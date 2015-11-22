@@ -6,6 +6,7 @@
 #------------------------------------------------------------
 import urlparse,urllib2,urllib,re
 import os, sys
+import time
 
 from core import logger
 from core import config
@@ -88,7 +89,19 @@ def peliculas(item):
     itemlist = []
 
     # Descarga la pagina
-    data = scrapertools.cache_page(item.url, headers=headers)
+    data = data = anti_cloudflare(item.url)
+
+    ## ------------------------------------------------
+    cookies = ""
+    matches = re.compile('(.portalehd.net.*?)\n', re.DOTALL).findall(config.get_cookie_data())
+    for cookie in matches:
+        name = cookie.split('\t')[5]
+        value = cookie.split('\t')[6]
+        cookies += name + "=" + value + ";"
+    headers.append(['Cookie', cookies[:-1]])
+    import urllib
+    _headers = urllib.urlencode(dict(headers))
+    ## ------------------------------------------------
 
     # Extrae las entradas (carpetas)
     patron  = '<div class="ThreeTablo T-FilmBaslik">\s*'
@@ -110,6 +123,9 @@ def peliculas(item):
         #scrapedplot = scrapertools.decodeHtmlentities(scrapedplot)
         scrapedplot = ""
         if (DEBUG): logger.info("title=["+scrapedtitle+"], url=["+scrapedurl+"], thumbnail=["+scrapedthumbnail+"]")
+        ## ------------------------------------------------
+        scrapedthumbnail += "|" + _headers
+        ## ------------------------------------------------
         itemlist.append( Item(channel=__channel__, action="findvideos", fulltitle=scrapedtitle, show=scrapedtitle, title=scrapedtitle, url=scrapedurl , thumbnail=scrapedthumbnail , plot=scrapedplot , folder=True) )
 
     # Extrae el paginador
@@ -120,5 +136,38 @@ def peliculas(item):
     if len(matches)>0:
         scrapedurl = urlparse.urljoin(item.url,matches[0])
         itemlist.append( Item(channel=__channel__, action="peliculas", title="[COLOR orange]Successivo >>[/COLOR]" , url=scrapedurl , thumbnail="http://2.bp.blogspot.com/-fE9tzwmjaeQ/UcM2apxDtjI/AAAAAAAAeeg/WKSGM2TADLM/s1600/pager+old.png", folder=True) )
+
+    return itemlist
+
+def anti_cloudflare(url):
+    # global headers
+
+    try:
+        resp_headers = scrapertools.get_headers_from_response(url, headers=headers)
+        resp_headers = dict(resp_headers)
+    except urllib2.HTTPError, e:
+        resp_headers = e.headers
+
+    if 'refresh' in resp_headers:
+        time.sleep(int(resp_headers['refresh'][:1]))
+
+        scrapertools.get_headers_from_response(host + "/" + resp_headers['refresh'][7:], headers=headers)
+
+    return scrapertools.cache_page(url, headers=headers)
+
+def findvideos(item):
+    logger.info("[portalehd.py] findvideos")
+
+    # Descarga la página
+    data = anti_cloudflare(item.url)
+
+    itemlist = servertools.find_video_items(data=data)
+
+    for videoitem in itemlist:
+        videoitem.title = "".join([item.title, '[COLOR green][B]' + videoitem.title + '[/B][/COLOR]'])
+        videoitem.fulltitle = item.fulltitle
+        videoitem.show = item.show
+        videoitem.thumbnail = item.thumbnail
+        videoitem.channel = __channel__
 
     return itemlist
