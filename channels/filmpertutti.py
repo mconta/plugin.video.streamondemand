@@ -63,7 +63,12 @@ def mainlist(item):
                      title="[COLOR azure]Anime Sub-Ita[/COLOR]",
                      action="anime",
                      url="http://www.filmpertutti.co/category/anime-cartoon-sub-ita/",
-                     thumbnail="http://orig09.deviantart.net/df5a/f/2014/169/2/a/fist_of_the_north_star_folder_icon_by_minacsky_saya-d7mq8c8.png")]
+                     thumbnail="http://orig09.deviantart.net/df5a/f/2014/169/2/a/fist_of_the_north_star_folder_icon_by_minacsky_saya-d7mq8c8.png"),
+                Item(channel=__channel__,
+                     title="[COLOR yellow]Cerca Anime Sub-Ita...[/COLOR]",
+                     action="search",
+                     extra="anime",
+                     thumbnail="http://dc467.4shared.com/img/fEbJqOum/s7/13feaf0c8c0/Search")]
     
     return itemlist
 
@@ -184,7 +189,8 @@ def episodianime(item):
     # Downloads page
     data = scrapertools.cache_page(item.url)
     # Extracts the entries
-    patron = '<a href="(.*?)".*?class="postlink".*?target="_blank".*?rel="nofollow">(.*?)</a>'
+    patron = '<a href="(.*?)".*?class=".*?rel="nofollow">(.*?)</a>'
+    #patron += '<a href="(.*?)"class="bbc_url" title="link esterno"  rel="nofollow external" rel="nofollow">(.*?)</a>'
     matches = re.compile(patron, re.DOTALL).findall(data)
 
     for scrapedurl,scrapedtitle in matches:
@@ -238,6 +244,8 @@ def search(item, texto):
     try:
         if item.extra == "serie":
             return peliculas(item)
+        if item.extra == "anime":
+            return anime(item)
         else:
             return peliculas(item)
     # Se captura la excepción, para no interrumpir al buscador global si un canal falla
