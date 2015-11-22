@@ -184,10 +184,10 @@ def episodianime(item):
     # Downloads page
     data = scrapertools.cache_page(item.url)
     # Extracts the entries
-    patron = '<a href=.*?class="postlink".*?target="_blank" rel="nofollow">(.*?)</a>.*?<a href="(.*?)".*?="postlink".*?target="_blank" rel="nofollow">'
+    patron = '<a href="(.*?)".*?class="postlink".*?target="_blank".*?rel="nofollow">(.*?)</a>'
     matches = re.compile(patron, re.DOTALL).findall(data)
 
-    for scrapedtitle,scrapedurl in matches:
+    for scrapedurl,scrapedtitle in matches:
         scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle)
         itemlist.append(
             Item(channel=__channel__,
