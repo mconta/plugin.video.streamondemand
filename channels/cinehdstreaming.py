@@ -89,8 +89,7 @@ def peliculas(item):
     data = scrapertools.cache_page(item.url)
 
     # Extrae las entradas (carpetas)
-    # patron  = '<h2 class="entry-title">\s*<a href="(.*?)"[^>]+>(.*?)</a>.*?<p><a href.*?<img.*?src="(.*?)"'
-    patron  = '<p><a href="(.*?)"><.*?alt="(.*?)".*?</a></p>\s*<.*?</p>\s*<.*?<a href="(.*?)"[^>]*>'
+     patron  = '<h2 class="entry-title">\s*<a href="(.*?)"[^>]+>(.*?)</a>.*?<p><a href.*?<img.*?src="(.*?)"'
     matches = re.compile(patron,re.DOTALL).findall(data)
     scrapertools.printMatches(matches)
 
@@ -98,8 +97,8 @@ def peliculas(item):
         scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle)
         response = urllib2.urlopen(scrapedurl)
         html = response.read()
-        start = html.find("<p><em><strong>")
-        end = html.find("</a></em></p>", start)
+        start = html.find("<h2 class=")
+        end = html.find("</div>", start)
         scrapedplot = html[start:end]
         scrapedplot = re.sub(r'<.*?>', '', scrapedplot)
         scrapedplot = scrapertools.decodeHtmlentities(scrapedplot)
