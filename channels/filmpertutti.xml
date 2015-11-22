@@ -6,10 +6,10 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/filmpertutti.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>6</version>
+    <version>7</version>
     <adult>false</adult>
     <date>09/11/2015</date>
-    <changes>Aggiunta voce per anime sub ita</changes>
+    <changes>Migliorie anime sub ita</changes>
     <categories>
         <category>movie</category>
         <category>serie</category>
