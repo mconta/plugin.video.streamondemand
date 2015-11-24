@@ -9,6 +9,7 @@ import datetime
 import json
 import re
 import urllib
+import animesubita
 
 from core import config
 from core import logger
@@ -79,7 +80,9 @@ def mainlist(item):
                      title="[COLOR yellow]Disney Classic Collection[/COLOR]",
                      action="tmdb_saghe",
                      url='http://api.themoviedb.org/3/list/51224e42760ee3297424a1e0?api_key=%s&language=it' % tmdb_key,
-                     thumbnail="https://image.tmdb.org/t/p/w180_and_h270_bestv2/vGV35HBCMhQl2phhGaQ29P08ZgM.jpg")]
+                     thumbnail="https://image.tmdb.org/t/p/w180_and_h270_bestv2/vGV35HBCMhQl2phhGaQ29P08ZgM.jpg"),
+                Item( title="[COLOR azure]Hokuto no Ken[/COLOR]", channel="hokutonoken", action="mainlist", thumbnail="http://i.imgur.com/dn9ImTf.jpg"),
+                Item( title="[COLOR azure]Saint Seiya[/COLOR]", channel="saintseiya" ,action="mainlist", thumbnail="http://vignette2.wikia.nocookie.net/nonciclopedia/images/1/12/Logo_Cavalieri_dello_Zodiaco.png/revision/latest?cb=20140308215438")]
 
     return itemlist
 
