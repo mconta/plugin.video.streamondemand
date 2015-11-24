@@ -670,9 +670,9 @@
     <id>nowvideo</id>
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/servers/nowvideo.py</update_url>
     <active>true</active>
-    <version>4</version>
+    <version>5</version>
     <date>20/11/2015</date>
-    <changes>Merged with Pelis</changes>
+    <changes>Reverted Doc version</changes>
 </server>
 
 <server>
