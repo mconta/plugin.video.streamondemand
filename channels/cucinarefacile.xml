@@ -7,7 +7,7 @@
     <active>true</active>
     <include_in_global_search>false</include_in_global_search>
     <version>3</version>
-    <adult>false</version>
+    <adult>false</adult>
     <date>21/11/2015</date>
     <changes>Added BackHome function</changes>
     <categories>

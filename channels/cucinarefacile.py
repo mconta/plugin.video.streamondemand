@@ -4,14 +4,13 @@
 # Canal para cucinarefacile
 # http://blog.tvalacarta.info/plugin-xbmc/streamondemand.
 #------------------------------------------------------------
-import urlparse,urllib2,urllib,re
-import os, sys
+import re
+import urlparse
 
-from core import logger
 from core import config
+from core import logger
 from core import scrapertools
 from core.item import Item
-from servers import servertools
 
 __channel__ = "cucinarefacile"
 __category__ = "D"
@@ -68,9 +67,6 @@ def peliculas(item):
     return itemlist
 
 def HomePage(item):
-    import sys
     import xbmc
     xbmc.executebuiltin("ReplaceWindow(10024,plugin://plugin.video.streamondemand)")
-    return
-
 
