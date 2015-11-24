@@ -1,79 +1,108 @@
 # -*- coding: utf-8 -*-
-# ------------------------------------------------------------
+#------------------------------------------------------------
 # pelisalacarta - XBMC Plugin
 # Conector para flashx
 # http://blog.tvalacarta.info/plugin-xbmc/pelisalacarta/
-# ------------------------------------------------------------
-# Credits: DrZ3r0
+#------------------------------------------------------------
 
-import re
-import time
+import urlparse,urllib2,urllib,re
+import os
 
 from core import scrapertools
 from core import logger
-from lib.jsbeautifier.unpackers import packer
+from core import config
+from core import jsunpack
 
+def get_video_url( page_url , premium = False , user="" , password="", video_password="" ):
+    logger.info("pelisalacarta.servers.flashx url="+page_url)
 
-def get_video_url(page_url, premium=False, user="", password="", video_password=""):
-    logger.info("[flashx.py] get_video_url(page_url='%s')" % page_url)
+    # Lo pide una vez
+    headers = [['User-Agent','Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.8.1.14) Gecko/20080404 Firefox/2.0.0.14']]
+    data = scrapertools.cache_page( page_url , headers=headers )
+    #logger.info("data="+data)
+    
+    form_url = scrapertools.get_match(data,"<Form method=\"POST\" action='([^']+)'>")
+    logger.info("pelisalacarta.servers.flashx form_url="+form_url)
+    form_url = urlparse.urljoin(page_url,form_url)
+    logger.info("pelisalacarta.servers.flashx form_url="+form_url)
+
+    op = scrapertools.get_match(data,'<input type="hidden" name="op" value="([^"]+)"')
+    logger.info("pelisalacarta.servers.flashx op="+op)
+    
+    usr_login = ""
+    
+    id = scrapertools.get_match(data,'<input type="hidden" name="id" value="([^"]+)"')
+    logger.info("pelisalacarta.servers.flashx id="+id)
+
+    fname = scrapertools.get_match(data,'<input type="hidden" name="fname" value="([^"]+)"')
+    logger.info("pelisalacarta.servers.flashx fname="+fname)
+    
+    referer = scrapertools.get_match(data,'<input type="hidden" name="referer" value="([^"]*)"')
+    logger.info("pelisalacarta.servers.flashx referer="+referer)
+    
+    hashstring = scrapertools.get_match(data,'<input type="hidden" name="hash" value="([^"]*)"')
+    logger.info("pelisalacarta.servers.flashx hashstring="+hashstring)
+    
+    imhuman = scrapertools.get_match(data,'<input type="submit".*?name="imhuman" value="([^"]+)"').replace(" ","+")
+    logger.info("pelisalacarta.servers.flashx imhuman="+imhuman)
+        
+    import time
+    time.sleep(10)
+
+    # Lo pide una segunda vez, como si hubieras hecho click en el banner
+    #op=download1&usr_login=&id=z3nnqbspjyne&fname=Coriolanus_DVDrip_Castellano_by_ARKONADA.avi&referer=&hash=nmnt74bh4dihf4zzkxfmw3ztykyfxb24&imhuman=Continue+to+Video
+    #op=download1&usr_login=&id=h6gjvhiuqfsq&fname=GENES1S.avi&referer=&hash=taee4nbdgbuwuxfguju3t6nq2gkdzs6k&imhuman=Proceed+to+video
+    #op=download1&usr_login=&id=vpkvjdpkh972&fname=G4ngm4n15HDRSub.avi&referer=&hash=1357853-176-86-1437560090-ee4170e4a4eca471524f6f07eca2b7a9&imhuman=Proceed+to+video
+    post = "op="+op+"&usr_login="+usr_login+"&id="+id+"&fname="+fname+"&referer="+referer+"&hash="+hashstring+"&imhuman="+imhuman
+    headers.append(["Referer",page_url])
+    body = scrapertools.cache_page( form_url , post=post, headers=headers )
+    logger.info("body="+body)
+
+    data = scrapertools.find_single_match(body,"<script type='text/javascript'>(eval\(function\(p,a,c,k,e,d.*?)</script>")
+    logger.info("data="+data)
+    data = jsunpack.unpack(data)
+    logger.info("data="+data)
+
+    # Extrae la URL
+    #{file:"http://f11-play.flashx.tv/luq4gfc7gxixexzw6v4lhz4xqslgqmqku7gxjf4bk43u4qvwzsadrjsozxoa/video1.mp4"}
     video_urls = []
-
-    headers = [
-        ['User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:38.0) Gecko/20100101 Firefox/38.0'],
-        ['Accept-Encoding', 'gzip, deflate, lzma'],
-        ['Connection', 'keep-alive'],
-        ['Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8']]
-
-    data = scrapertools.cache_page(page_url, headers=headers)
-
-    time.sleep(5)
-
-    post_url = re.findall('Form method="POST" action=\'(.*)\'', data)[0]
-    post_selected = re.findall('Form method="POST" action=(.*)</Form>', data, re.DOTALL)[0]
-
-    post_data = 'op=%s&usr_login=%s&id=%s&fname=%s&referer=%s&hash=%s&imhuman=Proceed+to+video' % (
-        re.findall('input type="hidden" name="op" value="(.*)"', post_selected)[0],
-        re.findall('input type="hidden" name="usr_login" value="(.*)"', post_selected)[0],
-        re.findall('input type="hidden" name="id" value="(.*)"', post_selected)[0],
-        re.findall('input type="hidden" name="fname" value="(.*)"', post_selected)[0],
-        re.findall('input type="hidden" name="referer" value="(.*)"', post_selected)[0],
-        re.findall('input type="hidden" name="hash" value="(.*)"', post_selected)[0])
-
-    headers.append(['Referer', page_url])
-    data = scrapertools.cache_page('http://www.flashx.tv' + post_url, post=post_data, headers=headers)
-
-    for media_url in get_link(data):
-        video_urls.append([".mp4" + " [flashx]", media_url])
+    media_urls = scrapertools.find_multiple_matches(data,'\{file\:"([^"]+)"')
+    video_urls = []
+    for media_url in media_urls:
+        video_urls.append( [ scrapertools.get_filename_from_url(media_url)[-4:]+" [flashx]",media_url])
 
     for video_url in video_urls:
-        logger.info("[flashx.py] %s - %s" % (video_url[0], video_url[1]))
+        logger.info("pelisalacarta.servers.flashx %s - %s" % (video_url[0],video_url[1]))
 
     return video_urls
 
-
 # Encuentra vídeos del servidor en el texto pasado
 def find_videos(data):
+
+    # Añade manualmente algunos erróneos para evitarlos
     encontrados = set()
     devuelve = []
 
-    patronvideos = '//(?:www.|play.)?flashx.tv/(?:embed-|dl\?)?([0-9a-zA-Z/-]+)'
-    logger.info("[flashx.py] find_videos #" + patronvideos + "#")
-    matches = re.compile(patronvideos, re.DOTALL).findall(data)
+    #http://www.flashx.tv/li5ydvxhg514.html
+    #http://flashx.tv/z3nnqbspjyne
+    patronvideos  = 'flashx.tv/([a-z0-9A-Z]+)'
+    logger.info("pelisalacarta.servers.flashx find_videos #"+patronvideos+"#")
+    matches = re.compile(patronvideos,re.DOTALL).findall(data)
 
-    for media_id in matches:
+    for match in matches:
         titulo = "[flashx]"
-        url = 'http://flashx.tv/%s.html' % media_id
+        url = "http://www.flashx.tv/"+match+".html"
         if url not in encontrados:
-            logger.info("  url=" + url)
-            devuelve.append([titulo, url, 'flashx'])
+            logger.info("  url="+url)
+            devuelve.append( [ titulo , url , 'flashx' ] )
             encontrados.add(url)
         else:
-            logger.info("  url duplicada=" + url)
+            logger.info("  url duplicada="+url)
 
     return devuelve
 
+def test():
 
-def get_link(data):
-    for match in re.finditer('(eval\(function\(p,a,c,k,e,d\).*?)</script>', data, re.DOTALL):
-        js = packer.unpack(match.group(1))
-        return re.findall('file\s*:\s*"([^"]+\.mp4)"', js)
+    video_urls = get_video_url("http://www.flashx.tv/vpkvjdpkh972.html")
+
+    return len(video_urls)>0
