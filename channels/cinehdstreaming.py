@@ -113,10 +113,12 @@ def peliculas(item):
     for scrapedurl, scrapedtitle, scrapedthumbnail in matches:
         scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle)
         html = scrapertools.cache_page(scrapedurl, headers=headers)
-        start = html.find("<h2 class=")
-        end = html.find("</div>", start)
+        start = html.find("<p><em><strong>")
+        end = html.find("<p><span class=", start)
         scrapedplot = html[start:end]
         scrapedplot = re.sub(r'<.*?>', '', scrapedplot)
+        scrapedplot = re.sub(r'Download: QUI', '', scrapedplot)
+        scrapedplot = re.sub(r'Streaming: QUI', '', scrapedplot)
         scrapedplot = scrapertools.decodeHtmlentities(scrapedplot)
         if DEBUG: logger.info(
             "title=[" + scrapedtitle + "], url=[" + scrapedurl + "], thumbnail=[" + scrapedthumbnail + "]")

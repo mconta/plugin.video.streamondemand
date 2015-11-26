@@ -9,7 +9,7 @@
     <version>9</version>
     <adult>false</adult>
     <date>22/11/2015</date>
-    <changes>Readded categories</changes>
+    <changes>Fixed plot</changes>
     <categories>
         <category>movie</category>
     </categories>
