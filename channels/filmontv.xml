@@ -6,9 +6,9 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/filmontv.py</update_url>
     <active>true</active>
     <include_in_global_search>false</include_in_global_search>
-    <version>7</version>
+    <version>8</version>
     <adult>false</version>
-    <date>04/11/2015</date>
+    <date>26/11/2015</date>
     <changes>Fix channel</changes></changes>
     <categories>
         <category>movie</category>
