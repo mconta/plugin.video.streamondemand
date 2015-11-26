@@ -1,0 +1,10 @@
+v5.1.5
+- Added new channels: Mondo Lunatico, HD Streaminig, Cine HD Streaming, Hokutonoken
+- Fixed channels: Altadefinizione01, Streamblog, PortaleHD, Tenente Colombo, Vedi Serie, Streamingfilmit
+- Fixed/Added servers: exashare, googledrive, flashx
+- Unified search exclusion
+- Unload broken channels
+- advancedsettings.xml small tweak
+- Channelselector (Home Page) modified
+- Test "Back Home" function, only Cucinarefacile channel (please feedback)
+- Saghe updated

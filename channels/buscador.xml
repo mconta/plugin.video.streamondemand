@@ -6,8 +6,8 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/buscador.py</update_url>
     <active>true</active>
     <include_in_global_search>false</include_in_global_search>
-    <version>7</version>
+    <version>8</version>
     <adult>false</adult>
-    <date>31/10/2015</date>
+    <date>26/11/2015</date>
     <changes>Smail fix customization</changes>
 </channel>
