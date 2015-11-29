@@ -6,10 +6,10 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/altadefinizione01.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>11</version>
+    <version>12</version>
     <adult>false</adult>
-    <date>05/09/2015</date>
-    <changes>Update check</changes>
+    <date>29/11/2015</date>
+    <changes>Added back home</changes>
     <categories>
         <category>movie</category>
         <category>serie</category>

@@ -6,10 +6,10 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/casacinema.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>6</version>
+    <version>7</version>
     <adult>false</adult>
-    <date>31/10/2015</date>
-    <changes>Added TV-Series menu</changes>
+    <date>29/11/2015</date>
+    <changes>Added back home</changes>
     <categories>
         <category>movie</category>
         <category>serie</category>
