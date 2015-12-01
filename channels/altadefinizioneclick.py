@@ -251,24 +251,25 @@ def findvideos(item):
             else:
                 get_data = '%s=%s&%s=%s&%s=%s&%s=%s' % (name1, val1, name2, val2, name3, val3, name4, val4)
             tmp_data = scrapertools.cache_page('http://hdpass.link/film.php?randid=0&' + get_data, headers=headers)
+            patron = r'; eval\(unescape\("(.*?)",(\[".*?;"\]),(\[".*?\])\)\);'
+            [(par1, par2, par3)] = re.compile(patron, re.DOTALL).findall(tmp_data)
+            par2 = eval(par2, {'__builtins__': None}, {})
+            par3 = eval(par3, {'__builtins__': None}, {})
+            tmp_data = unescape(par1, par2, par3)
             if 'Google' in get_data or 'Vecchio Player' in get_data:
-                patron = r'; eval\(unescape\("(.*?)",(\[".*?;"\]),(\[".*?\])\)\);'
-                [(par1, par2, par3)] = re.compile(patron, re.DOTALL).findall(tmp_data)
-                par2 = eval(par2, {'__builtins__': None}, {})
-                par3 = eval(par3, {'__builtins__': None}, {})
-                tmp_data = unescape(par1, par2, par3)
                 tmp_data = scrapertools.find_single_match(tmp_data, r'tvar Data = \\"([^\\]+)\\";')
-                tmp_data = binascii.unhexlify(tmp_data).replace(r'\/', '/')
+                tmp_data = binascii.unhexlify(tmp_data)
                 if 'Vecchio Player' in get_data:
                     patron = '"url":"([^"]+)"'
-                    scrapedurl = scrapertools.find_single_match(tmp_data, patron)
+                    scrapedurl = scrapertools.find_single_match(tmp_data.replace(r'\/', '/'), patron)
                     itemlist.append(
                         Item(server='directo',
                              action="play",
                              title=' - [Vecchio Player]',
                              url=scrapedurl,
                              folder=False))
-            html.append(tmp_data)
+                    continue
+            html.append(tmp_data.replace(r'\/', '/'))
         html = ''.join(html)
     else:
         html = url
