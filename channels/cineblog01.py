@@ -883,11 +883,11 @@ def play(item):
         print "##### play go.php data ##\n%s\n##" % data
     elif "/link/" in item.url:
         data = anti_cloudflare(item.url)
-        from lib.jsbeautifier.unpackers import packer
+        from core import jsunpack
 
         try:
             data = scrapertools.get_match(data, "(eval.function.p,a,c,k,e,.*?)</script>")
-            data = packer.unpack(data)
+            data = jsunpack.unpack(data)
             print "##### play /link/ unpack ##\n%s\n##" % data
         except IndexError:
             print "##### The content is yet unpacked"

@@ -6,28 +6,35 @@
 # ------------------------------------------------------------
 
 import re
+import urllib
 
+from core import jsunpack
 from core import logger
 from core import scrapertools
 
 headers = [
-    ['User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:38.0) Gecko/20100101 Firefox/38.0'],
-    ['Accept-Encoding', 'gzip, deflate'],
-    ['Accept', "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"]
+    ['User-Agent',
+     'Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5376e Safari/8536.25'],
 ]
 
 
 def get_video_url(page_url, premium=False, user="", password="", video_password=""):
     logger.info("streamondemand.videomega get_video_url(page_url='%s')" % page_url)
 
-    headers.append(['Referer', page_url.replace('view.php', '')])
-    data = scrapertools.downloadpage(page_url, follow_redirects=False, headers=headers)
+    headers.append(['Referer', page_url])
+    data = scrapertools.cache_page(page_url, headers=headers)
     video_urls = []
 
-    location = scrapertools.find_single_match(data, '<source src="([^"]+)"')
-    logger.info("streamondemand.videomega location=" + location)
+    patron = r"(eval.function.p,a,c,k,e,.*?)\s*</script>"
+    data = scrapertools.find_single_match(data, patron)
+    if data != '':
+        data = jsunpack.unpack(data)
 
-    video_urls.append([scrapertools.get_filename_from_url(location)[-4:] + " [videomega]", location])
+        location = scrapertools.find_single_match(data, r'"src"\s*,\s*"([^"]+)')
+        location += '|' + urllib.urlencode(dict(headers))
+        logger.info("streamondemand.videomega location=" + location)
+
+        video_urls.append([scrapertools.get_filename_from_url(location)[-4:] + " [videomega]", location])
 
     for video_url in video_urls:
         logger.info("streamondemand.videomega %s - %s" % (video_url[0], video_url[1]))
@@ -40,14 +47,14 @@ def find_videos(data):
     encontrados = set()
     devuelve = []
 
-    pattern = r"//(?:www\.)?videomega\.tv/(?:(?:iframe|cdn|validatehash|view)\.php)?\?(?:ref|hashkey)=([a-zA-Z0-9]+)"
+    pattern = r'//(?:www.)?videomega\.tv/(?:(?:iframe|cdn|validatehash|view)\.php)?\?(?:ref|hashkey)=([a-zA-Z0-9]+)'
 
     logger.info("[videomega.py] find_videos #" + pattern + "#")
     matches = re.compile(pattern, re.DOTALL).findall(data)
 
-    for match in matches:
+    for media_id in matches:
         titulo = "[videomega]"
-        url = "http://videomega.tv/view.php?ref=" + match + "&width=100%&height=400"
+        url = 'http://videomega.tv/cdn.php?ref=%s' % media_id
         if url not in encontrados:
             logger.info("  url=" + url)
             devuelve.append([titulo, url, 'videomega'])

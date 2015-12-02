@@ -7,9 +7,9 @@
 
 import re
 
-from core import scrapertools
+from core import jsunpack
 from core import logger
-from lib.jsbeautifier.unpackers import packer
+from core import scrapertools
 
 
 def test_video_exists(page_url):
@@ -39,7 +39,7 @@ def get_video_url(page_url, premium=False, user="", password="", video_password=
     data = scrapertools.cache_page(url)
 
     packed = scrapertools.get_match(data, "<script type='text/javascript'>eval.function.p,a,c,k,e,.*?</script>")
-    unpacked = packer.unpack(packed)
+    unpacked = jsunpack.unpack(packed)
     media_url = scrapertools.get_match(unpacked, 'file:"([^"]+)"')
 
     video_urls = [[scrapertools.get_filename_from_url(media_url)[-4:] + " [rapidvideo.org]", media_url]]
@@ -50,7 +50,7 @@ def get_video_url(page_url, premium=False, user="", password="", video_password=
     return video_urls
 
 
-# Encuentra vÃ­deos de este servidor en el texto pasado
+# Encuentra vídeos de este servidor en el texto pasado
 def find_videos(data):
     encontrados = set()
     devuelve = []

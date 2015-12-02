@@ -7,9 +7,9 @@
 
 import re
 
+from core import jsunpack
 from core import logger
 from core import scrapertools
-from lib.jsbeautifier.unpackers import packer
 
 headers = [
     ['User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:38.0) Gecko/20100101 Firefox/38.0'],
@@ -40,7 +40,7 @@ def get_video_url(page_url, premium=False, user="", password="", video_password=
 
     patron = "<script type='text/javascript'>(eval\(function\(p,a,c,k,e,d.*?)</script>"
     data = scrapertools.find_single_match(body, patron)
-    data = packer.unpack(data)
+    data = jsunpack.unpack(data)
 
     media_urls = re.findall(r'\{label:"([^"]+)",file:"([^"]+)"\}', data)
     video_urls = []

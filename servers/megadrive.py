@@ -8,8 +8,8 @@
 
 import re
 
-from core import scrapertools
 from core import logger
+from core import scrapertools
 
 
 # Returns an array of possible video url's from the page_url
@@ -24,8 +24,8 @@ def get_video_url(page_url, premium=False, user="", password="", video_password=
         from core import unpackerjs3
         data_unpack = unpackerjs3.unpackjs(data_pack)
         if data_unpack == "":
-            from lib.jsbeautifier.unpackers import packer
-            data_unpack = packer.unpack(data_pack)
+            from core import jsunpack
+            data_unpack = jsunpack.unpack(data_pack)
         data = data_unpack
 
     video_url = scrapertools.find_single_match(data, 'file"?\s*:\s*"([^"]+)",')
