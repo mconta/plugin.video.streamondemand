@@ -21,26 +21,42 @@ __language__ = "IT"
 
 DEBUG = config.get_setting("debug")
 
-sito="http://www.playcinema.org"
+host = "http://www.playcinema.org"
+
+headers = [
+    ['User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'],
+    ['Accept-Encoding', 'gzip, deflate']
+]
 
 def isGeneric():
     return True
 
 def mainlist(item):
     logger.info("streamondemand.playcinema mainlist")
-    itemlist = []
-    itemlist.append( Item(channel=__channel__, title="[COLOR azure]Ultimi Film Inseriti[/COLOR]", action="peliculas", url="http://www.playcinema.org/", thumbnail="http://orig03.deviantart.net/6889/f/2014/079/7/b/movies_and_popcorn_folder_icon_by_matheusgrilo-d7ay4tw.png"))
-    itemlist.append( Item(channel=__channel__, title="[COLOR azure]Film Per Categoria[/COLOR]", action="categorias", url="http://www.playcinema.org/", thumbnail="http://xbmc-repo-ackbarr.googlecode.com/svn/trunk/dev/skin.cirrus%20extended%20v2/extras/moviegenres/All%20Movies%20by%20Genre.png"))
-    itemlist.append( Item(channel=__channel__, title="[COLOR yellow]Cerca...[/COLOR]", action="search", thumbnail="http://dc467.4shared.com/img/fEbJqOum/s7/13feaf0c8c0/Search"))
+    itemlist = [Item(channel=__channel__,
+                     title="[COLOR azure]Ultimi Film Inseriti[/COLOR]",
+                     action="peliculas",
+                     url=host,
+                     thumbnail="http://orig03.deviantart.net/6889/f/2014/079/7/b/movies_and_popcorn_folder_icon_by_matheusgrilo-d7ay4tw.png"),
+                Item(channel=__channel__,
+                     title="[COLOR azure]Film Per Categoria[/COLOR]",
+                     action="categorias",
+                     url=host,
+                     thumbnail="http://xbmc-repo-ackbarr.googlecode.com/svn/trunk/dev/skin.cirrus%20extended%20v2/extras/moviegenres/All%20Movies%20by%20Genre.png"),
+                Item(channel=__channel__,
+                     title="[COLOR yellow]Cerca...[/COLOR]",
+                     action="search",
+                     thumbnail="http://dc467.4shared.com/img/fEbJqOum/s7/13feaf0c8c0/Search")]
 
-    
     return itemlist
+
+
 
 def categorias(item):
     itemlist = []
     
     # Descarga la pagina
-    data = scrapertools.cache_page(item.url)
+    data = scrapertools.cache_page(item.url, headers=headers)
     bloque = scrapertools.get_match(data,'<ul class="sub-menu">(.*?)</ul>')
     
     # Extrae las entradas (carpetas)
@@ -72,8 +88,19 @@ def peliculas(item):
     logger.info("streamondemand.playcinema peliculas")
     itemlist = []
 
-    # Descarga la pagina
-    data = scrapertools.cache_page(item.url)
+    data = anti_cloudflare(item.url)
+
+    ## ------------------------------------------------
+    cookies = ""
+    matches = re.compile('(.playcinema.org.*?)\n', re.DOTALL).findall(config.get_cookie_data())
+    for cookie in matches:
+        name = cookie.split('\t')[5]
+        value = cookie.split('\t')[6]
+        cookies += name + "=" + value + ";"
+    headers.append(['Cookie', cookies[:-1]])
+    import urllib
+    _headers = urllib.urlencode(dict(headers))
+    ## ------------------------------------------------
 
     # Extrae las entradas (carpetas)
     patron = '<div class="moviefilm">\s*'
@@ -83,16 +110,16 @@ def peliculas(item):
     scrapertools.printMatches(matches)
 
     for scrapedurl,scrapedthumbnail,scrapedtitle in matches:
-        response = urllib2.urlopen(scrapedurl)
-        html = response.read()
+        #response = urllib2.urlopen(scrapedurl)
+        #html = response.read()
         #start = html.find("<div class=\"filmicerik\">")
-        start = html.find("<p><span style=\"font-family: Arial, Helvetica, sans-serif;\">")
-        end = html.find("<span style=\"font-size: xx-small;\">+Info", start)
+        #start = html.find("<p><span style=\"font-family: Arial, Helvetica, sans-serif;\">")
+        #end = html.find("<span style=\"font-size: xx-small;\">+Info", start)
         #end = html.find("</font></a><br />", start)
-        scrapedplot = html[start:end]
-        scrapedplot = re.sub(r'<[^>]*>', '', scrapedplot)
-        scrapedplot = scrapertools.decodeHtmlentities(scrapedplot)
-        #scrapedplot = ""
+        #scrapedplot = html[start:end]
+        #scrapedplot = re.sub(r'<[^>]*>', '', scrapedplot)
+        #scrapedplot = scrapertools.decodeHtmlentities(scrapedplot)
+        scrapedplot = ""
         scrapedtitle=scrapertools.decodeHtmlentities(scrapedtitle.replace("Streaming",""))
         if (DEBUG): logger.info("title=["+scrapedtitle+"], url=["+scrapedurl+"], thumbnail=["+scrapedthumbnail+"]")
         itemlist.append( Item(channel=__channel__, action="findvideos", fulltitle=scrapedtitle, show=scrapedtitle, title="[COLOR azure]"+scrapedtitle+"[/COLOR]" , url=scrapedurl , thumbnail=scrapedthumbnail , plot=scrapedplot , folder=True) )
@@ -108,18 +135,19 @@ def peliculas(item):
 
     return itemlist
 
-def test():
-    from servers import servertools
-    
-    # mainlist
-    mainlist_items = mainlist(Item())
-    # Da por bueno el canal si alguno de los videos de "Novedades" devuelve mirrors
-    novedades_items = peliculas(mainlist_items[0])
-    bien = False
-    for novedades_item in novedades_items:
-        mirrors = servertools.find_video_items( item=novedades_item )
-        if len(mirrors)>0:
-            bien = True
-            break
+def anti_cloudflare(url):
+    # global headers
 
-    return bien
+    try:
+        resp_headers = scrapertools.get_headers_from_response(url, headers=headers)
+        resp_headers = dict(resp_headers)
+    except urllib2.HTTPError, e:
+        resp_headers = e.headers
+
+    if 'refresh' in resp_headers:
+        time.sleep(int(resp_headers['refresh'][:1]))
+
+        scrapertools.get_headers_from_response(host + "/" + resp_headers['refresh'][7:], headers=headers)
+
+    return scrapertools.cache_page(url, headers=headers)
+
