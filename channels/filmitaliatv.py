@@ -97,7 +97,7 @@ def peliculas(item):
     # Extrae las entradas (carpetas)
     patron = '<div class="post-img small-post-img">\s*'
     patron += '<a href="([^"]+)"[^>]+>\s*'
-    patron += '<img src="([^"]+)"[^>]+>[^>]+>\s*'
+    patron += '<img.*src="([^"]+)"[^>]+>[^>]+>\s'
     patron += '</div>\s*'
     patron += '<div[^>]+>\s*'
     patron += '<div[^>]+>\s*'
