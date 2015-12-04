@@ -61,6 +61,9 @@ NLS_List_by_Genre = Nls(30987, 'Genre')
 NLS_Search_by_Year = Nls(30988, 'Search by Year')
 NLS_Library = Nls(30991, 'Library')
 NLS_Next_Page = Nls(30992, 'Next Page')
+NLS_Looking_For = Nls(30993, 'Looking for %s...')
+NLS_Searching_In = Nls(30994, 'Searching in %s...')
+NLS_Found_So_Far = Nls(30995, '%d found so far: %s')
 
 TMDb_genres = {}
 
@@ -303,7 +306,7 @@ def do_channels_search(item):
     try:
         import xbmcgui
         progress_dialog = xbmcgui.DialogProgress()
-        progress_dialog.create("Ricerca di " + item.title)
+        progress_dialog.create(NLS_Looking_For % item.title)
         show_dialog = True
     except:
         show_dialog = False
@@ -324,8 +327,8 @@ def do_channels_search(item):
         else:
             if show_dialog:
                 progress_dialog.update(index * 100 / number_of_channels,
-                    'Sto cercando in %s...' % basename,
-                    '%d trovati sinora: %s' % (len(itemlist), channels_successfull))
+                    NLS_Searching_In % basename,
+                    NLS_Found_So_Far % (len(itemlist), channels_successfull))
 
             try:
                 obj = imp.load_source(basename, infile)
