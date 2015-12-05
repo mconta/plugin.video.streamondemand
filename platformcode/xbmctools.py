@@ -876,7 +876,10 @@ def renderItems(itemlist, params, url, category, isPlayable='false'):
             if viewmode=="list":
                 xbmc.executebuiltin("Container.SetViewMode(50)")
             elif viewmode=="movie_with_plot":
-                xbmc.executebuiltin("Container.SetViewMode(503)")
+                if xbmc.getSkinDir()=="skin.aeon.nox.5":
+                    xbmc.executebuiltin("Container.SetViewMode(55)")
+                else:
+                    xbmc.executebuiltin("Container.SetViewMode(503)")
             elif viewmode=="movie":
                 xbmc.executebuiltin("Container.SetViewMode(500)")
 
