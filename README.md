@@ -35,4 +35,4 @@ Chryses (for ideas about auto-updates)
 fenice82 (for editing the useful xml files for channels and for
           adapting pelisalacarta-UI to Streamondemand-PureIta, https://github.com/Fenice82/plugin.video.streamondemand-pureita)
 
-WHISHLIST: http://www.mimediacenter.info/foro/viewtopic.php?f=36&t=7022&p=26728#p26728
+WISHLIST: http://www.mimediacenter.info/foro/viewtopic.php?f=36&t=7022&p=26728#p26728
