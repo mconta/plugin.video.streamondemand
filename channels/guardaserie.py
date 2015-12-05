@@ -141,9 +141,7 @@ def cerca( item ):
 
     data = scrapertools.cache_page( item.url )
 
-    data = scrapertools.find_single_match( data, '<div class="search_post">(.*?)</div>' )
-
-    patron  = '<a.*?href="(.*?)".*?title="(.*?)".*?<img src="(.*?)" />'
+    patron  = '<div class="search_thumbnail">.*?<a class="search_link" href="(.*?)" rel="bookmark" title="(.*?)">.*?<img src="(.*?)" />.*?</a>'
 
     matches = re.compile( patron, re.DOTALL ).findall( data )
 
@@ -153,7 +151,7 @@ def cerca( item ):
 
            scrapedtitle = scrapedtitle[7:]
            
-        itemlist.append( Item( channel=__channel__, action="episodios",title= scrapedtitle , fulltitle=scrapedtitle, url=scrapedurl, show=scrapedtitle ) )
+        itemlist.append( Item( channel=__channel__, action="episodios",title= scrapedtitle , fulltitle=scrapedtitle, url=scrapedurl, show=scrapedtitle , thumbnail=scrapedthumbnail) )
 
     return itemlist
 
@@ -217,4 +215,3 @@ def findvideos( item ):
     itemlist.append( Item( channel=__channel__, action="play",title= title , url=url, server=server , fulltitle=item.fulltitle, show=item.show, folder=False ) )
 
     return itemlist
-
