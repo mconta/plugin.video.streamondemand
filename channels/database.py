@@ -25,7 +25,6 @@ from core import config
 from core.item import Item
 from servers import servertools
 from unicodedata import normalize
-from unidecode import unidecode
 
 __channel__ = "database"
 __category__ = "F"
@@ -93,7 +92,12 @@ def list_movie(item):
     page = int(item.plot)
     itemlist = build_movie_list(item, tmdb_get_data('%spage=%d&' % (item.url, page), results=results))
     if page < results[0]:
-        itemlist.append(Item(channel=item.channel, title="[COLOR orange]%s (%d/%d)[/COLOR]" % (NLS_Next_Page, page * len(itemlist), results[1]), action="list_movie", url=item.url, plot="%d" % (page+1)))
+        itemlist.append(Item(
+            channel=item.channel,
+            title="[COLOR orange]%s (%d/%d)[/COLOR]" % (NLS_Next_Page, page * len(itemlist), results[1]),
+            action="list_movie",
+            url=item.url,
+            plot="%d" % (page+1)))
 
     return itemlist
 
@@ -226,7 +230,7 @@ def build_movie_list(item, movies):
     itemlist = []
     for movie in movies:
         title = normalize_unicode(tmdb_tag(movie, 'title'))
-        title_search = unidecode(tmdb_tag(movie, 'title'))
+        title_search = normalize_unicode(tmdb_tag(movie, 'title'), encoding='ascii')
         poster = tmdb_image(movie, 'poster_path')
         fanart = tmdb_image(movie, 'backdrop_path', 'w1280')
         jobrole = normalize_unicode(' [COLOR azure][' + tmdb_tag(movie, 'job') + '][/COLOR]' if tmdb_tag_exists(movie, 'job') else '')
@@ -281,6 +285,7 @@ def do_channels_search(item):
 
     import glob
     import imp
+    from lib.fuzzywuzzy import fuzz
 
     master_exclude_data_file = os.path.join( config.get_runtime_path() , "resources", "global_search_exclusion.txt")
     logger.info("streamondemand.channels.database master_exclude_data_file=" + master_exclude_data_file)
@@ -366,33 +371,40 @@ def do_channels_search(item):
                 channel_thread.start()
                 channel_result_itemlist = channel_thread.join(60)
 
-                check_year = True
-                check_title = False
-
                 for item in channel_result_itemlist:
-                    plain_channel_title = unidecode(re.sub(r'(?i)\[/?COLOR[^\]]*\]', '', item.title))
+                    title = item.fulltitle
 
-                    if check_year:
-                        found_year = re.match('.*\((\d{4})\)', item.title)
-                        # Give some tolerance to the release year
-                        if found_year and abs(int(found_year.group(1)) - title_year) > 1:
-                            logger.info("streamondemand.channels.database %s: returned title '%s' doesn't match the searched title '%s' %d (year)" \
-                                % (basename, item.title, title_search, title_year))
+                    # Check if the found title matches the release year
+                    year_match = re.search('\(.*(\d{4})\)', title)
+                    if year_match:
+                        found_year = int(year_match.group(1))
+                        title = title[:year_match.start()] + title[year_match.end():]
+                        if title_year > 0 and abs(found_year - title_year) > 1:
+                            logger.info("streamondemand.channels.database %s: '%s' doesn't match the searched title '%s' %d (delta year is %d)" \
+                                % (basename, item.fulltitle, title_search, title_year, abs(found_year - title_year)))
                             continue
 
-                    if check_title:
-                        if plain_channel_title != title_search and \
-                           (not plain_channel_title.startswith(title_search) or plain_channel_title[len(title_search)] not in string.whitespace):
-                            logger.info("streamondemand.channels.database %s: returned title '%s' doesn't match the searched title '%s' %d (title)" \
-                                % (basename, item.title, title_search, title_year))
+                    # Clean up a bit the returned title to improve the fuzzy matching
+                    title = re.sub(r'\(\d\.\d\)', '', title)                    # Rating, es: (8.4)
+                    title = re.sub(r'(?i) (film|streaming|ITA)', '', title)     # Common keywords in titles
+                    title = re.sub(r'[\[(](HD|B/N)[\])]', '', title)            # Common keywords in titles, es. [HD], (B/N), etc.
+                    title = re.sub(r'(?i)\[/?COLOR[^\]]*\]', '', title)         # Formatting keywords
+
+                    # Check if the found title fuzzy matches the searched one
+                    fuzzy = fuzz.token_sort_ratio(title_search, title)
+                    if  fuzzy <= 85:
+                            logger.info("streamondemand.channels.database %s: '%s' doesn't match the searched title '%s' %d (title fuzzy comparision is %d)" \
+                                % (basename, item.fulltitle, title_search, title_year, fuzzy))
                             continue
 
-                    logger.info("streamondemand.channels.database %s: returned title '%s' match the searched title '%s' %d" \
-                        % (basename, item.title, title_search, title_year))
+                    logger.info("streamondemand.channels.database %s: '%s' matches the searched title '%s' %d (title fuzzy comparision is %d)" \
+                        % (basename, item.fulltitle, title_search, title_year, fuzzy))
 
                     item.title = "[COLOR orange][%s][/COLOR] %s" % (basename, item.title)
+                    item.fulltitle = title # Use the clean title for sorting
                     item.viewmode = "list"
                     itemlist.append(item)
+
                     if basename not in channels_successfull:
                         if len(channels_successfull): channels_successfull += ', '
                         channels_successfull += basename
@@ -401,16 +413,12 @@ def do_channels_search(item):
                 import traceback
                 logger.error(traceback.format_exc())
 
-    itemlist = sorted(itemlist, key=lambda Item: Item.title) 
+    itemlist = sorted(itemlist, key=lambda Item: fuzz.token_sort_ratio(title_search, item.fulltitle), reverse=True)
 
     if show_dialog:
         progress_dialog.close()
 
     return itemlist
-
-def do_plain_title(title, encoding='utf-8'):
-    return ''.join(x for x in normalize('NFKD', title if isinstance(title, unicode) else unicode(title, encoding, 'ignore'))
-                    if x in string.ascii_letters+string.digits+string.whitespace+"'").lower()
 
 def normalize_unicode(string, encoding='utf-8'):
     return normalize('NFKD', string if isinstance(string, unicode) else unicode(string, encoding, 'ignore')).encode(encoding, 'ignore')
