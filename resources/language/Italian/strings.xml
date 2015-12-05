@@ -256,4 +256,22 @@
     <string id="30168">Modifiche applicate</string>
     <string id="30169">Cerca</string>
     <string id="30170">Aggiornamento canali:</string>
+
+    <!-- =============================================================== -->
+    <!-- Database                                                        -->
+    <!-- =============================================================== -->
+    <string id="30980">Cerca Titolo</string>
+    <string id="30981">Cerca Persona</string>
+    <string id="30982">Cerca Società</string>
+    <string id="30983">Oggi in Sala</string>
+    <string id="30984">I Più Popolari</string>
+    <string id="30985">I Migliori</string>
+    <string id="30986">Cerca Collezione</string>
+    <string id="30987">Generi</string>
+    <string id="30988">Cerca Anno</string>
+    <string id="30991">Libreria</string>
+    <string id="30992">Successivi</string>
+    <string id="30993">Ricerca di %s...</string>
+    <string id="30994">Sto cercando in %s...</string>
+    <string id="30995">%d trovati sinora: %s</string>
 </strings>
