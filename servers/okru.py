@@ -9,13 +9,12 @@
 import re
 import urllib
 
-from core import scrapertools
 from core import logger
+from core import scrapertools
 
 headers = [
-    ['User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:38.0) Gecko/20100101 Firefox/38.0'],
-    ['Accept-Encoding', 'gzip, deflate'],
-    ['Connection', 'keep-alive']
+    ['User-Agent',
+     'Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5376e Safari/8536.25'],
 ]
 
 
@@ -23,18 +22,18 @@ def get_video_url(page_url, premium=False, user="", password="", video_password=
     logger.info("[okru.py] url=" + page_url)
     video_urls = []
 
-    headers.append(['Referer', page_url.split('|')[1]])
+    page_url = page_url.split('|')
+    headers.append(['Referer', page_url[1]])
 
-    data = scrapertools.cache_page(page_url.split('|')[0], headers=headers)
+    data = scrapertools.cache_page(page_url[0], headers=headers)
 
-    headers.append(['X-Requested-With', 'ShockwaveFlash/99.999.999.999'])
     _headers = urllib.urlencode(dict(headers))
 
     # URL del vídeo
-    for type, url in re.findall(r'\{"name":"([^"]+)","url":"([^"]+)"', data, re.DOTALL):
+    for vtype, url in re.findall(r'\{"name":"([^"]+)","url":"([^"]+)"', data, re.DOTALL):
         url = url.replace("%3B", ";").replace(r"\u0026", "&")
         url += '|' + _headers
-        video_urls.append([type + " [okru]", url])
+        video_urls.append([vtype + " [okru]", url])
 
     return video_urls
 
