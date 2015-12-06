@@ -39,11 +39,16 @@ def mainlist(item):
                      action="novedades",
                      url=host,
                      thumbnail="http://repository-butchabay.googlecode.com/svn/branches/eden/skin.cirrus.extended.v2/extras/moviegenres/Anime.png"),
+#                Item(channel=__channel__,
+#                     title="[COLOR azure]Anime - Per Genere[/COLOR]",
+#                     action="categorias",
+#                     url=host + "cerca-per-genere/",
+#                     thumbnail="http://xbmc-repo-ackbarr.googlecode.com/svn/trunk/dev/skin.cirrus%20extended%20v2/extras/moviegenres/Genre.png"),
                 Item(channel=__channel__,
-                     title="[COLOR azure]Anime - Per Genere[/COLOR]",
-                     action="categorias",
-                     url=host + "cerca-per-genere/",
-                     thumbnail="http://xbmc-repo-ackbarr.googlecode.com/svn/trunk/dev/skin.cirrus%20extended%20v2/extras/moviegenres/Genre.png"),
+                     title="[COLOR azure]Serie concluse[/COLOR]",
+                     action="concluse",
+                     url=host + "serie-concluse/",
+                     thumbnail="http://i60.tinypic.com/i6xe1g.jpg"),
                 Item(channel=__channel__,
                      title="[COLOR azure]Anime - Lista A-Z[/COLOR]",
                      action="categorias",
@@ -106,6 +111,28 @@ def categorias(item):
 
     return itemlist
 
+def concluse(item):
+    logger.info("streamondemand.animesubita categorias")
+
+    itemlist = []
+
+    data = scrapertools.cache_page(item.url, headers=headers)
+
+    # The categories are the options for the combo
+    patron = '<li class="jcl_category "><a href="(.*?)">(.*?)</a></li>'
+
+    matches = re.compile(patron, re.DOTALL).findall(data)
+
+    for scrapedurl, scrapedtitle in matches:
+        itemlist.append(
+            Item(channel=__channel__,
+                 action="episodios",
+                 title=scrapedtitle,
+                 fulltitle=scrapedtitle,
+                 show=scrapedtitle,
+                 url=scrapedurl))
+
+    return itemlist
 
 def selection(item):
     logger.info("streamondemand.animesubita peliculas")

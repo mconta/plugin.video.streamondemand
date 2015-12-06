@@ -95,25 +95,12 @@ def peliculas(item):
     data = scrapertools.cache_page(item.url)
 
     # Extrae las entradas (carpetas)
-    patron = '<div class="post-img small-post-img">\s*'
-    patron += '<a href="([^"]+)"[^>]+>\s*'
-    patron += '<img src="([^"]+)"[^>]+>[^>]+>\s*'
-    patron += '</div>\s*'
-    patron += '<div[^>]+>\s*'
-    patron += '<div[^>]+>\s*'
-    patron += '<header[^>]+>\s*'
-    patron += '<div[^>]+>\s*'
-    patron += '<h2[^>]+>[^>]+>(.*?)</a>[^>]+>\s*'
-    patron += '<div[^>]+>[^>]+>\s*'
-    patron += '<li>[^>]+>[^>]+>[^>]+>[^>]+>[^>]+>\s*'
-    patron += '</div>[^>]+>\s*'
-    patron += '</header>[^>]+>\s*'
-    patron += '<div[^>]+>\s*'
-    patron += '<p>(.*?)</p>'
+    patron = '<div class="post-img small-post-img">\s*<a href="([^"]+)"[^>]+>\s*<img width="135" height="200" src="([^"]+)" [^=]+=[^=]+="([^"]+)" />'
     matches = re.compile(patron, re.DOTALL).findall(data)
 
-    for scrapedurl, scrapedthumbnail, scrapedtitle, scrapedplot in matches:
-        scrapedplot = scrapertools.decodeHtmlentities(scrapedplot)
+    for scrapedurl, scrapedthumbnail, scrapedtitle in matches:
+        #scrapedplot = scrapertools.decodeHtmlentities(scrapedplot)
+        scrapedplot = ""
         scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle)
         if DEBUG: logger.info(
             "title=[" + scrapedtitle + "], url=[" + scrapedurl + "], thumbnail=[" + scrapedthumbnail + "]")

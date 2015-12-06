@@ -19,12 +19,12 @@ __title__ = "Guarda Serie"
 __language__ = "IT"
 
 headers = [
-    ['Host','www.guardaserie.net'],
+    ['Host','www.guardaserie.me'],
     ['User-Agent','Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'],
     ['Accept-Encoding','gzip, deflate']
 ]
 
-host = "http://www.guardaserie.net"
+host = "http://www.guardaserie.me"
 
 def isGeneric():
     return True
@@ -72,6 +72,7 @@ def fichas( item ):
     matches = re.compile( patron, re.DOTALL ).findall( data )
 
     for scrapedurl, scrapedtitle in matches:
+        scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle)
 
         itemlist.append( Item( channel=__channel__, action="episodios", title= scrapedtitle , fulltitle=scrapedtitle, show=scrapedtitle, url=scrapedurl ) )
 
@@ -91,6 +92,7 @@ def anime( item ):
     matches = re.compile( patron, re.DOTALL ).findall( data )
 
     for scrapedurl, scrapedtitle in matches:
+        scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle)
 
         itemlist.append( Item( channel=__channel__, action="episodios", title= scrapedtitle , fulltitle=scrapedtitle, show=scrapedtitle, url=scrapedurl, thumbnail="http://www.itrentenni.com/wp-content/uploads/2015/02/tv-series.jpg" ) )
 
@@ -110,6 +112,7 @@ def cartoni( item ):
     matches = re.compile( patron, re.DOTALL ).findall( data )
 
     for scrapedurl, scrapedtitle in matches:
+        scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle)
 
         itemlist.append( Item( channel=__channel__, action="episodios", title= scrapedtitle , fulltitle=scrapedtitle, url=scrapedurl, show=scrapedtitle, thumbnail="http://www.itrentenni.com/wp-content/uploads/2015/02/tv-series.jpg" ) )
 
@@ -129,6 +132,7 @@ def progs( item ):
     matches = re.compile( patron, re.DOTALL ).findall( data )
 
     for scrapedurl, scrapedtitle in matches:
+        scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle)
 
         itemlist.append( Item( channel=__channel__, action="episodios",title= scrapedtitle, fulltitle=scrapedtitle, url=scrapedurl, show=scrapedtitle, thumbnail="http://www.itrentenni.com/wp-content/uploads/2015/02/tv-series.jpg" ) )
 
@@ -141,19 +145,18 @@ def cerca( item ):
 
     data = scrapertools.cache_page( item.url )
 
-    data = scrapertools.find_single_match( data, '<div class="search_post">(.*?)</div>' )
-
-    patron  = '<a.*?href="(.*?)".*?title="(.*?)".*?<img src="(.*?)" />'
+    patron  = '<div class="search_thumbnail">.*?<a class="search_link" href="(.*?)" rel="bookmark" title="(.*?)">.*?<img src="(.*?)" />.*?</a>'
 
     matches = re.compile( patron, re.DOTALL ).findall( data )
 
     for scrapedurl, scrapedtitle, scrapedthumbnail in matches:
+        scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle)
 
         if scrapedtitle.startswith("Guarda "):
 
            scrapedtitle = scrapedtitle[7:]
            
-        itemlist.append( Item( channel=__channel__, action="episodios",title= scrapedtitle , fulltitle=scrapedtitle, url=scrapedurl, show=scrapedtitle ) )
+        itemlist.append( Item( channel=__channel__, action="episodios",title= scrapedtitle , fulltitle=scrapedtitle, url=scrapedurl, show=scrapedtitle , thumbnail=scrapedthumbnail) )
 
     return itemlist
 
@@ -217,4 +220,3 @@ def findvideos( item ):
     itemlist.append( Item( channel=__channel__, action="play",title= title , url=url, server=server , fulltitle=item.fulltitle, show=item.show, folder=False ) )
 
     return itemlist
-
