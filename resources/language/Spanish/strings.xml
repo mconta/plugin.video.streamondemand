@@ -254,5 +254,27 @@
     <string id="30168">Cambios aplicados</string>
     <string id="30169">Buscar</string>
     <string id="30170">Actualizar canales:</string>
-</strings>
 
+    <!-- =============================================================== -->
+    <!-- Database                                                        -->
+    <!-- =============================================================== -->
+    <string id="30980">Búsqueda por Título</string>
+    <string id="30981">Búsqueda por Persona</string>
+    <string id="30982">Búsqueda por Compañía</string>
+    <string id="30983">Reproduciendo Ahora</string>
+    <string id="30984">Popular</string>
+    <string id="30985">Los Más Valorados</string>
+    <string id="30986">Búsqueda por Colección</string>
+    <string id="30987">Género</string>
+    <string id="30988">Búsqueda por Año</string>
+    <string id="30989">Buscar Películas similares</string>
+    <string id="30990">Buscar Serie</string>
+    <string id="30991">Biblioteca</string>
+    <string id="30992">Pagina siguiente</string>
+    <string id="30993">Buscando %s...</string>
+    <string id="30994">Búsqueda en %s...</string>
+    <string id="30995">%d encontrado hasta ahora: %s</string>
+    <string id="30996">Lo Más Votado</string>
+    <string id="30997">Premio de la Academia</string>
+    <string id="30998">Últimos 2 meses</string>
+</strings>

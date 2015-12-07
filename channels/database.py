@@ -4,11 +4,12 @@
 # Search in the TMDB (tmdb.org) for movies, persons, etc.
 # http://blog.tvalacarta.info/plugin-xbmc/pelisalacarta/
 #------------------------------------------------------------
-import urlparse,urllib2,urllib,re
-import os, sys
 import hashlib
+import os
+import re
 import time
-import string
+import urllib
+import urllib2
 
 try:
     import json
@@ -23,7 +24,6 @@ import xbmcvfs
 from core import logger
 from core import config
 from core.item import Item
-from servers import servertools
 from unicodedata import normalize
 
 __channel__ = "database"
@@ -42,7 +42,7 @@ TMDB_URL_BASE = 'http://api.themoviedb.org/3/'
 TMDB_KEY = '34142515d9d23817496eeb4ff1d223d0'
 TMDB_IMAGES_BASEURL = 'http://image.tmdb.org/t/p/'
 INCLUDE_ADULT = 'true' if config.get_setting("enableadultmode") else 'false'
-LANGUAGE_ID = xbmc.getLanguage(xbmc.ISO_639_1)
+LANGUAGE_ID = 'it'
 
 def Nls(code, default=''):
     local_string = ADDON.getLocalizedString(code)
@@ -287,10 +287,10 @@ def do_channels_search(item):
     import imp
     from lib.fuzzywuzzy import fuzz
 
-    master_exclude_data_file = os.path.join( config.get_runtime_path() , "resources", "global_search_exclusion.txt")
+    master_exclude_data_file = os.path.join(config.get_runtime_path(), "resources", "sodsearch.txt")
     logger.info("streamondemand.channels.database master_exclude_data_file=" + master_exclude_data_file)
 
-    exclude_data_file = os.path.join( config.get_data_path() , "global_search_exclusion.txt")
+    exclude_data_file = os.path.join(config.get_data_path(), "sodsearch.txt")
     logger.info("streamondemand.channels.database exclude_data_file=" + exclude_data_file)
 
     channels_path = os.path.join( config.get_runtime_path() , "channels" , '*.py' )

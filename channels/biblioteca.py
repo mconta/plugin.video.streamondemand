@@ -6,13 +6,22 @@
 # ------------------------------------------------------------
 import base64
 import datetime
-import json
 import re
 import urllib
+from unicodedata import normalize
+
+import xbmc
+import xbmcgui
+
+from core import scrapertools
+
+try:
+    import json
+except:
+    import simplejson as json
 
 from core import config
 from core import logger
-from core import scrapertools
 from core.item import Item
 
 __channel__ = "biblioteca"
@@ -25,15 +34,40 @@ host = "http://www.ibs.it"
 
 DEBUG = config.get_setting("debug")
 
-tmdb_key = base64.urlsafe_b64decode('NTc5ODNlMzFmYjQzNWRmNGRmNzdhZmI4NTQ3NDBlYTk=')
-dttime = (datetime.datetime.utcnow() - datetime.timedelta(hours=5))
-systime = dttime.strftime('%Y%m%d%H%M%S%f')
-today_date = dttime.strftime('%Y-%m-%d')
-month_date = (dttime - datetime.timedelta(days=30)).strftime('%Y-%m-%d')
-month2_date = (dttime - datetime.timedelta(days=60)).strftime('%Y-%m-%d')
-year_date = (dttime - datetime.timedelta(days=365)).strftime('%Y-%m-%d')
-tmdb_image = 'http://image.tmdb.org/t/p/original'
-tmdb_poster = 'http://image.tmdb.org/t/p/w500'
+TMDB_URL_BASE = 'http://api.themoviedb.org/3/'
+TMDB_KEY = base64.urlsafe_b64decode('NTc5ODNlMzFmYjQzNWRmNGRmNzdhZmI4NTQ3NDBlYTk=')
+TMDB_IMAGES_BASEURL = 'http://image.tmdb.org/t/p/'
+INCLUDE_ADULT = 'true' if config.get_setting("enableadultmode") else 'false'
+LANGUAGE_ID = 'it'
+
+DTTIME = (datetime.datetime.utcnow() - datetime.timedelta(hours=5))
+SYSTIME = DTTIME.strftime('%Y%m%d%H%M%S%f')
+TODAY_TIME = DTTIME.strftime('%Y-%m-%d')
+MONTH_TIME = (DTTIME - datetime.timedelta(days=30)).strftime('%Y-%m-%d')
+MONTH2_TIME = (DTTIME - datetime.timedelta(days=60)).strftime('%Y-%m-%d')
+YEAR_DATE = (DTTIME - datetime.timedelta(days=365)).strftime('%Y-%m-%d')
+
+NLS_Search_by_Title = config.get_localized_string(30980)
+NLS_Search_by_Person = config.get_localized_string(30981)
+NLS_Search_by_Company = config.get_localized_string(30982)
+NLS_Now_Playing = config.get_localized_string(30983)
+NLS_Popular = config.get_localized_string(30984)
+NLS_Top_Rated = config.get_localized_string(30985)
+NLS_Search_by_Collection = config.get_localized_string(30986)
+NLS_List_by_Genre = config.get_localized_string(30987)
+NLS_Search_by_Year = config.get_localized_string(30988)
+NLS_Search_Similar_by_Title = config.get_localized_string(30989)
+NLS_Search_Tvshow_by_Title = config.get_localized_string(30990)
+NLS_Most_Voted = config.get_localized_string(30996)
+NLS_Oscar = config.get_localized_string(30997)
+NLS_Last_2_months = config.get_localized_string(30998)
+NLS_Library = config.get_localized_string(30991)
+NLS_Next_Page = config.get_localized_string(30992)
+NLS_Looking_For = config.get_localized_string(30993)
+NLS_Searching_In = config.get_localized_string(30994)
+NLS_Found_So_Far = config.get_localized_string(30995)
+
+TMDb_genres = {}
 
 
 def isGeneric():
@@ -47,376 +81,390 @@ def mainlist(item):
                      action="mainlist",
                      thumbnail="http://i.imgur.com/pE5WSZp.png"),
                 Item(channel=__channel__,
-                     title="[COLOR yellow]Cerca Film TMDB...[/COLOR]",
+                     title="[COLOR yellow]%s...[/COLOR]" % NLS_Search_by_Title,
                      action="search",
-                     extra="tmdb_mov",
+                     url="search_movie_by_title",
                      thumbnail="http://i.imgur.com/B1H1G8U.png"),
                 Item(channel=__channel__,
-                     title="[COLOR yellow]Cerca Attori/Registi TMDB...[/COLOR]",
+                     title="[COLOR yellow]%s...[/COLOR]" % NLS_Search_by_Person,
                      action="search",
-                     extra="tmdb_att_reg",
+                     url="search_person_by_name",
                      thumbnail="http://i.imgur.com/efuEeNu.png"),
                 Item(channel=__channel__,
-                     title="[COLOR yellow]Cerca Film simili TMDB...[/COLOR]",
+                     title="[COLOR yellow]%s...[/COLOR]" % NLS_Search_by_Year,
                      action="search",
-                     extra="tmdb_film_sim",
+                     url="search_movie_by_year",
+                     thumbnail="http://xbmc-repo-ackbarr.googlecode.com/svn/trunk/dev/skin.cirrus%20extended%20v2/extras/moviegenres/Movie%20Year.png"),
+                Item(channel=__channel__,
+                     title="[COLOR yellow]%s...[/COLOR]" % NLS_Search_by_Collection,
+                     action="search",
+                     url="search_collection_by_name",
                      thumbnail="http://i.imgur.com/JmcvZDL.png"),
                 Item(channel=__channel__,
-                     title="[COLOR yellow]Cerca Serie TV TMDB...[/COLOR]",
+                     title="[COLOR yellow]%s...[/COLOR]" % NLS_Search_Similar_by_Title,
                      action="search",
-                     extra="tmdb_tv",
+                     url="search_similar_movie_by_title",
+                     thumbnail="http://i.imgur.com/JmcvZDL.png"),
+                Item(channel=__channel__,
+                     title="[COLOR yellow]%s...[/COLOR]" % NLS_Search_Tvshow_by_Title,
+                     action="search",
+                     url="search_tvshow_by_title",
                      thumbnail="https://i.imgur.com/2ZWjLn5.jpg?1"),
                 Item(channel=__channel__,
-                     title="[COLOR yellow]Al Cinema[/COLOR]",
-                     action="tmdb_list",
-                     url='http://api.themoviedb.org/3/movie/now_playing?api_key=%s&language=it&page=1' % tmdb_key,
+                     title="[COLOR yellow]%s[/COLOR]" % NLS_Now_Playing,
+                     action="list_movie",
+                     url="movie/now_playing?",
+                     plot="1",
                      thumbnail="http://i.imgur.com/B16HnVh.png"),
                 Item(channel=__channel__,
-                     title="[COLOR yellow]Più richiesti[/COLOR]",
-                     action="tmdb_list",
-                     url='http://api.themoviedb.org/3/movie/popular?api_key=%s&language=it&page=1' % tmdb_key,
+                     title="[COLOR yellow]%s[/COLOR]" % NLS_Popular,
+                     action="list_movie",
+                     url="movie/popular?",
+                     plot="1",
                      thumbnail="http://i.imgur.com/8IBjyzw.png"),
                 Item(channel=__channel__,
-                     title="[COLOR yellow]Più visti[/COLOR]",
-                     action="tmdb_list",
-                     url='http://api.themoviedb.org/3/movie/top_rated?api_key=%s&language=it&page=1' % tmdb_key,
+                     title="[COLOR yellow]%s[/COLOR]" % NLS_Top_Rated,
+                     action="list_movie",
+                     url="movie/top_rated?",
+                     plot="1",
                      thumbnail="http://www.clipartbest.com/cliparts/RiG/6qn/RiG6qn79T.png"),
                 Item(channel=__channel__,
-                     title="[COLOR yellow]Più votati[/COLOR]",
-                     action="tmdb_list",
-                     url='http://api.themoviedb.org/3/discover/movie?api_key=%s&certification_country=US&language=it&page=1&sort_by=vote_count.desc' % tmdb_key,
+                     title="[COLOR yellow]%s[/COLOR]" % NLS_Most_Voted,
+                     action="list_movie",
+                     url='discover/movie?certification_country=US&sort_by=vote_count.desc&',
+                     plot="1",
                      thumbnail="http://i.imgur.com/5ShnO8w.png"),
                 Item(channel=__channel__,
-                     title="[COLOR yellow]Premi Oscar[/COLOR]",
-                     action="tmdb_oscar",
-                     url='http://api.themoviedb.org/3/list/509ec17b19c2950a0600050d?api_key=%s&language=it' % tmdb_key,
+                     title="[COLOR yellow]%s[/COLOR]" % NLS_Oscar,
+                     action="list_movie",
+                     url='list/509ec17b19c2950a0600050d?',
+                     plot="1",
                      thumbnail="http://i.imgur.com/5ShnO8w.png"),
                 Item(channel=__channel__,
-                     title="[COLOR yellow]Ultimi 2 mesi[/COLOR]",
-                     action="tmdb_list",
-                     url='http://api.themoviedb.org/3/discover/movie?api_key=%s&primary_release_date.gte=%s&primary_release_date.lte=%s&language=it&page=1' % (
-                         tmdb_key, year_date, month2_date),
+                     title="[COLOR yellow]%s[/COLOR]" % NLS_Last_2_months,
+                     action="list_movie",
+                     url='discover/movie?primary_release_date.gte=%s&primary_release_date.lte=%s&' % (
+                         YEAR_DATE, MONTH2_TIME),
+                     plot="1",
                      thumbnail="http://i.imgur.com/CsizqUI.png"),
                 Item(channel=__channel__,
-                     title="[COLOR yellow]Genere[/COLOR]",
-                     action="tmdb_genre_list",
-                     url='http://api.themoviedb.org/3/genre/movie/list?api_key=%s&language=it' % tmdb_key,
+                     title="[COLOR yellow]%s[/COLOR]" % NLS_List_by_Genre,
+                     action="list_genres",
                      thumbnail="http://i.imgur.com/uotyBbU.png")]
 
     return itemlist
 
 
-def search(item, texto):
-    logger.info("[biblioteca.py] " + item.url + " search " + texto)
+def list_movie(item):
+    logger.info("streamondemand.channels.database list_movie '%s/%s'" % (item.url, item.plot))
 
-    try:
-        if item.extra == "tmdb_mov":
-            item.url = 'http://api.themoviedb.org/3/search/movie?api_key=%s&query=%s&language=it&page=1' % (
-                tmdb_key, texto)
-            return tmdb_list(item)
-        if item.extra == "tmdb_tv":
-            item.url = 'http://api.themoviedb.org/3/search/tv?api_key=%s&query=%s&language=it&page=1' % (
-                tmdb_key, texto)
-            return tmdb_serie_list(item)
-        if item.extra == "tmdb_film_sim":
-            item.url = 'http://api.themoviedb.org/3/search/movie?api_key=%s&query=%s&append_to_response=similar_movies,alternative_title&language=it&page=1' % (
-                tmdb_key, texto)
-            return tmdb_list(item)
-        if item.extra == "tmdb_att_reg":
-            item.url = 'http://api.themoviedb.org/3/search/person?api_key=%s&query=%s&include_adult=false&language=it&page=1' % (
-                tmdb_key, texto)
-            return tmdb_person_list(item)
-
-    # Se captura la excepción, para no interrumpir al buscador global si un canal falla
-    except:
-        import sys
-        for line in sys.exc_info():
-            logger.error("%s" % line)
-        return []
-
-
-def tmdb_oscar(item):
-    try:
-        result = scrapertools.cache_page(item.url)
-        result = json.loads(result)
-        items = result['items']
-    except:
-        return
-
-    itemlist = []
-    for item in items:
-        try:
-            title = item['title']
-            title = scrapertools.decodeHtmlentities(title)
-            title = title.encode('utf-8')
-
-            poster = item['poster_path']
-            if poster == '' or poster is None:
-                raise Exception()
-            else:
-                poster = '%s%s' % (tmdb_poster, poster)
-            poster = poster.encode('utf-8')
-
-            fanart = item['backdrop_path']
-            if fanart == '' or fanart is None: fanart = '0'
-            if not fanart == '0': fanart = '%s%s' % (tmdb_image, fanart)
-            fanart = fanart.encode('utf-8')
-
-            plot = item['overview']
-            if plot == '' or plot is None: plot = '0'
-            plot = scrapertools.decodeHtmlentities(plot)
-            plot = plot.encode('utf-8')
-
-            itemlist.append(
-                Item(channel=__channel__,
-                     action="do_search",
-                     extra=urllib.quote_plus(title),
-                     title="[COLOR azure]%s[/COLOR]" % title,
-                     fulltitle=title,
-                     plot=plot,
-                     thumbnail=poster,
-                     fanart=fanart,
-                     folder=True))
-        except:
-            pass
+    results = [0, 0]
+    page = int(item.plot)
+    itemlist = build_movie_list(item, tmdb_get_data('%spage=%d&' % (item.url, page), results=results))
+    if page < results[0]:
+        itemlist.append(Item(
+            channel=item.channel,
+            title="[COLOR orange]%s (%d/%d)[/COLOR]" % (NLS_Next_Page, page * len(itemlist), results[1]),
+            action="list_movie",
+            url=item.url,
+            plot="%d" % (page + 1),
+            type=item.type))
 
     return itemlist
 
 
-def tmdb_list(item):
-    try:
-        result = scrapertools.cache_page(item.url)
-        result = json.loads(result)
-        items = result['results']
-    except:
-        return
+def list_genres(item):
+    logger.info("streamondemand.channels.database list_genres")
 
-    try:
-        next = str(result['page'])
-        total = str(result['total_pages'])
-        if next == total: raise Exception()
-        if 'page=' not in item.url: raise Exception()
-        next = '%s&page=%s' % (item.url.split('&page=', 1)[0], str(int(next) + 1))
-        next = next.encode('utf-8')
-    except:
-        next = ''
-
+    tmdb_genre(1)
     itemlist = []
-    for item in items:
-        try:
-            title = item['title']
-            title = scrapertools.decodeHtmlentities(title)
-            title = title.encode('utf-8')
-
-            poster = item['poster_path']
-            if poster == '' or poster is None:
-                raise Exception()
-            else:
-                poster = '%s%s' % (tmdb_poster, poster)
-            poster = poster.encode('utf-8')
-
-            fanart = item['backdrop_path']
-            if fanart == '' or fanart is None: fanart = '0'
-            if not fanart == '0': fanart = '%s%s' % (tmdb_image, fanart)
-            fanart = fanart.encode('utf-8')
-
-            plot = item['overview']
-            if plot == '' or plot is None: plot = '0'
-            plot = scrapertools.decodeHtmlentities(plot)
-            plot = plot.encode('utf-8')
-
-            itemlist.append(
-                Item(channel=__channel__,
-                     action="do_search",
-                     extra=urllib.quote_plus(title),
-                     title="[COLOR azure]%s[/COLOR]" % title,
-                     fulltitle=title,
-                     plot=plot,
-                     thumbnail=poster,
-                     fanart=fanart,
-                     folder=True))
-        except:
-            pass
-
-    if next != "":
+    for genre_id, genre_name in TMDb_genres.iteritems():
         itemlist.append(
-            Item(channel=__channel__,
-                 action="tmdb_list",
-                 title="[COLOR orange]Successivo >>[/COLOR]",
-                 url=next,
-                 thumbnail="http://2.bp.blogspot.com/-fE9tzwmjaeQ/UcM2apxDtjI/AAAAAAAAeeg/WKSGM2TADLM/s1600/pager+old.png",
-                 folder=True))
+            Item(channel=item.channel,
+                 title=genre_name,
+                 action="list_movie",
+                 url='genre/%d/movies?primary_release_date.gte=%s&primary_release_date.lte=%s&' % (
+                     genre_id, YEAR_DATE, TODAY_TIME),
+                 plot="1"))
 
     return itemlist
 
 
-def tmdb_serie_list(item):
-    try:
-        result = scrapertools.cache_page(item.url)
-        result = json.loads(result)
-        try:
-            items = result['results']
-        except:
-            items = result['tv_credits']['cast']
-    except:
-        return
+# Do not change the name of this function otherwise launcher.py won't create the keyboard dialog required to enter the search terms
+def search(item, search_terms):
+    if item.url == '': return []
 
-    try:
-        next = str(result['page'])
-        total = str(result['total_pages'])
-        if next == total: raise Exception()
-        if 'page=' not in item.url: raise Exception()
-        next = '%s&page=%s' % (item.url.split('&page=', 1)[0], str(int(next) + 1))
-        next = next.encode('utf-8')
-    except:
-        next = ''
+    return globals()[item.url](item, search_terms) if item.url in globals() else []
+
+
+def search_tvshow_by_title(item, search_terms):
+    logger.info("streamondemand.channels.database search_tvshow_by_title '%s'" % (search_terms))
+
+    return list_movie(
+        Item(channel=item.channel,
+             url='search/tv?query=%s&' % url_quote_plus(search_terms),
+             plot="1",
+             type="serie"))
+
+
+def search_movie_by_title(item, search_terms):
+    logger.info("streamondemand.channels.database search_movie_by_title '%s'" % (search_terms))
+
+    return list_movie(
+        Item(channel=item.channel,
+             url='search/movie?query=%s&' % url_quote_plus(search_terms),
+             plot="1"))
+
+
+def search_similar_movie_by_title(item, search_terms):
+    logger.info("streamondemand.channels.database search_movie_by_title '%s'" % (search_terms))
+
+    return list_movie(
+        Item(channel=item.channel,
+             url='search/movie?append_to_response=similar_movies,alternative_title&query=%s&' % url_quote_plus(
+                 search_terms),
+             plot="1"))
+
+
+def search_movie_by_year(item, search_terms):
+    logger.info("streamondemand.channels.database search_movie_by_year '%s'" % (search_terms))
+
+    year = url_quote_plus(search_terms)
+    result = []
+    if len(year) == 4:
+        result.extend(
+            list_movie(
+                Item(channel=item.channel,
+                     url='discover/movie?primary_release_year=%s&' % year,
+                     plot="1")))
+    return result
+
+
+def search_person_by_name(item, search_terms):
+    logger.info("streamondemand.channels.database search_person_by_name '%s'" % (search_terms))
+
+    persons = tmdb_get_data("search/person?query=%s&" % url_quote_plus(search_terms))
 
     itemlist = []
-    for item in items:
-        try:
-            title = item['name']
-            title = re.sub('\s(|[(])(UK|US|AU|\d{4})(|[)])$', '', title)
-            title = scrapertools.decodeHtmlentities(title)
-            title = title.encode('utf-8')
+    for person in persons:
+        name = normalize_unicode(tmdb_tag(person, 'name'))
+        poster = tmdb_image(person, 'profile_path')
+        fanart = ''
+        for movie in tmdb_tag(person, 'known_for', []):
+            if tmdb_tag_exists(movie, 'backdrop_path'):
+                fanart = tmdb_image(movie, 'backdrop_path', 'w1280')
+                break
 
-            poster = item['poster_path']
-            if poster == '' or poster is None:
-                raise Exception()
-            else:
-                poster = '%s%s' % (tmdb_poster, poster)
-            poster = poster.encode('utf-8')
-
-            try:
-                fanart = item['backdrop_path']
-            except:
-                fanart = '0'
-            if fanart == '' or fanart is None: fanart = '0'
-            if not fanart == '0': fanart = '%s%s' % (tmdb_image, fanart)
-            fanart = fanart.encode('utf-8')
-
-            try:
-                plot = item['overview']
-            except:
-                plot = '0'
-            if plot == '' or plot is None: plot = '0'
-            plot = scrapertools.decodeHtmlentities(plot)
-            plot = plot.encode('utf-8')
-
-            itemlist.append(
-                Item(channel=__channel__,
-                     category="serie",
-                     action="do_search",
-                     extra=urllib.quote_plus(title),
-                     title="[COLOR azure]%s[/COLOR]" % title,
-                     fulltitle=title,
-                     plot=plot,
-                     thumbnail=poster,
-                     fanart=fanart,
-                     folder=True))
-        except:
-            pass
-
-    if next != "":
-        itemlist.append(
-            Item(channel=__channel__,
-                 action="tmdb_serie_list",
-                 title="[COLOR orange]Successivo >>[/COLOR]",
-                 url=next,
-                 thumbnail="http://2.bp.blogspot.com/-fE9tzwmjaeQ/UcM2apxDtjI/AAAAAAAAeeg/WKSGM2TADLM/s1600/pager+old.png",
-                 folder=True))
+        itemlist.append(Item(
+            channel=item.channel,
+            action='search_movie_by_person',
+            extra=str(tmdb_tag(person, 'id')),
+            title=name,
+            thumbnail=poster,
+            viewmode='list',
+            fanart=fanart,
+        ))
 
     return itemlist
 
 
-def tmdb_person_list(item):
-    try:
-        result = scrapertools.cache_page(item.url)
-        result = json.loads(result)
-        items = result['results']
-    except:
-        return
+def search_movie_by_person(item):
+    logger.info("streamondemand.channels.database search_movie_by_person '%s'" % (item.extra))
 
-    try:
-        next = str(result['page'])
-        total = str(result['total_pages'])
-        if next == total: raise Exception()
-        if 'page=' not in item.url: raise Exception()
-        next = '%s&page=%s' % (item.url.split('&page=', 1)[0], str(int(next) + 1))
-        next = next.encode('utf-8')
-    except:
-        next = ''
+    person_movie_credits = tmdb_get_data(
+        "person/%s/movie_credits?primary_release_date.lte=%s&sort_by=primary_release_date.desc&" % (
+            item.extra, TODAY_TIME))
+    movies = []
+    if person_movie_credits:
+        movies.extend(tmdb_tag(person_movie_credits, 'cast', []))
+        movies.extend(tmdb_tag(person_movie_credits, 'crew', []))
+
+    # Movie person list is not paged
+    return build_movie_list(item, movies)
+
+
+def search_collection_by_name(item, search_terms):
+    logger.info("streamondemand.channels.database search_collection_by_name '%s'" % (search_terms))
+
+    collections = tmdb_get_data("search/collection?query=%s&" % url_quote_plus(search_terms))
 
     itemlist = []
-    for item in items:
-        try:
-            name = item['name']
-            name = name.encode('utf-8')
+    for collection in collections:
+        name = normalize_unicode(tmdb_tag(collection, 'name'))
+        poster = tmdb_image(collection, 'poster_path')
+        fanart = tmdb_image(collection, 'backdrop_path', 'w1280')
 
-            url = 'http://api.themoviedb.org/3/discover/movie?api_key=%s&with_people=%s&primary_release_date.lte=%s&sort_by=primary_release_date.desc&language=it&page=1' % (
-                tmdb_key, item['id'], today_date)
-            url = url.encode('utf-8')
-
-            image = '%s%s' % (tmdb_image, item['profile_path'])
-            image = image.encode('utf-8')
-
-            itemlist.append(
-                Item(channel=__channel__,
-                     title="[COLOR azure]%s[/COLOR]" % name,
-                     action="tmdb_list",
-                     url=url,
-                     thumbnail=image,
-                     folder=True))
-        except:
-            pass
-
-    if next != "":
-        itemlist.append(
-            Item(channel=__channel__,
-                 action="tmdb_person_list",
-                 title="[COLOR orange]Successivo >>[/COLOR]",
-                 url=next,
-                 thumbnail="http://2.bp.blogspot.com/-fE9tzwmjaeQ/UcM2apxDtjI/AAAAAAAAeeg/WKSGM2TADLM/s1600/pager+old.png",
-                 folder=True))
+        itemlist.append(Item(
+            channel=item.channel,
+            action='search_movie_by_collection',
+            extra=str(tmdb_tag(collection, 'id')),
+            title=name,
+            thumbnail=poster,
+            viewmode='list',
+            fanart=fanart,
+        ))
 
     return itemlist
 
 
-def tmdb_genre_list(item):
-    try:
-        result = scrapertools.cache_page(item.url)
-        result = json.loads(result)
-        items = result['genres']
-    except:
-        return
+def search_movie_by_collection(item):
+    logger.info("streamondemand.channels.database search_movie_by_collection '%s'" % (item.extra))
+
+    collection = tmdb_get_data("collection/%s?" % item.extra)
+
+    # Movie collection list is not paged
+    return build_movie_list(item, collection['parts']) if 'parts' in collection else []
+
+
+def build_movie_list(item, movies):
+    if movies is None: return []
 
     itemlist = []
-    for item in items:
-        try:
-            name = item['name']
-            name = name.encode('utf-8')
+    for movie in movies:
+        title = normalize_unicode(tmdb_tag(movie, 'title'))
+        title_search = normalize_unicode(tmdb_tag(movie, 'title'), encoding='ascii')
+        poster = tmdb_image(movie, 'poster_path')
+        fanart = tmdb_image(movie, 'backdrop_path', 'w1280')
+        jobrole = normalize_unicode(
+            ' [COLOR yellow][' + tmdb_tag(movie, 'job') + '][/COLOR]' if tmdb_tag_exists(movie, 'job') else '')
+        genres = ' / '.join([tmdb_genre(genre).upper() for genre in tmdb_tag(movie, 'genre_ids', [])])
+        year = tmdb_tag(movie, 'release_date')[0:4] if tmdb_tag_exists(movie, 'release_date') else ''
+        plot = "[COLOR orange]%s%s[/COLOR]\n%s" % (genres, '\n' + year, tmdb_tag(movie, 'overview'))
+        plot = normalize_unicode(plot)
 
-            url = 'http://api.themoviedb.org/3/discover/movie?api_key=%s&with_genres=%s&primary_release_date.gte=%s&primary_release_date.lte=%s&language=it&page=1' % (
-                tmdb_key, item['id'], year_date, today_date)
-            url = url.encode('utf-8')
+        found = False
+        kodi_db_movies = kodi_database_movies(title)
+        for kodi_db_movie in kodi_db_movies:
+            logger.info('streamondemand.database set for local playing(%s):\n%s' % (title, str(kodi_db_movie)))
+            if year == str(kodi_db_movie["year"]):
+                found = True
+                itemlist.append(Item(
+                    channel=item.channel,
+                    action='play',
+                    url=kodi_db_movie["file"],
+                    title='[COLOR orange][%s][/COLOR] ' % NLS_Library + kodi_db_movie["title"] + jobrole,
+                    thumbnail=kodi_db_movie["art"]["poster"],
+                    category=genres,
+                    plot=plot,
+                    viewmode='movie_with_plot',
+                    fanart=kodi_db_movie["art"]["fanart"],
+                    folder=False,
+                ))
 
-            itemlist.append(
-                Item(channel=__channel__,
-                     title="[COLOR azure]%s[/COLOR]" % name,
-                     action="tmdb_list",
-                     url=url,
-                     thumbnail="http://dc467.4shared.com/img/fEbJqOum/s7/13feaf0c8c0/Search",
-                     folder=True))
-        except:
-            pass
+        if not found:
+            logger.info('streamondemand.database set for channels search(%s)' % title)
+            itemlist.append(Item(
+                channel=item.channel,
+                action='do_channels_search',
+                extra=("%4s" % year) + title_search,
+                title=title + jobrole,
+                thumbnail=poster,
+                category=genres,
+                plot=plot,
+                viewmode='movie_with_plot',
+                fanart=fanart,
+                type=item.type
+            ))
 
     return itemlist
 
 
-def do_search(item):
-    logger.info("streamondemand.channels.biblioteca do_search")
+def normalize_unicode(string, encoding='utf-8'):
+    return normalize('NFKD', string if isinstance(string, unicode) else unicode(string, encoding, 'ignore')).encode(
+        encoding, 'ignore')
 
-    tecleado = item.extra
-    mostra = item.fulltitle
+
+def tmdb_get_data(url="", results=[0, 0]):
+    url = TMDB_URL_BASE + "%sinclude_adult=%s&language=%s&api_key=%s" % (url, INCLUDE_ADULT, LANGUAGE_ID, TMDB_KEY)
+    response = get_json_response(url)
+    results[0] = response['total_pages'] if 'total_pages' in response else 0
+    results[1] = response['total_results'] if 'total_results' in response else 0
+
+    if response:
+        if "results" in response:
+            return response["results"]
+        elif "items" in response:
+            return response["items"]
+        elif "tv_credits" in response:
+            return response["tv_credits"]["cast"]
+        else:
+            return response
+
+
+def tmdb_tag_exists(entry, tag):
+    return tag in entry and entry[tag] is not None
+
+
+def tmdb_tag(entry, tag, default=""):
+    return entry[tag] if isinstance(entry, dict) and tag in entry else default
+
+
+def tmdb_image(entry, tag, width='original'):
+    return TMDB_IMAGES_BASEURL + width + '/' + tmdb_tag(entry, tag) if tmdb_tag_exists(entry, tag) else ''
+
+
+def tmdb_genre(id):
+    if id not in TMDb_genres:
+        genres = tmdb_get_data("genre/list?")
+        for genre in tmdb_tag(genres, 'genres', []):
+            TMDb_genres[tmdb_tag(genre, 'id')] = tmdb_tag(genre, 'name')
+
+    return TMDb_genres[id] if id in TMDb_genres else str(id)
+
+
+def kodi_database_movies(title):
+    json_query = \
+        '{"jsonrpc": "2.0",\
+            "params": {\
+               "sort": {"order": "ascending", "method": "title"},\
+               "filter": {"operator": "is", "field": "title", "value": "%s"},\
+               "properties": ["title", "art", "file", "year"]\
+            },\
+            "method": "VideoLibrary.GetMovies",\
+            "id": "libMovies"\
+        }' % title
+    response = get_xbmc_jsonrpc_response(json_query)
+    return response["result"]["movies"] if response and "result" in response and "movies" in response["result"] else []
+
+
+def get_xbmc_jsonrpc_response(json_query=""):
+    try:
+        response = xbmc.executeJSONRPC(json_query)
+        response = unicode(response, 'utf-8', errors='ignore')
+        response = json.loads(response)
+        logger.info("streamondemand.channels.database jsonrpc %s" % response)
+    except Exception, e:
+        logger.info("streamondemand.channels.database jsonrpc error: %s" % str(e))
+        response = None
+    return response
+
+
+def url_quote_plus(input_string):
+    try:
+        return urllib.quote_plus(input_string.encode('utf8', 'ignore'))
+    except:
+        return urllib.quote_plus(unicode(input_string, "utf-8").encode("utf-8"))
+
+
+def get_json_response(url=""):
+    response = scrapertools.cache_page(url)
+    try:
+        results = json.loads(response)
+    except:
+        logger.info("streamondemand.channels.database Exception: Could not get new JSON data from %s" % url)
+        results = []
+    return results
+
+
+def do_channels_search(item):
+    logger.info("streamondemand.channels.biblioteca do_channels_search")
+
+    try:
+        title_year = int(item.extra[0:4])
+    except Exception:
+        title_year = 0
+    mostra = item.extra[4:]
+    tecleado = urllib.quote_plus(mostra)
 
     itemlist = []
 
@@ -451,7 +499,7 @@ def do_search(item):
     try:
         import xbmcgui
         progreso = xbmcgui.DialogProgressBG()
-        progreso.create("Ricerca di " + mostra)
+        progreso.create(NLS_Looking_For % mostra)
     except:
         show_dialog = False
 
@@ -462,7 +510,7 @@ def do_search(item):
             # http://docs.python.org/library/imp.html?highlight=imp#module-imp
             obj = imp.load_source(basename_without_extension, infile)
             logger.info("streamondemand.channels.buscador cargado " + basename_without_extension + " de " + infile)
-            channel_result_itemlist.extend(obj.search(Item(extra=item.category), tecleado))
+            channel_result_itemlist.extend(obj.search(Item(extra=item.type), tecleado))
             for local_item in channel_result_itemlist:
                 local_item.title = " [COLOR azure] " + local_item.title + " [/COLOR] [COLOR orange]su[/COLOR] [COLOR green]" + basename_without_extension + "[/COLOR]"
                 local_item.viewmode = "list"
@@ -481,15 +529,39 @@ def do_search(item):
 
     number_of_channels = len(channel_files)
 
+    local_itemlist = []
     for index, t in enumerate(threads):
         percentage = index * 100 / number_of_channels
         if show_dialog:
-            progreso.update(percentage, ' Sto cercando "' + mostra + '"')
+            progreso.update(percentage, NLS_Looking_For % mostra)
         t.join()
-        itemlist.extend(result.get())
+        local_itemlist.extend(result.get())
 
-    itemlist = sorted([item for item in itemlist if fuzz.WRatio(mostra, item.fulltitle) > 85],
-                      key=lambda Item: Item.title)
+    for item in local_itemlist:
+        title = item.fulltitle
+
+        # Check if the found title matches the release year
+        year_match = re.search('\(.*(\d{4})\)', title)
+        if year_match:
+            found_year = int(year_match.group(1))
+            title = title[:year_match.start()] + title[year_match.end():]
+            if title_year > 0 and abs(found_year - title_year) > 1:
+                continue
+
+        # Clean up a bit the returned title to improve the fuzzy matching
+        title = re.sub(r'\(\d\.\d\)', '', title)  # Rating, es: (8.4)
+        title = re.sub(r'(?i) (film|streaming|ITA)', '', title)  # Common keywords in titles
+        title = re.sub(r'[\[(](HD|B/N)[\])]', '', title)  # Common keywords in titles, es. [HD], (B/N), etc.
+        title = re.sub(r'(?i)\[/?COLOR[^\]]*\]', '', title)  # Formatting keywords
+
+        # Check if the found title fuzzy matches the searched one
+        fuzzy = fuzz.token_sort_ratio(mostra, title)
+        if fuzzy <= 85:
+            continue
+
+        itemlist.append(item)
+
+    itemlist = sorted(itemlist, key=lambda item: item.fulltitle)
 
     if show_dialog:
         progreso.close()

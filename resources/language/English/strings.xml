@@ -92,7 +92,7 @@
     <string id="30061">Quality not available or video removed</string> <!-- La calidad elegida no esta disponible o el video ha sido borrado -->
     <string id="30062">Try another quality</string> <!-- Prueba a reproducir en otra calidad -->
     <string id="30063">This channel has been downloaded and updated!</string>
-    <string id="30064">¡Channel list has been updated!</string>
+    <string id="30064">Channel list has been updated!</string>
 
     <string id="30065">Unsopported Server</string>
 
@@ -136,9 +136,9 @@
     <string id="30128">Search Trailers</string>
     <string id="30129">Adult</string>
     <string id="30131">Library</string>
-    <string id="30132">Temáticos</string>
+    <string id="30132">Theme</string>
     <string id="30133">Internet</string>
-    <string id="30134">Los nuevos</string>
+    <string id="30134">The new ones</string>
 
     <!-- =============================================================== -->
     <!-- 30150 to 30199: Action menu / contextual menu                   -->
@@ -207,7 +207,7 @@
     <string id="30434">Keyboard</string>
     <string id="30435">Subtitles Directory</string>
     <string id="30436">Subtitle file</string>
-    <string id="30437">taping the Addres</string>
+    <string id="30437">tapping the Address</string>
     
     <!-- =============================================================== -->
     <!-- Setting Category strings                                        -->
@@ -219,32 +219,32 @@
     <!-- LetMeWatchThis -->
     <string id="40001">Movies - Just added</string>
     <string id="40002">TV Shows - Just added</string>
-    <string id="40003">!Next page</string>
+    <string id="40003">Next page</string>
     
     <!-- TVShack strings -->
     <string id="30900">TVShack</string>
     <string id="30901">Series TV (VO)</string>
-    <string id="30902">Películas (VO)</string>
-    <string id="30903">Documentales (VO)</string>
+    <string id="30902">Movies (VO)</string>
+    <string id="30903">Documentaries (VO)</string>
     <string id="30904">Anime (VO)</string>
-    <string id="30905">Música</string>
-    <string id="30906">Busqueda Global en TVShack</string>
-    <string id="30907">No se produjeron resultados de búsqueda</string>
-    <string id="30908">Serie - %s (%s episodios)</string>
+    <string id="30905">Music</string>
+    <string id="30906">Global Search in TVShack</string>
+    <string id="30907">No search results</string>
+    <string id="30908">Serie - %s (%s episode)</string>
     <string id="30909">Serie - </string>
 
     <string id="30910">Cine - %s (%s)</string>
-    <string id="30911">"Música - "</string>
-    <string id="30912">Leyendo %s...</string>
-    <string id="30913">No se encontró nada que listar</string>
-    <string id="30914">episodio</string>
-    <string id="30915">episodios</string>
-    <string id="30916">canción</string>
-    <string id="30917">canciones</string>
-    <string id="30918"> (Nuevo)</string>
-    <string id="30919"> (Nuevos contenidos)</string>
+    <string id="30911">"Music - "</string>
+    <string id="30912">Reading %s...</string>
+    <string id="30913">Nothing was found to list</string>
+    <string id="30914">episode</string>
+    <string id="30915">episodes</string>
+    <string id="30916">song</string>
+    <string id="30917">songs</string>
+    <string id="30918">(New)</string>
+    <string id="30919">(New content)</string>
 
-    <string id="30920">AÑADIR TODOS LOS EPISODIOS A LA BIBLIOTECA</string>
+    <string id="30920">ADD ALL EPISODES TO THE LIBRARY</string>
     
     <!-- =============================================================== -->
     <!-- Configuracion RSS (IAMM, XTreamer y otros)    -->
@@ -252,9 +252,32 @@
     <string id="31000">Media translate activated:</string>
     <string id="30140">Title</string>
     <string id="30165">Press OK for change...</string>
-    <string id="30166">Salvar cambios</string>
-    <string id="30167">Salir</string>
-    <string id="30168">Cambios aplicados</string>
-    <string id="30169">Buscar</string>
-    <string id="30170">Actualizar canales:</string>
+    <string id="30166">Save changes</string>
+    <string id="30167">Get out</string>
+    <string id="30168">Changes applied</string>
+    <string id="30169">Search</string>
+    <string id="30170">Update channels:</string>
+
+    <!-- =============================================================== -->
+    <!-- Database                                                        -->
+    <!-- =============================================================== -->
+    <string id="30980">Search by Title</string>
+    <string id="30981">Search by Person</string>
+    <string id="30982">Search by Company</string>
+    <string id="30983">Now Playing</string>
+    <string id="30984">Popular</string>
+    <string id="30985">Top Rated</string>
+    <string id="30986">Search by Collection</string>
+    <string id="30987">Genre</string>
+    <string id="30988">Search by Year</string>
+    <string id="30989">Search Similar Movies</string>
+    <string id="30990">Search TV show</string>
+    <string id="30991">Library</string>
+    <string id="30992">Next Page</string>
+    <string id="30993">Looking for %s...</string>
+    <string id="30994">Searching in %s...</string>
+    <string id="30995">%d found so far: %s</string>
+    <string id="30996">Most Voted</string>
+    <string id="30997">Academy Awards</string>
+    <string id="30998">Last 2 months</string>
 </strings>

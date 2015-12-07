@@ -269,9 +269,14 @@
     <string id="30986">Cerca Collezione</string>
     <string id="30987">Generi</string>
     <string id="30988">Cerca Anno</string>
+    <string id="30989">Cerca Film simili</string>
+    <string id="30990">Cerca Serie TV</string>
     <string id="30991">Libreria</string>
     <string id="30992">Successivi</string>
     <string id="30993">Ricerca di %s...</string>
     <string id="30994">Sto cercando in %s...</string>
     <string id="30995">%d trovati sinora: %s</string>
+    <string id="30996">I Più Votati</string>
+    <string id="30997">Premi Oscar</string>
+    <string id="30998">Ultimi 2 mesi</string>
 </strings>
