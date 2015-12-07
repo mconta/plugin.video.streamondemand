@@ -6,10 +6,10 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/database.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>1</version>
+    <version>2</version>
     <adult>false</adult>
-    <date>05/1/2015</date>
-    <changes>Nuovo canale</changes>
+    <date>07/1/2015</date>
+    <changes>Lang and src exclusion fix</changes>
     <categories>
         <category>movie</category>
         <category>serie</category>
