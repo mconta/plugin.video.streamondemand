@@ -327,10 +327,10 @@ def build_movie_list(item, movies):
         fanart = tmdb_image(movie, 'backdrop_path', 'w1280')
         jobrole = normalize_unicode(
             ' [COLOR yellow][' + tmdb_tag(movie, 'job') + '][/COLOR]' if tmdb_tag_exists(movie, 'job') else '')
-        genres = ' / '.join([tmdb_genre(genre).upper() for genre in tmdb_tag(movie, 'genre_ids', [])])
+        genres = normalize_unicode(' / '.join([tmdb_genre(genre).upper() for genre in tmdb_tag(movie, 'genre_ids', [])]))
         year = tmdb_tag(movie, 'release_date')[0:4] if tmdb_tag_exists(movie, 'release_date') else ''
-        plot = "[COLOR orange]%s%s[/COLOR]\n%s" % (genres, '\n' + year, tmdb_tag(movie, 'overview'))
-        plot = normalize_unicode(plot)
+        plot = normalize_unicode(tmdb_tag(movie, 'overview'))
+        rating = tmdb_tag(movie, 'vote_average')
 
         found = False
         kodi_db_movies = kodi_database_movies(title)
@@ -343,11 +343,14 @@ def build_movie_list(item, movies):
                     action='play',
                     url=kodi_db_movie["file"],
                     title='[COLOR orange][%s][/COLOR] ' % NLS_Library + kodi_db_movie["title"] + jobrole,
+                    genres=genres,
+                    year=year,
                     thumbnail=kodi_db_movie["art"]["poster"],
                     category=genres,
                     plot=plot,
                     viewmode='movie_with_plot',
                     fanart=kodi_db_movie["art"]["fanart"],
+                    rating=rating,
                     folder=False,
                 ))
 
@@ -358,11 +361,14 @@ def build_movie_list(item, movies):
                 action='do_channels_search',
                 extra=("%4s" % year) + title_search,
                 title=title + jobrole,
+                genres=genres,
+                year=year,
                 thumbnail=poster,
                 category=genres,
                 plot=plot,
                 viewmode='movie_with_plot',
                 fanart=fanart,
+                rating=rating,
                 type=item.type
             ))
 

@@ -1,12 +1,15 @@
 class Item(object):
     channel = ""
     title = ""
+    genres = ""
+    year = ""
     url = ""
     page = ""
     thumbnail = ""
     plot = ""
     duration = ""
     fanart = ""
+    rating = ""
     folder = ""
     action = ""
     server = "directo"
@@ -24,9 +27,11 @@ class Item(object):
     fulltitle = ""
     viewmode = "list"
 
-    def __init__(self, channel="", title="", url="", page="", thumbnail="", plot="", duration="", fanart="", action="", server="directo", extra="", show="", category = "" , language = "" , subtitle="" , folder=True, context = "",totalItems = 0, overlay = None, type="", password="", fulltitle="", viewmode="list" ):
+    def __init__(self, channel="", title="", url="", page="", thumbnail="", plot="", duration="", fanart="", action="", server="directo", extra="", show="", category = "" , language = "" , subtitle="" , folder=True, context = "",totalItems = 0, overlay = None, type="", password="", fulltitle="", viewmode="list", genres="", year="", rating="" ):
         self.channel = channel
         self.title = title
+        self.genres = genres
+        self.year = year
         self.url = url
         if page=="":
             self.page = url
@@ -36,6 +41,7 @@ class Item(object):
         self.plot = plot
         self.duration = duration
         self.fanart = fanart
+        self.rating = rating
         self.folder = folder
         self.server = server
         self.action = action

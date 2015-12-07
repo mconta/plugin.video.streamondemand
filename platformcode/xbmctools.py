@@ -25,13 +25,13 @@ except:
 DEBUG = True
 
 # TODO: (3.2) Esto es un lío, hay que unificar
-def addnewfolder( canal , accion , category , title , url , thumbnail , plot , Serie="",totalItems=0,fanart="",context="", show="",fulltitle=""):
+def addnewfolder( item, canal , accion , category , title , url , thumbnail , plot , Serie="",totalItems=0,fanart="",context="", show="",fulltitle=""):
     if fulltitle=="":
         fulltitle=title
-    ok = addnewfolderextra( canal , accion , category , title , url , thumbnail , plot , "" ,Serie,totalItems,fanart,context,show, fulltitle)
+    ok = addnewfolderextra( item, canal , accion , category , title , url , thumbnail , plot , "" ,Serie,totalItems,fanart,context,show, fulltitle)
     return ok
 
-def addnewfolderextra( canal , accion , category , title , url , thumbnail , plot , extradata ,Serie="",totalItems=0,fanart="",context="",show="",fulltitle=""):
+def addnewfolderextra( item, canal , accion , category , title , url , thumbnail , plot , extradata ,Serie="",totalItems=0,fanart="",context="",show="",fulltitle=""):
     if fulltitle=="":
         fulltitle=title
     
@@ -54,6 +54,9 @@ def addnewfolderextra( canal , accion , category , title , url , thumbnail , plo
     listitem = xbmcgui.ListItem( title, iconImage="DefaultFolder.png", thumbnailImage=thumbnail )
 
     listitem.setInfo( "video", { "Title" : title, "Plot" : plot, "Studio" : canal } )
+    if item.year!="": listitem.setInfo( "video", { "Year" : item.year })
+    if item.genres!="": listitem.setInfo( "video", { "Genre" : item.genres })
+    if item.rating!="":  listitem.setInfo( "video", { "Rating" : item.rating })
 
     if fanart!="":
         listitem.setProperty('fanart_image',fanart) 
@@ -105,7 +108,7 @@ def addnewfolderextra( canal , accion , category , title , url , thumbnail , plo
             ok = xbmcplugin.addDirectoryItem( handle = pluginhandle, url = itemurl , listitem=listitem, isFolder=True, totalItems=totalItems)
     return ok
 
-def addnewvideo( canal , accion , category , server , title , url , thumbnail, plot ,Serie="",duration="",fanart="",IsPlayable='false',context = "", subtitle="", viewmode="", totalItems = 0, show="", password="", extra="",fulltitle=""):
+def addnewvideo( item, canal , accion , category , server , title , url , thumbnail, plot ,Serie="",duration="",fanart="",IsPlayable='false',context = "", subtitle="", viewmode="", totalItems = 0, show="", password="", extra="",fulltitle=""):
     contextCommands = []
     ok = False
     try:
@@ -126,6 +129,9 @@ def addnewvideo( canal , accion , category , server , title , url , thumbnail, p
      
     listitem = xbmcgui.ListItem( title, iconImage="DefaultVideo.png", thumbnailImage=thumbnail )
     listitem.setInfo( "video", { "Title" : title, "FileName" : title, "Plot" : plot, "Duration" : duration, "Studio" : canal, "Genre" : category } )
+    if item.year!="": listitem.setInfo( "video", { "Year" : item.year })
+    if item.genres!="": listitem.setInfo( "video", { "Genre" : item.genres })
+    if item.rating!="":  listitem.setInfo( "video", { "Rating" : item.rating })
 
     if fanart!="":
         #logger.info("fanart :%s" %fanart)
@@ -844,18 +850,18 @@ def renderItems(itemlist, params, url, category, isPlayable='false'):
 
             if item.folder :
                 if len(item.extra)>0:
-                    addnewfolderextra( item.channel , item.action , item.category , item.title , item.url , item.thumbnail , item.plot , extradata = item.extra , totalItems = len(itemlist), fanart=item.fanart , context=item.context, show=item.show, fulltitle=item.fulltitle )
+                    addnewfolderextra( item, item.channel , item.action , item.category , item.title , item.url , item.thumbnail , item.plot , extradata = item.extra , totalItems = len(itemlist), fanart=item.fanart , context=item.context, show=item.show, fulltitle=item.fulltitle )
                 else:
-                    addnewfolder( item.channel , item.action , item.category , item.title , item.url , item.thumbnail , item.plot , totalItems = len(itemlist) , fanart = item.fanart, context = item.context, show=item.show, fulltitle=item.fulltitle )
+                    addnewfolder( item, item.channel , item.action , item.category , item.title , item.url , item.thumbnail , item.plot , totalItems = len(itemlist) , fanart = item.fanart, context = item.context, show=item.show, fulltitle=item.fulltitle )
             else:
                 if config.get_setting("player_mode")=="1": # SetResolvedUrl debe ser siempre "isPlayable = true"
                     isPlayable = "true"
                 
 
                 if item.duration:
-                    addnewvideo( item.channel , item.action , item.category , item.server, item.title , item.url , item.thumbnail , item.plot , "" ,  duration = item.duration , fanart = item.fanart, IsPlayable=isPlayable,context = item.context , subtitle=item.subtitle, totalItems = len(itemlist), show=item.show, password = item.password, extra = item.extra, fulltitle=item.fulltitle )
+                    addnewvideo( item, item.channel , item.action , item.category , item.server, item.title , item.url , item.thumbnail , item.plot , "" ,  duration = item.duration , fanart = item.fanart, IsPlayable=isPlayable,context = item.context , subtitle=item.subtitle, totalItems = len(itemlist), show=item.show, password = item.password, extra = item.extra, fulltitle=item.fulltitle )
                 else:    
-                    addnewvideo( item.channel , item.action , item.category , item.server, item.title , item.url , item.thumbnail , item.plot, fanart = item.fanart, IsPlayable=isPlayable , context = item.context , subtitle = item.subtitle , totalItems = len(itemlist), show=item.show , password = item.password , extra=item.extra, fulltitle=item.fulltitle )
+                    addnewvideo( item, item.channel , item.action , item.category , item.server, item.title , item.url , item.thumbnail , item.plot, fanart = item.fanart, IsPlayable=isPlayable , context = item.context , subtitle = item.subtitle , totalItems = len(itemlist), show=item.show , password = item.password , extra=item.extra, fulltitle=item.fulltitle )
             
             if item.viewmode!="list":
                 viewmode = item.viewmode
