@@ -4,11 +4,12 @@
 # Search in the TMDB (tmdb.org) for movies, persons, etc.
 # http://blog.tvalacarta.info/plugin-xbmc/pelisalacarta/
 #------------------------------------------------------------
-import urlparse,urllib2,urllib,re
-import os, sys
 import hashlib
+import os
+import re
 import time
-import string
+import urllib
+import urllib2
 
 try:
     import json
@@ -23,7 +24,6 @@ import xbmcvfs
 from core import logger
 from core import config
 from core.item import Item
-from servers import servertools
 from unicodedata import normalize
 
 __channel__ = "database"
