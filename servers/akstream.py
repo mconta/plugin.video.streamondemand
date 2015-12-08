@@ -3,40 +3,40 @@
 # pelisalacarta - XBMC Plugin
 # Conector for akstream.net
 # http://blog.tvalacarta.info/plugin-xbmc/pelisalacarta/
-# by be4t5
+# by DrZ3r0
 # ------------------------------------------------------------
 
 import re
+import urllib
 
-from core import scrapertools
 from core import logger
+from core import scrapertools
 from lib import mechanize
+
+headers = [
+    ['User-Agent',
+     'Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5376e Safari/8536.25'],
+]
 
 
 def get_video_url(page_url, premium=False, user="", password="", video_password=""):
     logger.info("[akstream.py] url=" + page_url)
     video_urls = []
 
-    br = mechanize.Browser()
-    br.addheaders = [('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:38.0) Gecko/20100101 Firefox/38.0')]
-    br.set_handle_robots(False)
+    data = scrapertools.cache_page(page_url, headers=headers)
 
-    r = br.open(page_url)
-    vid = scrapertools.find_single_match(r.read(), """http://akstream.video/stream/([^"']+)""")
+    vid = scrapertools.find_single_match(data, '<input type="hidden" name="streamLink" value="([^"]+)">')
 
-    r = br.open("http://akstream.video/stream/%s" % vid)
-
-    url = "../viewvideo.php"
-    req = br.click_link(url=url)
-    data = br.open(req)
-    data = data.read()
+    headers.append(['Referer', page_url])
+    post_data = 'streamLink=%s' % vid
+    data = scrapertools.cache_page('http://akstream.video/viewvideo.php', post=post_data, headers=headers)
 
     # URL
-    url = scrapertools.find_single_match(data, '<source src="([^"]+)" type="video/mp4"')
-    logger.info("url=" + url)
+    media_url = scrapertools.find_single_match(data, '<source src="([^"]+)" type="video/mp4"')
+    _headers = urllib.urlencode(dict(headers))
 
     # URL del vídeo
-    video_urls.append([".mp4" + " [Akstream]", url])
+    video_urls.append([scrapertools.get_filename_from_url(media_url)[-4:] + " [Akstream]", media_url + '|' + _headers])
 
     for video_url in video_urls:
         logger.info("[akstream.py] %s - %s" % (video_url[0], video_url[1]))
@@ -56,7 +56,7 @@ def find_videos(text):
 
     for match in matches:
         titulo = "[Akstream]"
-        url = "http://akstream.video/videos/" + match
+        url = "http://akstream.video/stream/" + match
         if url not in encontrados:
             logger.info("  url=" + url)
             devuelve.append([titulo, url, 'akstream'])
@@ -64,14 +64,12 @@ def find_videos(text):
         else:
             logger.info("  url duplicada=" + url)
 
-
     # http://vcrypt.net/sak/0a8hqibleus5
     # Filmpertutti.eu
     br = mechanize.Browser()
-    br.addheaders = [('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:38.0) Gecko/20100101 Firefox/38.0'),
-                     ('Accept-Encoding', 'gzip, deflate'),
-                     ('Connection', 'keep-alive')]
+    br.addheaders = [('User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:38.0) Gecko/20100101 Firefox/38.0')]
     br.set_handle_robots(False)
+    br.set_handle_gzip(True)
     patronvideos = 'http://vcrypt.net/sak/([^"]+)'
     matches = re.compile(patronvideos, re.DOTALL).findall(text)
     page = scrapertools.find_single_match(text, 'rel="canonical" href="([^"]+)"')
@@ -82,7 +80,7 @@ def find_videos(text):
         r = br.open(url)
         data = r.read()
         vid = scrapertools.find_single_match(data, 'akstream.(?:net|video)/(?:v|videos)/([^"]+)"')
-        url = "http://akstream.video/videos/" + vid
+        url = "http://akstream.video/stream/" + vid
         if url not in encontrados and vid != "":
             logger.info("  url=" + url)
             devuelve.append([titulo, url, 'akstream'])

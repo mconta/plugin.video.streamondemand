@@ -3,37 +3,39 @@
 # pelisalacarta - XBMC Plugin
 # Conector for abysstream.com
 # http://blog.tvalacarta.info/plugin-xbmc/pelisalacarta/
-# by be4t5
+# by DrZ3r0
 # ------------------------------------------------------------
 import re
+import urllib
 
-from core import scrapertools
 from core import logger
-from lib import mechanize
+from core import scrapertools
+
+headers = [
+    ['User-Agent',
+     'Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5376e Safari/8536.25'],
+]
 
 
 def get_video_url(page_url, premium=False, user="", password="", video_password=""):
     logger.info("[abysstream.py] url=" + page_url)
     video_urls = []
 
-    br = mechanize.Browser()
-    br.addheaders = [('User-agent', 'Mozilla/5.0 (Windows NT 6.1; rv:38.0) Gecko/20100101 Firefox/38.0')]
-    br.set_handle_robots(False)
+    data = scrapertools.cache_page(page_url, headers=headers)
 
-    br.open(page_url)
-    br.open(page_url)
+    vid = scrapertools.find_single_match(data, '<input type="hidden" name="streamLink" value="([^"]+)">')
 
-    url = "../viewvideo.php"
-    req = br.click_link(url=url)
-    data = br.open(req)
-    data = data.read()
+    headers.append(['Referer', page_url])
+    post_data = 'streamLink=%s' % vid
+    data = scrapertools.cache_page('http://abysstream.com/viewvideo.php', post=post_data, headers=headers)
 
     # URL
-    url = scrapertools.find_single_match(data, '<source src="([^"]+)" type="video/mp4"')
-    logger.info("url=" + url)
+    media_url = scrapertools.find_single_match(data, '<source src="([^"]+)" type="video/mp4"')
+    _headers = urllib.urlencode(dict(headers))
 
     # URL del vídeo
-    video_urls.append([".mp4" + " [Abysstream]", url])
+    video_urls.append(
+            [scrapertools.get_filename_from_url(media_url)[-4:] + " [Abysstream]", media_url + '|' + _headers])
 
     for video_url in video_urls:
         logger.info("[abysstream.py] %s - %s" % (video_url[0], video_url[1]))
@@ -53,7 +55,7 @@ def find_videos(text):
 
     for match in matches:
         titulo = "[Abysstream]"
-        url = "http://abysstream.com/videos/" + match
+        url = "http://abysstream.com/v/" + match
         if url not in encontrados:
             logger.info("  url=" + url)
             devuelve.append([titulo, url, 'abysstream'])
@@ -62,9 +64,3 @@ def find_videos(text):
             logger.info("  url duplicada=" + url)
 
     return devuelve
-
-
-def test():
-    video_urls = get_video_url("http://abysstream.com/videos/ub4ztmqe57l8")
-
-    return len(video_urls) > 0
