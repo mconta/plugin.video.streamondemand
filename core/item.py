@@ -1,15 +1,12 @@
 class Item(object):
     channel = ""
     title = ""
-    genres = ""
-    year = ""
     url = ""
     page = ""
     thumbnail = ""
     plot = ""
     duration = ""
     fanart = ""
-    rating = ""
     folder = ""
     action = ""
     server = "directo"
@@ -26,12 +23,12 @@ class Item(object):
     password = ""
     fulltitle = ""
     viewmode = "list"
+    extrameta = None
+    extracmds = None
 
-    def __init__(self, channel="", title="", url="", page="", thumbnail="", plot="", duration="", fanart="", action="", server="directo", extra="", show="", category = "" , language = "" , subtitle="" , folder=True, context = "",totalItems = 0, overlay = None, type="", password="", fulltitle="", viewmode="list", genres="", year="", rating="" ):
+    def __init__(self, channel="", title="", url="", page="", thumbnail="", plot="", duration="", fanart="", action="", server="directo", extra="", show="", category = "" , language = "" , subtitle="" , folder=True, context = "",totalItems = 0, overlay = None, type="", password="", fulltitle="", viewmode="list", extrameta=None, extracmds=None ):
         self.channel = channel
         self.title = title
-        self.genres = genres
-        self.year = year
         self.url = url
         if page=="":
             self.page = url
@@ -41,7 +38,6 @@ class Item(object):
         self.plot = plot
         self.duration = duration
         self.fanart = fanart
-        self.rating = rating
         self.folder = folder
         self.server = server
         self.action = action
@@ -58,6 +54,8 @@ class Item(object):
         self.password = password
         self.fulltitle = fulltitle
         self.viewmode = viewmode
+        self.extrameta = extrameta
+        self.extracmds = extracmds
 
     def tostring(self):
         return "title=["+self.title+"], url=["+self.url+"], thumbnail=["+self.thumbnail+"], action=["+self.action+"], show=["+self.show+"], category=["+self.category+"]"

@@ -66,6 +66,7 @@ NLS_Next_Page = config.get_localized_string(30992)
 NLS_Looking_For = config.get_localized_string(30993)
 NLS_Searching_In = config.get_localized_string(30994)
 NLS_Found_So_Far = config.get_localized_string(30995)
+NLS_Info_Title = config.get_localized_string(30999)
 
 TMDb_genres = {}
 
@@ -331,6 +332,17 @@ def build_movie_list(item, movies):
         year = tmdb_tag(movie, 'release_date')[0:4] if tmdb_tag_exists(movie, 'release_date') else ''
         plot = normalize_unicode(tmdb_tag(movie, 'overview'))
         rating = tmdb_tag(movie, 'vote_average')
+        votes = tmdb_tag(movie, 'vote_count')
+
+        extrameta = {}
+        if year!="": extrameta["Year"] = year
+        if genres!="": extrameta["Genre"] = genres
+        if votes:
+            extrameta["Rating"] = rating
+            extrameta["Votes"] = "%d" % votes
+
+        extracmds = [(NLS_Info_Title, "RunScript(script.extendedinfo,info=extendedinfo,id=%d)" % tmdb_tag(movie, 'id'))] \
+            if xbmc.getCondVisibility('System.HasAddon(script.extendedinfo)') else []
 
         found = False
         kodi_db_movies = kodi_database_movies(title)
@@ -343,14 +355,13 @@ def build_movie_list(item, movies):
                     action='play',
                     url=kodi_db_movie["file"],
                     title='[COLOR orange][%s][/COLOR] ' % NLS_Library + kodi_db_movie["title"] + jobrole,
-                    genres=genres,
-                    year=year,
                     thumbnail=kodi_db_movie["art"]["poster"],
                     category=genres,
                     plot=plot,
                     viewmode='movie_with_plot',
                     fanart=kodi_db_movie["art"]["fanart"],
-                    rating=rating,
+                    extrameta=extrameta,
+                    extracmds=extracmds,
                     folder=False,
                 ))
 
@@ -361,14 +372,13 @@ def build_movie_list(item, movies):
                 action='do_channels_search',
                 extra=("%4s" % year) + title_search,
                 title=title + jobrole,
-                genres=genres,
-                year=year,
                 thumbnail=poster,
                 category=genres,
                 plot=plot,
                 viewmode='movie_with_plot',
                 fanart=fanart,
-                rating=rating,
+                extrameta=extrameta,
+                extracmds=extracmds,
                 type=item.type
             ))
 
