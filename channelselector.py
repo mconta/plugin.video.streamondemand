@@ -253,6 +253,7 @@ def channels_list():
     #itemlist.append( Item( title="[COLOR azure]CineBlog01.FM[/COLOR]"       , channel="cineblogfm"           , language="IT"    , category="F,S"   , type="generic"))
     #itemlist.append( Item( title="[COLOR azure]Cinemagratis[/COLOR]"        , channel="cinemagratis"       , language="IT"    , category="F"       , type="generic"))
     #itemlist.append( Item( title="[COLOR azure]Chimerarevo[/COLOR]"        , channel="chimerarevo"       , language="IT"    , category="D"       , type="generic",thumbnail="http://www.chimerarevo.com/assets/img/chimera-revo.png"))
+    itemlist.append( Item( title="[COLOR azure]Cinefilm[/COLOR]"          , channel="cinefilm"           , language="IT"    , category="F,S"   , type="generic",thumbnail="http://cinefilm.altervista.org/wp-content/uploads/2015/07/logo1.png"))
     itemlist.append( Item( title="[COLOR azure]Cinemastreaming.net[/COLOR]"        , channel="cinemastreaming"       , language="IT"    , category="F"       , type="generic"	, thumbnail="http://cinemastreaming.net/wp-content/themes/boxes/images/logo_cine.png"))
     itemlist.append( Item( title="[COLOR azure]Cucinarefacile[/COLOR]"        , channel="cucinarefacile"       , language="IT"    , category="D"       , type="generic"))
     itemlist.append( Item( title="[COLOR azure]Darkstream[/COLOR]"        , channel="darkstream"       , language="IT"    , category="F"       , type="generic"))
