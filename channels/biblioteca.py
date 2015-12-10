@@ -271,6 +271,12 @@ def search_person_by_name(item, search_terms):
 def search_movie_by_person(item):
     logger.info("streamondemand.channels.database search_movie_by_person '%s'" % (item.extra))
 
+    # return list_movie(
+    #     Item(channel=item.channel,
+    #          url="discover/movie?with_people=%s&primary_release_date.lte=%s&sort_by=primary_release_date.desc&" % (
+    #              item.extra, TODAY_TIME),
+    #          plot="1"))
+
     person_movie_credits = tmdb_get_data(
         "person/%s/movie_credits?primary_release_date.lte=%s&sort_by=primary_release_date.desc&" % (
             item.extra, TODAY_TIME))
@@ -321,8 +327,11 @@ def build_movie_list(item, movies):
 
     itemlist = []
     for movie in movies:
-        title = normalize_unicode(tmdb_tag(movie, 'title'))
-        title_search = normalize_unicode(tmdb_tag(movie, 'title'), encoding='ascii')
+        t = tmdb_tag(movie, 'title')
+        if t == '':
+            t = re.sub('\s(|[(])(UK|US|AU|\d{4})(|[)])$', '', tmdb_tag(movie, 'name'))
+        title = normalize_unicode(t)
+        title_search = normalize_unicode(t, encoding='ascii')
         poster = tmdb_image(movie, 'poster_path')
         fanart = tmdb_image(movie, 'backdrop_path', 'w1280')
         jobrole = normalize_unicode(
@@ -363,7 +372,7 @@ def build_movie_list(item, movies):
                 plot=plot,
                 viewmode='movie_with_plot',
                 fanart=fanart,
-                type=item.type
+                url=item.type
             ))
 
     return itemlist
@@ -510,7 +519,8 @@ def do_channels_search(item):
             # http://docs.python.org/library/imp.html?highlight=imp#module-imp
             obj = imp.load_source(basename_without_extension, infile)
             logger.info("streamondemand.channels.buscador cargado " + basename_without_extension + " de " + infile)
-            channel_result_itemlist.extend(obj.search(Item(extra=item.type), tecleado))
+            # item.url contains search type: serie, anime, etc...
+            channel_result_itemlist.extend(obj.search(Item(extra=item.url), tecleado))
             for local_item in channel_result_itemlist:
                 local_item.title = " [COLOR azure] " + local_item.title + " [/COLOR] [COLOR orange]su[/COLOR] [COLOR green]" + basename_without_extension + "[/COLOR]"
                 local_item.viewmode = "list"
