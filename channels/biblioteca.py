@@ -67,6 +67,7 @@ NLS_Looking_For = config.get_localized_string(30993)
 NLS_Searching_In = config.get_localized_string(30994)
 NLS_Found_So_Far = config.get_localized_string(30995)
 NLS_Info_Title = config.get_localized_string(30999)
+NLS_Info_Person = config.get_localized_string(30979)
 
 TMDb_genres = {}
 
@@ -169,7 +170,8 @@ def list_movie(item):
             action="list_movie",
             url=item.url,
             plot="%d" % (page + 1),
-            type=item.type))
+            type=item.type,
+            viewmode="" if page<=1 else "paged_list"))
 
     return itemlist
 
@@ -256,6 +258,9 @@ def search_person_by_name(item, search_terms):
                 fanart = tmdb_image(movie, 'backdrop_path', 'w1280')
                 break
 
+        extracmds = [(NLS_Info_Person, "RunScript(script.extendedinfo,info=extendedactorinfo,id=%d)" % tmdb_tag(person, 'id'))] \
+            if xbmc.getCondVisibility('System.HasAddon(script.extendedinfo)') else []
+
         itemlist.append(Item(
             channel=item.channel,
             action='search_movie_by_person',
@@ -264,6 +269,7 @@ def search_person_by_name(item, search_terms):
             thumbnail=poster,
             viewmode='list',
             fanart=fanart,
+            extracmds=extracmds
         ))
 
     return itemlist
@@ -386,6 +392,7 @@ def build_movie_list(item, movies):
 
 
 def normalize_unicode(string, encoding='utf-8'):
+    if string is None: string = ''
     return normalize('NFKD', string if isinstance(string, unicode) else unicode(string, encoding, 'ignore')).encode(
         encoding, 'ignore')
 
@@ -490,6 +497,7 @@ def do_channels_search(item):
     from lib.fuzzywuzzy import fuzz
     import threading
     import Queue
+    import time
 
     master_exclude_data_file = os.path.join(config.get_runtime_path(), "resources", "sodsearch.txt")
     logger.info("streamondemand.channels.buscador master_exclude_data_file=" + master_exclude_data_file)
@@ -540,46 +548,53 @@ def do_channels_search(item):
     result = Queue.Queue()
     threads = [threading.Thread(target=worker, args=(infile, result)) for infile in channel_files]
 
+    start_time = int(time.time())
+
     for t in threads:
+        t.daemon = True     # NOTE: setting dameon to True allows the main thread to exit even if there are threads still running
         t.start()
 
     number_of_channels = len(channel_files)
+    completed_channels = 0
+    while completed_channels < number_of_channels:
 
-    local_itemlist = []
-    for index, t in enumerate(threads):
-        percentage = index * 100 / number_of_channels
+        delta_time = int(time.time()) - start_time
+        if len(itemlist) <= 0:
+            timeout = None              # No result so far,lets the thread to continue working until a result is returned
+        elif delta_time >= 60:
+            break                       # At least a result matching the searched title has been found, lets stop the search
+        else:
+            timeout = 60 - delta_time   # Still time to gather other results
+
         if show_dialog:
-            progreso.update(percentage, NLS_Looking_For % mostra)
-        t.join()
-        local_itemlist.extend(result.get())
+            progreso.update(completed_channels * 100 / number_of_channels)
 
-    for item in local_itemlist:
-        title = item.fulltitle
+        try:
+            result_itemlist = result.get(timeout=timeout)
+            completed_channels = completed_channels + 1
+        except:
+            # Expired timeout raise an exception
+            break;
 
-        # Check if the found title matches the release year
-        year_match = re.search('\(.*(\d{4})\)', title)
-        if year_match:
-            found_year = int(year_match.group(1))
-            title = title[:year_match.start()] + title[year_match.end():]
-            if title_year > 0 and abs(found_year - title_year) > 1:
-                continue
+        for item in result_itemlist:
+            title = item.fulltitle
 
-        # Clean up a bit the returned title to improve the fuzzy matching
-        title = re.sub(r'\(\d\.\d\)', '', title)  # Rating, es: (8.4)
-        title = re.sub(r'(?i) (film|streaming|ITA)', '', title)  # Common keywords in titles
-        title = re.sub(r'[\[(](HD|B/N)[\])]', '', title)  # Common keywords in titles, es. [HD], (B/N), etc.
-        title = re.sub(r'(?i)\[/?COLOR[^\]]*\]', '', title)  # Formatting keywords
+            # If the release year is known, check if it matches the year found in the title
+            if title_year > 0:
+                year_match = re.search('\(.*(\d{4}).*\)', title)
+                if year_match and abs(int(year_match.group(1)) - title_year) > 1:
+                    continue
 
-        # Check if the found title fuzzy matches the searched one
-        fuzzy = fuzz.token_sort_ratio(mostra, title)
-        if fuzzy <= 85:
-            continue
+            # Clean up a bit the returned title to improve the fuzzy matching
+            title = re.sub(r'\(.*\)', '', title)    # Anything within ()
+            title = re.sub(r'\[.*\]', '', title)    # Anything within []
 
-        itemlist.append(item)
-
-    itemlist = sorted(itemlist, key=lambda item: item.fulltitle)
+            # Check if the found title fuzzy matches the searched one
+            if fuzz.token_sort_ratio(mostra, title) > 85: itemlist.append(item)
 
     if show_dialog:
         progreso.close()
+
+    itemlist = sorted(itemlist, key=lambda item: item.fulltitle)
 
     return itemlist

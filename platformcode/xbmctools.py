@@ -882,12 +882,14 @@ def renderItems(itemlist, params, url, category, isPlayable='false'):
             if viewmode=="list":
                 xbmc.executebuiltin("Container.SetViewMode(50)")
             elif viewmode=="movie_with_plot":
-                if xbmc.getSkinDir()=="skin.aeon.nox.5":
-                    xbmc.executebuiltin("Container.SetViewMode(55)")
-                else:
-                    xbmc.executebuiltin("Container.SetViewMode(503)")
+                xbmc.executebuiltin("Container.SetViewMode(503)")
             elif viewmode=="movie":
                 xbmc.executebuiltin("Container.SetViewMode(500)")
+        elif viewmode=="paged_list":
+            # When rendering paged list, force the current viewmode starting with the 2nd page
+            viewmode = repr(xbmcgui.Window(xbmcgui.getCurrentWindowId()).getFocusId())
+            logger.info("[xbmctools] renderItems: setting ViewMode to %s" % viewmode)
+            xbmc.executebuiltin("Container.SetViewMode(%s)" % viewmode)
 
     xbmcplugin.endOfDirectory( handle=pluginhandle, succeeded=True )
 
