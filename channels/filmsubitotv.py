@@ -4,12 +4,12 @@
 # Canal para filmsubito.tv
 # http://blog.tvalacarta.info/plugin-xbmc/streamondemand.
 # ------------------------------------------------------------
-import urlparse
 import re
 import sys
+import urlparse
 
-from core import logger
 from core import config
+from core import logger
 from core import scrapertools
 from core.item import Item
 from servers import servertools
@@ -193,7 +193,8 @@ def findvideos(item):
         '21': 'http://vidto.me/embed-%s',
         '22': 'http://www.exashare.com/embed-%s-700x400.html',
         '23': 'http://videomega.tv/cdn.php?ref=%s&width=700&height=430',
-        '29': 'http://embed.novamov.com/embed.php?v=%s'
+        '29': 'http://embed.novamov.com/embed.php?v=%s',
+        '30': 'http://streamin.to/embed-%s-700x370.html'
     }
 
     patron = "=.setupNewPlayer.'([^']+)','(\d+)'"
