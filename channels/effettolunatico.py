@@ -45,7 +45,7 @@ def mainlist(item):
 
 def search(item, texto):
     logger.info("[effettolunatico.py] " + item.url + " search " + texto)
-    item.url = "http://effettolunatico.altervista.org/forum/vbtube.php?do=search&startid=0&mstr=" + texto + "&securitytoken=guest"
+    item.url = host + "/forum/vbtube.php?do=search&startid=0&mstr=" + texto + "&securitytoken=guest"
     try:
         return peliculas(item)
     # Se captura la excepción, para no interrumpir al buscador global si un canal falla
