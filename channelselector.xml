@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <version>
 	<name>channelselector</name>
-	<tag>123</tag>
-	<date>05/12/2015</date>
-	<changes>Database channel</changes>
+	<tag>125</tag>
+	<date>11/12/2015</date>
+	<changes>Unload channel</changes>
 </version>
