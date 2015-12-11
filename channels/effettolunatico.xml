@@ -6,10 +6,10 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/effettolunatico.py</update_url>
     <active>true</active>
     <include_in_global_search>false</include_in_global_search>
-    <version>3</version>
+    <version>4</version>
     <adult>false</adult>
-    <date>10/11/2015</date>
-    <changes>Added plot</changes>
+    <date>11/12/2015</date>
+    <changes>Added search</changes>
     <categories>
         <category>movie</category>
     </categories>

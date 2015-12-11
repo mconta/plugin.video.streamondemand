@@ -34,15 +34,18 @@ def mainlist(item):
                      title="[COLOR azure]Ultimi Film Inseriti[/COLOR]",
                      action="peliculas",
                      url="%s/forum/vbtube.php?do=cat&id=2&o=0&page=0" % host,
-                     thumbnail="http://orig03.deviantart.net/6889/f/2014/079/7/b/movies_and_popcorn_folder_icon_by_matheusgrilo-d7ay4tw.png")]
-    # itemlist.append( Item(channel=__channel__, title="[COLOR yellow]Cerca...[/COLOR]", action="search", thumbnail="http://dc467.4shared.com/img/fEbJqOum/s7/13feaf0c8c0/Search"))
+                     thumbnail="http://orig03.deviantart.net/6889/f/2014/079/7/b/movies_and_popcorn_folder_icon_by_matheusgrilo-d7ay4tw.png"),
+                Item(channel=__channel__, 
+                     title="[COLOR yellow]Cerca...[/COLOR]", 
+                     action="search", 
+                     thumbnail="http://dc467.4shared.com/img/fEbJqOum/s7/13feaf0c8c0/Search")]
 
     return itemlist
 
 
 def search(item, texto):
     logger.info("[effettolunatico.py] " + item.url + " search " + texto)
-    item.url = host + "/forum/vbtube.php?do=search&" + texto
+    item.url = "http://effettolunatico.altervista.org/forum/vbtube.php?do=search&startid=0&mstr=" + texto + "&securitytoken=guest"
     try:
         return peliculas(item)
     # Se captura la excepción, para no interrumpir al buscador global si un canal falla
