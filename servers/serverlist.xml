@@ -1390,7 +1390,7 @@
     <id>youwatch</id>
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/servers/youwatch.py</update_url>
     <active>true</active>
-    <version>1</version>
+    <version>2</version>
     <date>12/09/2015</date>
     <changes>Prima versione di Pelisalacarta 4</changes>
 </server>
