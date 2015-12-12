@@ -34,7 +34,8 @@ def mainlist( item ):
 
     itemlist = []
 
-    itemlist.append( Item( channel=__channel__, action="fichas", title="[COLOR azure]Serie TV[/COLOR]", url=host + "/lista-serie-tv-guardaserie/" , thumbnail="http://i58.tinypic.com/2zs64cz.jpg" ) )
+    itemlist.append( Item( channel=__channel__, action="ultimi", title="[COLOR azure]Ultimi Episodi Aggiunti[/COLOR]", url=host + "/aggiornamenti-serie-tv/" , thumbnail="http://i58.tinypic.com/2zs64cz.jpg" ) )
+    itemlist.append( Item( channel=__channel__, action="fichas", title="[COLOR azure]Lista Serie TV[/COLOR]", url=host + "/lista-serie-tv-guardaserie/" , thumbnail="http://i58.tinypic.com/2zs64cz.jpg" ) )
     itemlist.append( Item( channel=__channel__, action="anime", title="[COLOR azure]Anime[/COLOR]", url=host + "/lista-serie-tv-guardaserie/" , thumbnail="http://2.bp.blogspot.com/-4AeDx37c3uQ/VAxIHDhm-9I/AAAAAAAABRA/BUnctEGpVYM/s1600/528900971.gif" ) )
     itemlist.append( Item( channel=__channel__, action="cartoni", title="[COLOR azure]Cartoni Animati[/COLOR]", url=host + "/lista-serie-tv-guardaserie/" , thumbnail="http://i.imgur.com/d9GffYm.png" ) )
     itemlist.append( Item( channel=__channel__, action="progs", title="[COLOR azure]Programmi TV[/COLOR]", url=host + "/lista-serie-tv-guardaserie/" , thumbnail="http://mujakovic.weebly.com/uploads/1/4/7/9/14799472/3787546.png" ) )
@@ -73,8 +74,30 @@ def fichas( item ):
 
     for scrapedurl, scrapedtitle in matches:
         scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle)
+        
 
         itemlist.append( Item( channel=__channel__, action="episodios", title= scrapedtitle , fulltitle=scrapedtitle, show=scrapedtitle, url=scrapedurl ) )
+
+    return itemlist
+
+def ultimi( item ):
+    logger.info( "streamondemand.channels.guardaserie fichas" )
+
+    itemlist = []
+
+    data = scrapertools.cache_page( item.url )
+
+    data = scrapertools.find_single_match( data, '<p>Nuove Puntate delle SERIE TV, Aggiunte OGGI:</p>(.*?)<div id="disclamer">' )
+
+    patron  = '<li><a href="([^"]+)[^>]+>([^<]+)</a></li>'
+
+    matches = re.compile( patron, re.DOTALL ).findall( data )
+
+    for scrapedurl, scrapedtitle in matches:
+        scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle)
+        url= host + scrapedurl
+
+        itemlist.append( Item( channel=__channel__, action="episodios", title= scrapedtitle , fulltitle=scrapedtitle, show=scrapedtitle, url=url ) )
 
     return itemlist
 
