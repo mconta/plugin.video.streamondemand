@@ -103,7 +103,7 @@ def peliculas(item):
         scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle)
         itemlist.append(
             Item(channel=__channel__,
-                 action="findvideos",
+                 action="findvid",
                  fulltitle=scrapedtitle,
                  show=scrapedtitle,
                  title=scrapedtitle,
@@ -177,8 +177,8 @@ def serietv80(item):
 
     return itemlist
 
-'''
-def findvideos(item):
+
+def findvid(item):
     logger.info("[filmsubitotv.py] findvideos")
 
     # Descarga la página
@@ -219,7 +219,7 @@ def findvideos(item):
 
     return itemlist
 
-'''
+
 def genere(item):
     logger.info("[filmsubitotv.py] genere")
     itemlist = []
