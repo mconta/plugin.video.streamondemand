@@ -4,9 +4,8 @@
 # Canal para filmsubito.tv
 # http://blog.tvalacarta.info/plugin-xbmc/streamondemand.
 # ------------------------------------------------------------
-import re
-import sys
-import urlparse
+import urlparse,urllib2,urllib,re
+import os, sys
 
 from core import config
 from core import logger
@@ -147,7 +146,7 @@ def serietv80(item):
     matches = re.compile(patron, re.DOTALL).findall(data)
 
     for scrapedurl, scrapedthumbnail, scrapedtitle in matches:
-        scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle)
+        title = scrapertools.decodeHtmlentities(scrapedtitle)
         if (DEBUG): logger.info(
             "title=[" + scrapedtitle + "], url=[" + scrapedurl + "], thumbnail=[" + scrapedthumbnail + "]")
         itemlist.append(
@@ -155,7 +154,7 @@ def serietv80(item):
                  action="findvideos",
                  fulltitle=scrapedtitle,
                  show=scrapedtitle,
-                 title=scrapedtitle,
+                 title=title,
                  url=scrapedurl,
                  thumbnail=scrapedthumbnail,
                  folder=True,
@@ -178,7 +177,7 @@ def serietv80(item):
 
     return itemlist
 
-
+'''
 def findvideos(item):
     logger.info("[filmsubitotv.py] findvideos")
 
@@ -190,6 +189,7 @@ def findvideos(item):
         '2': 'http://embed.nowvideo.li/embed.php?v=%s',
         '11': 'https://openload.co/embed/%s/',
         '16': 'http://youwatch.org/embed-%s-640x360.html',
+        '17': 'http://youwatch.org/embed-%s-640x360.html',
         '21': 'http://vidto.me/embed-%s',
         '22': 'http://www.exashare.com/embed-%s-700x400.html',
         '23': 'http://videomega.tv/cdn.php?ref=%s&width=700&height=430',
@@ -219,7 +219,7 @@ def findvideos(item):
 
     return itemlist
 
-
+'''
 def genere(item):
     logger.info("[filmsubitotv.py] genere")
     itemlist = []
