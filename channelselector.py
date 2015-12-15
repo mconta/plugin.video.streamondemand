@@ -230,7 +230,7 @@ def channels_history_list():
 def channels_list():
     itemlist = []
 
-    #itemlist.append( Item( viewmode="movie", title="Inserisci un URL"         , channel="tengourl"   , language="" , category="" , type="generic"  ))
+    itemlist.append( Item( viewmode="movie", title="Inserisci un URL..."         , channel="tengourl"   , language="" , category="" , type="generic"  ))
     if config.get_setting("personalchannel")=="true":
         itemlist.append( Item( title=config.get_setting("personalchannelname") , channel="personal" , language="" , category="" , type="generic"  ))
     if config.get_setting("personalchannel2")=="true":
@@ -292,7 +292,7 @@ def channels_list():
     itemlist.append( Item( title="[COLOR azure]Pianeta Streaming[/COLOR]"   , channel="pianetastreaming"           , language="IT"    , category="F,S,A"   , type="generic"))
     itemlist.append( Item( title="[COLOR azure]Pirate Streaming[/COLOR]"    , channel="piratestreaming"           , language="IT"    , category="F,S,A"   , type="generic"  ))
     itemlist.append( Item( title="[COLOR azure]Play Cinema[/COLOR]"    , channel="playcinema"           , language="IT"    , category="F"   , type="generic", thumbnail="http://www.playcinema.org/wp-content/uploads/2015/10/playcinemaimmagine.png"  ))
-    itemlist.append( Item( title="[COLOR azure]PortaleHD[/COLOR]"   , channel="portalehd"           , language="IT"    , category="F,S,A,B"   , type="generic"))
+    itemlist.append( Item( title="[COLOR azure]PortaleHD[/COLOR]"   , channel="portalehd"           , language="IT"    , category="F,B"   , type="generic"))
     itemlist.append( Item( title="[COLOR azure]Saint Seiya[/COLOR]"     , channel="saintseiya"       , language="IT"    , category="A"        , thumbnail="http://vignette2.wikia.nocookie.net/nonciclopedia/images/1/12/Logo_Cavalieri_dello_Zodiaco.png/revision/latest?cb=20140308215438", type="generic"))
     itemlist.append( Item( title="[COLOR azure]Serie HD[/COLOR]"     , channel="seriehd"       , language="IT"    , category="S"        , type="generic"))
     itemlist.append( Item( title="[COLOR azure]Serie TV Sub ITA[/COLOR]"    , channel="serietvsubita"         , language="IT" , category="S"        , type="generic" , extra="Series"))
