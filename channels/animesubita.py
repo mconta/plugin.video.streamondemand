@@ -41,8 +41,8 @@ def mainlist(item):
                      thumbnail="http://repository-butchabay.googlecode.com/svn/branches/eden/skin.cirrus.extended.v2/extras/moviegenres/Anime.png"),
                 Item(channel=__channel__,
                      title="[COLOR azure]Anime - Per Genere[/COLOR]",
-                     action="categorias",
-                     url=host + "lista-anime-streaming/",
+                     action="genere",
+                     url=host + "cerca-per-genere/",
                      thumbnail="http://xbmc-repo-ackbarr.googlecode.com/svn/trunk/dev/skin.cirrus%20extended%20v2/extras/moviegenres/Genre.png"),
                 Item(channel=__channel__,
                      title="[COLOR azure]Serie concluse[/COLOR]",
@@ -133,7 +133,57 @@ def concluse(item):
                  url=scrapedurl))
 
     return itemlist
+	
+def genere(item):
+    logger.info("streamondemand.animesubita categorias")
 
+    itemlist = []
+
+    data = scrapertools.cache_page(item.url, headers=headers)
+
+    # The categories are the options for the combo
+    patron = '<li><a title="(.*?)" href="(.*?)">.*?</a></li>'
+
+    matches = re.compile(patron, re.DOTALL).findall(data)
+
+    for scrapedtitle, scrapedurl in matches:
+	scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle)
+        itemlist.append(
+            Item(channel=__channel__,
+                 action="generedisplay",
+                 title=scrapedtitle,
+                 fulltitle=scrapedtitle,
+                 show=scrapedtitle,
+                 url=scrapedurl))
+
+    return itemlist
+
+def generedisplay(item):
+    logger.info("streamondemand.animesubita categorias")
+
+    itemlist = []
+
+    data = scrapertools.cache_page(item.url, headers=headers)
+
+    # The categories are the options for the combo
+    patron = '<a href="(.*?)"> <img src="(.*?)" alt="(.*?)" title=".*?">'
+
+    matches = re.compile(patron, re.DOTALL).findall(data)
+
+    for scrapedurl, scrapedthumbnail, scrapedtitle in matches:
+	scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle)
+        itemlist.append(
+            Item(channel=__channel__,
+                 action="episodios",
+                 title=scrapedtitle,
+                 fulltitle=scrapedtitle,
+                 show=scrapedtitle,
+                 url=scrapedurl,
+				 thumbnail=scrapedthumbnail))
+
+    return itemlist
+	
+'''
 def selection(item):
     logger.info("streamondemand.animesubita peliculas")
 
@@ -156,7 +206,6 @@ def selection(item):
                  url=scrapedurl))
 
     return itemlist
-
 
 def episodios(item):
     logger.info("streamondemand.animesubita peliculas")
@@ -187,16 +236,40 @@ def episodios(item):
                  action="add_serie_to_library",
                  extra="episodios",
                  show=item.show))
+
+    return itemlist
+'''
+def episodios(item):
+    logger.info("streamondemand.animesubita peliculas")
+
+    itemlist = []
+
+    # Descarga la pagina
+    data = scrapertools.cache_page(item.url, headers=headers)
+
+    # Extrae las entradas (carpetas)
+    patron = '<div class="item-head">.*?<h3><a href="(.*?)".*?>(.*?)</a>'
+    matches = re.compile(patron, re.DOTALL).findall(data)
+
+    for scrapedurl, scrapedtitle in matches:
         itemlist.append(
-            Item(channel=item.channel,
-                 title="Scarica tutti gli episodi della serie",
+            Item(channel=__channel__,
+                 action="findvideos",
+                 title=scrapedtitle,
+                 fulltitle=item.fulltitle,
+                 show=item.show,
+                 url=scrapedurl))
+
+    if config.get_library_support() and len(itemlist) != 0:
+        itemlist.append(
+            Item(channel=__channel__,
+                 title=item.title,
                  url=item.url,
-                 action="download_all_episodes",
+                 action="add_serie_to_library",
                  extra="episodios",
                  show=item.show))
 
-    return itemlist
-
+    return itemlist	
 
 def search(item, texto):
     logger.info("[animesubita.py] " + item.url + " search " + texto)
