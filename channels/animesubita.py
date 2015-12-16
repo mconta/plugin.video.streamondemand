@@ -23,7 +23,10 @@ host = "http://www.animesubita.info/"
 
 headers = [
     ['User-Agent', 'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0'],
-    ['Accept-Encoding', 'gzip, deflate']
+    ['Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'],
+	['Accept-Encoding', 'gzip, deflate'],
+	['Cookie', 'retina=1; __cfduid=d4d22afba40bc4f5b8296064ff528f82b1450224140; cookieconsent_dismissed=yes'],
+	['Cache-Control', 'max-age=0']
 ]
 
 
@@ -79,7 +82,7 @@ def novedades(item):
 
         itemlist.append(
             Item(channel=__channel__,
-                 action="findvideos",
+                 action="findvid",
                  title=scrapedtitle,
                  url=scrapedurl,
                  thumbnail=scrapedthumbnail,
@@ -119,7 +122,7 @@ def concluse(item):
     data = scrapertools.cache_page(item.url, headers=headers)
 
     # The categories are the options for the combo
-    patron = '<li class="jcl_category "><a href="(.*?)">(.*?)</a></li>'
+    patron = '<li class="jcl_category "><a href="([^"]+)">([^"]+)</a></li>'
 
     matches = re.compile(patron, re.DOTALL).findall(data)
 
@@ -142,7 +145,7 @@ def genere(item):
     data = scrapertools.cache_page(item.url, headers=headers)
 
     # The categories are the options for the combo
-    patron = '<li><a title="(.*?)" href="(.*?)">.*?</a></li>'
+    patron = '<li><a title="([^"]+)" href="([^"]+)">.*?</a></li>'
 
     matches = re.compile(patron, re.DOTALL).findall(data)
 
@@ -166,7 +169,7 @@ def generedisplay(item):
     data = scrapertools.cache_page(item.url, headers=headers)
 
     # The categories are the options for the combo
-    patron = '<a href="(.*?)"> <img src="(.*?)" alt="(.*?)" title=".*?">'
+    patron = '<a href="([^"]+)"> <img src="([^"]+)" alt="([^"]+)" title=".*?">'
 
     matches = re.compile(patron, re.DOTALL).findall(data)
 
@@ -183,7 +186,7 @@ def generedisplay(item):
 
     return itemlist
 	
-'''
+
 def selection(item):
     logger.info("streamondemand.animesubita peliculas")
 
@@ -199,7 +202,7 @@ def selection(item):
     for scrapedurl, scrapedtitle in matches:
         itemlist.append(
             Item(channel=__channel__,
-                 action="episodios",
+                 action="episodios2",
                  title=scrapedtitle,
                  fulltitle=scrapedtitle,
                  show=scrapedtitle,
@@ -207,7 +210,7 @@ def selection(item):
 
     return itemlist
 
-def episodios(item):
+def episodios2(item):
     logger.info("streamondemand.animesubita peliculas")
 
     itemlist = []
@@ -222,7 +225,7 @@ def episodios(item):
     for scrapedurl, scrapedtitle in matches:
         itemlist.append(
             Item(channel=__channel__,
-                 action="findvideos",
+                 action="findvid",
                  title=scrapedtitle,
                  fulltitle=item.fulltitle,
                  show=item.show,
@@ -238,27 +241,32 @@ def episodios(item):
                  show=item.show))
 
     return itemlist
-'''
+
 def episodios(item):
-    logger.info("streamondemand.animesubita peliculas")
+    logger.info("streamondemand.animesubita episodios")
 
     itemlist = []
 
     # Descarga la pagina
-    data = scrapertools.cache_page(item.url, headers=headers)
+    headers.append(['Referer', item.url])
 
+    # Descarga la pagina
+    data = scrapertools.cache_page(item.url, headers=headers)
+	
     # Extrae las entradas (carpetas)
-    patron = '<div class="item-head">.*?<h3><a href="(.*?)".*?>(.*?)</a>'
+    patron = '<a href="([^"]+)"> <img src="([^"]+)" alt="([^"]+)".*?'
+
     matches = re.compile(patron, re.DOTALL).findall(data)
 
-    for scrapedurl, scrapedtitle in matches:
+    for scrapedurl, scrapedthumbnail, scrapedtitle in matches:
         itemlist.append(
             Item(channel=__channel__,
-                 action="findvideos",
+                 action="findvid",
                  title=scrapedtitle,
                  fulltitle=item.fulltitle,
                  show=item.show,
-                 url=scrapedurl))
+                 url=scrapedurl,
+				 thumbnail=scrapedthumbnail))
 
     if config.get_library_support() and len(itemlist) != 0:
         itemlist.append(
@@ -287,7 +295,7 @@ def search(item, texto):
         return []
 
 
-def findvideos(item):
+def findvid(item):
     logger.info("streamondemand.channels.animesubita findvideos")
 
     headers.append(['Referer', item.url])
