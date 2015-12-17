@@ -9,9 +9,11 @@ import sys
 import time
 import urllib2
 import urlparse
+import binascii
 
 from core import config
 from core import logger
+from servers import adfly
 from core import scrapertools
 from core.item import Item
 from servers import servertools
@@ -19,21 +21,19 @@ from servers import servertools
 __channel__ = "instreaminginfo"
 __category__ = "F"
 __type__ = "generic"
-__title__ = "instreaminginfo (IT)"
+__title__ = "instreaming.info (IT)"
 __language__ = "IT"
 
 DEBUG = config.get_setting("debug")
 
-headers = [
-    ['Host', 'instreaminginfo.com'],
-    ['User-Agent', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:42.0) Gecko/20100101 Firefox/42.0'],
-    ['Accept-Encoding', 'gzip, deflate'],
-    ['Referer', 'http://instreaming.info/'],
-    ['Cache-Control', 'max-age=0']
-]
-
 host = "http://instreaming.info/news/"
 
+headers = [
+    ['User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:38.0) Gecko/20100101 Firefox/38.0'],
+    ['Accept-Encoding', 'gzip, deflate'],
+    ['Referer', host],
+    ['Connection', 'keep-alive']
+]
 
 def isGeneric():
     return True
@@ -59,7 +59,7 @@ def peliculas(item):
 
     ## ------------------------------------------------
     cookies = ""
-    matches = re.compile('(.instreaming.info)\n', re.DOTALL).findall(config.get_cookie_data())
+    matches = re.compile('(.instreaming.info.*?)\n', re.DOTALL).findall(config.get_cookie_data())
     for cookie in matches:
         name = cookie.split('\t')[5]
         value = cookie.split('\t')[6]
@@ -79,6 +79,9 @@ def peliculas(item):
         scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle)
         if (DEBUG): logger.info(
             "title=[" + scrapedtitle + "], url=[" + scrapedurl + "], thumbnail=[" + scrapedthumbnail + "]")
+        ## ------------------------------------------------
+        scrapedthumbnail += "|" + _headers
+        ## ------------------------------------------------
         itemlist.append(
             Item(channel=__channel__,
                  action="play",
@@ -91,37 +94,30 @@ def peliculas(item):
                  folder=True))
 
     # Extrae el paginador
-    patron = '<link rel="next" href="(.*?)" />'
-    match = scrapertools.find_single_match(data, patron)
 
-    if len(matches) > 0:
-        scrapedurl = urlparse.urljoin(item.url, matches[0])
-        itemlist.append(
-            Item(channel=__channel__,
-                 action="HomePage",
-                 title="[COLOR yellow]Torna Home[/COLOR]",
-                 folder=True)),
+    next_page = scrapertools.find_single_match(data, '<link rel="next" href="(.*?)" />')
+    if next_page != "":
         itemlist.append(
             Item(channel=__channel__,
                  action="peliculas",
                  title="[COLOR orange]Successivo >>[/COLOR]",
-                 url=scrapedurl,
-                 thumbnail="http://2.bp.blogspot.com/-fE9tzwmjaeQ/UcM2apxDtjI/AAAAAAAAeeg/WKSGM2TADLM/s1600/pager+old.png",
-                 folder=True))
+                 url=next_page,
+                 thumbnail="http://2.bp.blogspot.com/-fE9tzwmjaeQ/UcM2apxDtjI/AAAAAAAAeeg/WKSGM2TADLM/s1600/pager+old.png"))
 
-def HomePage(item):
-    import xbmc
-    xbmc.executebuiltin("ReplaceWindow(10024,plugin://plugin.video.streamondemand)")
+    return itemlist
 
 def play(item):
-    logger.info("[instreaminginfo.py] play")
+    logger.info("[streamingpopcorn.py] play")
 
     data = scrapertools.cache_page(item.url, headers=headers)
 
-    path = scrapertools.find_single_match(data, 'href="https://href.li/.([^"]+)"')
-    url = path
+    # <a target='_blank' href='linker.php?id=yeTp0t%2BjkqLr6dyP5tjj2%2BXD05LE3%2BKR48rX1tyx257M09DeqMbamKadtg%3D%3D&umId=5493&src='><img src='images/icons/youtube.png'>&nbsp;Guarda su YouTube</a>
 
-    itemlist = servertools.find_video_items(data=url)
+    path = scrapertools.find_single_match(data, 'href="(https://href.li/.[^"]+)"')
+    url = urlparse.urljoin(host, path)
+    location = scrapertools.get_header_from_response(url, header_to_get="Location")
+
+    itemlist = servertools.find_video_items(data=location)
 
     for videoitem in itemlist:
         videoitem.title = item.show
