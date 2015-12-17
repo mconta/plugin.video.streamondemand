@@ -1,5 +1,6 @@
-v5.1.6
-- Update Ricerca Globale (thanks giordiz999)
-- Fixed channels: SerieHD, FilmitaliaTV, GuardaSerie, AnimeSubITA
-- Fixed servers: okru, videomega, thevideome
+v5.1.7
+- Update (again) Ricerca Globale (thanks giordiz999)
+- Added channels: cineflm
+- Fixed channels: ItaliaSerie, GuardaSerie, AnimeSubITA
+- Fixed servers: youwatch
 

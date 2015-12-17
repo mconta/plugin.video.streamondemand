@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <version>
 	<name>Stream On Demand</name>
-	<tag>5.1.6</tag>
-	<version>5106</version>
-	<date>07/12/2015</date>
+	<tag>5.1.7</tag>
+	<version>5107</version>
+	<date>17/12/2015</date>
 	<changes>Stream On Demand - Library mandatory update - DrZ3r0</changes>
 </version>
