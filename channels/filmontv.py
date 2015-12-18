@@ -6,8 +6,8 @@
 # ------------------------------------------------------------
 import re
 
-from core import logger
 from core import config
+from core import logger
 from core import scrapertools
 from core.item import Item
 
@@ -19,6 +19,8 @@ __language__ = "IT"
 
 DEBUG = config.get_setting("debug")
 
+host = "http://www.comingsoon.it"
+
 
 def isGeneric():
     return True
@@ -29,37 +31,37 @@ def mainlist(item):
     itemlist = [Item(channel=__channel__,
                      title="[COLOR red]IN ONDA ADESSO[/COLOR]",
                      action="tvoggi",
-                     url="http://www.comingsoon.it/filmtv/",
+                     url="%s/filmtv/" % host,
                      thumbnail="http://a2.mzstatic.com/eu/r30/Purple/v4/3d/63/6b/3d636b8d-0001-dc5c-a0b0-42bdf738b1b4/icon_256.png"),
                 Item(channel=__channel__,
                      title="[COLOR azure]Mattina[/COLOR]",
                      action="tvoggi",
-                     url="http://www.comingsoon.it/filmtv/?range=mt",
+                     url="%s/filmtv/?range=mt" % host,
                      thumbnail="http://www.creattor.com/files/23/787/morning-pleasure-icons-screenshots-17.png"),
                 Item(channel=__channel__,
                      title="[COLOR azure]Pomeriggio[/COLOR]",
                      action="tvoggi",
-                     url="http://www.comingsoon.it/filmtv/?range=pm",
+                     url="%s/filmtv/?range=pm" % host,
                      thumbnail="http://icons.iconarchive.com/icons/custom-icon-design/weather/256/Sunny-icon.png"),
                 Item(channel=__channel__,
                      title="[COLOR azure]Preserale[/COLOR]",
                      action="tvoggi",
-                     url="http://www.comingsoon.it/filmtv/?range=pr",
+                     url="%s/filmtv/?range=pr" % host,
                      thumbnail="https://s.evbuc.com/https_proxy?url=http%3A%2F%2Ftriumphbar.com%2Fimages%2Fhappyhour_icon.png&sig=ADR2i7_K2FSfbQ6b3dy12Xjgkq9NCEdkKg"),
                 Item(channel=__channel__,
                      title="[COLOR azure]Prima serata[/COLOR]",
                      action="tvoggi",
-                     url="http://www.comingsoon.it/filmtv/?range=ps",
+                     url="%s/filmtv/?range=ps" % host,
                      thumbnail="http://icons.iconarchive.com/icons/icons-land/vista-people/256/Occupations-Pizza-Deliveryman-Male-Light-icon.png"),
                 Item(channel=__channel__,
                      title="[COLOR azure]Seconda serata[/COLOR]",
                      action="tvoggi",
-                     url="http://www.comingsoon.it/filmtv/?range=ss",
+                     url="%s/filmtv/?range=ss" % host,
                      thumbnail="http://orig03.deviantart.net/6889/f/2014/079/7/b/movies_and_popcorn_folder_icon_by_matheusgrilo-d7ay4tw.png"),
                 Item(channel=__channel__,
                      title="[COLOR azure]Notte[/COLOR]",
                      action="tvoggi",
-                     url="http://www.comingsoon.it/filmtv/?range=nt",
+                     url="%s/filmtv/?range=nt" % host,
                      thumbnail="http://icons.iconarchive.com/icons/oxygen-icons.org/oxygen/256/Status-weather-clear-night-icon.png")]
 
     return itemlist
@@ -73,8 +75,7 @@ def tvoggi(item):
     data = scrapertools.cache_page(item.url)
 
     # Extrae las entradas (carpetas)
-    patron = '<div class="col-xs-5 box-immagine">\s*<img src="(.*?)"[^>]+>\s*</div>\s*[^>]+>[^>]+>\s*[^>]+>\s*[^>]+>(.*?)</div>\s*[^>]+>[^>]+>[^>]+>[^>]+>(.*?)</div>'
-#    patron = '<img src=\'(.*?)\'[^>]+>\s*</div>\s*<div[^>]+>[^>]+>\s*<div[^>]+>\s*<h3 >(.*?)</h3>\s*<div[^>]+>[^>]+>[^>]+>(.*?)</div>'
+    patron = '<div class="col-xs-5 box-immagine">\s*<img src="([^"]+)"[^>]+>\s*</div>\s*[^>]+>[^>]+>\s*[^>]+>\s*[^>]+>(.*?)</div>\s*[^>]+>[^>]+>[^>]+>[^>]+>(.*?)</div>'
     matches = re.compile(patron, re.DOTALL).findall(data)
 
     for scrapedthumbnail, scrapedtitle, scrapedtv in matches:
@@ -85,14 +86,14 @@ def tvoggi(item):
         titolo = scrapedtitle.replace(" ", "+")
         if (DEBUG): logger.info("title=[" + scrapedtitle + "], url=[" + scrapedurl + "]")
         itemlist.append(
-            Item(channel=__channel__,
-                 action="do_search",
-                 extra=titolo,
-                 title=scrapedtitle + "[COLOR yellow]   " + scrapedtv + "[/COLOR]",
-                 fulltitle=scrapedtitle,
-                 url=scrapedurl,
-                 thumbnail=scrapedthumbnail,
-                 folder=True))
+                Item(channel=__channel__,
+                     action="do_search",
+                     extra=titolo,
+                     title=scrapedtitle + "[COLOR yellow]   " + scrapedtv + "[/COLOR]",
+                     fulltitle=scrapedtitle,
+                     url=scrapedurl,
+                     thumbnail=scrapedthumbnail,
+                     folder=True))
 
     return itemlist
 
