@@ -7,8 +7,8 @@
 import re
 import sys
 
-from core import logger
 from core import config
+from core import logger
 from core import scrapertools
 from core.item import Item
 from servers import servertools
@@ -22,6 +22,8 @@ __creationdate__ = "20120605"
 
 DEBUG = config.get_setting("debug")
 
+host = "http://www.filmsenzalimiti.co"
+
 
 def isGeneric():
     return True
@@ -33,17 +35,17 @@ def mainlist(item):
     itemlist = [Item(channel=__channel__,
                      title="[COLOR azure]Film Del Cinema[/COLOR]",
                      action="novedades",
-                     url="http://www.filmsenzalimiti.co/genere/film",
+                     url="%s/genere/film" % host,
                      thumbnail="http://orig03.deviantart.net/6889/f/2014/079/7/b/movies_and_popcorn_folder_icon_by_matheusgrilo-d7ay4tw.png"),
                 Item(channel=__channel__,
                      title="[COLOR azure]Film Dvdrip[/COLOR]",
                      action="novedades",
-                     url="http://www.filmsenzalimiti.co/genere/dvd-rip",
+                     url="%s/genere/dvd-rip" % host,
                      thumbnail="http://repository-butchabay.googlecode.com/svn/branches/eden/skin.cirrus.extended.v2/extras/moviegenres/Box%20Sets%20HD.png"),
                 Item(channel=__channel__,
                      title="[COLOR azure]Film Sub Ita[/COLOR]",
                      action="novedades",
-                     url="http://www.filmsenzalimiti.co/genere/subita",
+                     url="%s/genere/subita" % host,
                      thumbnail="http://i.imgur.com/qUENzxl.png"),
                 Item(channel=__channel__,
                      action="search",
@@ -53,7 +55,7 @@ def mainlist(item):
                      title="[COLOR azure]Serie TV[/COLOR]",
                      extra="serie",
                      action="novedades",
-                     url="http://www.filmsenzalimiti.co/genere/serie-tv",
+                     url="%s/genere/serie-tv" % host,
                      thumbnail="http://xbmc-repo-ackbarr.googlecode.com/svn/trunk/dev/skin.cirrus%20extended%20v2/extras/moviegenres/New%20TV%20Shows.png"),
                 Item(channel=__channel__,
                      title="[COLOR yellow]Cerca Serie TV...[/COLOR]",
@@ -68,32 +70,31 @@ def categorias(item):
     itemlist = []
 
     # Descarga la página
-    data = scrapertools.cachePage(item.url)
+    data = scrapertools.cache_page(item.url)
     data = scrapertools.get_match(data, '<li><a href\="\#">Dvdrip per Genere</a>(.*?)</ul>')
     patron = '<li><a href="([^"]+)">([^<]+)</a>'
     matches = re.compile(patron, re.DOTALL).findall(data)
-    if DEBUG: scrapertools.printMatches(matches)
 
     for scrapedurl, scrapedtitle in matches:
         scrapedthumbnail = ""
         scrapedplot = ""
         if (DEBUG): logger.info(
-            "title=[" + scrapedtitle + "], url=[" + scrapedurl + "], thumbnail=[" + scrapedthumbnail + "]")
+                "title=[" + scrapedtitle + "], url=[" + scrapedurl + "], thumbnail=[" + scrapedthumbnail + "]")
         itemlist.append(
-            Item(channel=__channel__,
-                 action="novedades",
-                 title="[COLOR azure]" + scrapedtitle + "[/COLOR]",
-                 url=scrapedurl,
-                 thumbnail=scrapedthumbnail,
-                 plot=scrapedplot,
-                 folder=True))
+                Item(channel=__channel__,
+                     action="novedades",
+                     title="[COLOR azure]" + scrapedtitle + "[/COLOR]",
+                     url=scrapedurl,
+                     thumbnail=scrapedthumbnail,
+                     plot=scrapedplot,
+                     folder=True))
 
     return itemlist
 
 
 def search(item, texto):
     logger.info("[filmsenzalimiti.py] " + item.url + " search " + texto)
-    item.url = "http://www.filmsenzalimiti.co/?s=" + texto
+    item.url = host + "/?s=" + texto
     try:
         if item.extra == "serie":
             return novedades(item)
@@ -107,18 +108,16 @@ def search(item, texto):
         return []
 
 
-
 def novedades(item):
     logger.info("[filmsenzalimiti.py] novedades")
     itemlist = []
 
     # Descarga la página
-    data = scrapertools.cachePage(item.url)
+    data = scrapertools.cache_page(item.url)
 
     patronvideos = '<div class="post-item-side"[^<]+'
     patronvideos += '<a href="([^"]+)"[^<]+<img src="([^"]+)"'
     matches = re.compile(patronvideos, re.DOTALL).findall(data)
-    if DEBUG: scrapertools.printMatches(matches)
 
     for scrapedurl, scrapedthumbnail in matches:
         html = scrapertools.cache_page(scrapedurl)
@@ -128,31 +127,30 @@ def novedades(item):
         scrapedplot = re.sub(r'<[^>]*>', '', scrapedplot)
         scrapedplot = scrapertools.decodeHtmlentities(scrapedplot)
         scrapedtitle = scrapertools.get_filename_from_url(scrapedurl).replace("-", " ").replace("/", "").replace(
-            ".html", "").capitalize().strip()
+                ".html", "").capitalize().strip()
         if (DEBUG): logger.info(
-            "title=[" + scrapedtitle + "], url=[" + scrapedurl + "], thumbnail=[" + scrapedthumbnail + "]")
+                "title=[" + scrapedtitle + "], url=[" + scrapedurl + "], thumbnail=[" + scrapedthumbnail + "]")
         itemlist.append(
-            Item(channel=__channel__,
-                 action="episodios" if item.extra == "serie" else "findvideos",
-                 fulltitle=scrapedtitle,
-                 show=scrapedtitle,
-                 title="[COLOR azure]" + scrapedtitle + "[/COLOR]",
-                 url=scrapedurl,
-                 thumbnail=scrapedthumbnail,
-                 plot=scrapedplot,
-                 folder=True))
+                Item(channel=__channel__,
+                     action="episodios" if item.extra == "serie" else "findvideos",
+                     fulltitle=scrapedtitle,
+                     show=scrapedtitle,
+                     title="[COLOR azure]" + scrapedtitle + "[/COLOR]",
+                     url=scrapedurl,
+                     thumbnail=scrapedthumbnail,
+                     plot=scrapedplot,
+                     folder=True))
 
-    # Siguiente
     try:
-        pagina_siguiente = scrapertools.get_match(data, 'class="nextpostslink" rel="next" href="([^"]+)"')
+        next_page = scrapertools.get_match(data, 'class="nextpostslink" rel="next" href="([^"]+)"')
         itemlist.append(
-            Item(channel=__channel__,
-                 extra=item.extra,
-                 action="novedades",
-                 title="[COLOR orange]Successivo >>[/COLOR]",
-                 url=pagina_siguiente,
-                 thumbnail="http://2.bp.blogspot.com/-fE9tzwmjaeQ/UcM2apxDtjI/AAAAAAAAeeg/WKSGM2TADLM/s1600/pager+old.png",
-                 folder=True))
+                Item(channel=__channel__,
+                     extra=item.extra,
+                     action="novedades",
+                     title="[COLOR orange]Successivo >>[/COLOR]",
+                     url=next_page,
+                     thumbnail="http://2.bp.blogspot.com/-fE9tzwmjaeQ/UcM2apxDtjI/AAAAAAAAeeg/WKSGM2TADLM/s1600/pager+old.png",
+                     folder=True))
     except:
         pass
 
@@ -164,25 +162,25 @@ def episodios(item):
         patron = '((?:.*?<a href="[^"]+" class="external" rel="nofollow" target="_blank">[^<]+</a>)+)'
         matches = re.compile(patron).findall(html)
         for data in matches:
-            ## Extrae las entradas
+            # Extrae las entradas
             scrapedtitle = data.split('<a ')[0]
             scrapedtitle = re.sub(r'<[^>]*>', '', scrapedtitle).strip()
             if scrapedtitle != 'Categorie':
                 itemlist.append(
-                    Item(channel=__channel__,
-                         action="findvid_serie",
-                         title="[COLOR azure]%s[/COLOR]" % (scrapedtitle + " (" + lang_title + ")"),
-                         url=item.url,
-                         thumbnail=item.thumbnail,
-                         extra=data,
-                         fulltitle=item.fulltitle,
-                         show=item.show))
+                        Item(channel=__channel__,
+                             action="findvid_serie",
+                             title="[COLOR azure]%s[/COLOR]" % (scrapedtitle + " (" + lang_title + ")"),
+                             url=item.url,
+                             thumbnail=item.thumbnail,
+                             extra=data,
+                             fulltitle=item.fulltitle,
+                             show=item.show))
 
     logger.info("[filmsenzalimiti.py] episodios")
 
     itemlist = []
 
-    ## Descarga la página
+    # Descarga la página
     data = scrapertools.cache_page(item.url)
     data = scrapertools.decodeHtmlentities(data)
 
@@ -212,19 +210,19 @@ def episodios(item):
 
     if config.get_library_support() and len(itemlist) != 0:
         itemlist.append(
-            Item(channel=__channel__,
-                 title=item.title,
-                 url=item.url,
-                 action="add_serie_to_library",
-                 extra="episodios",
-                 show=item.show))
+                Item(channel=__channel__,
+                     title=item.title,
+                     url=item.url,
+                     action="add_serie_to_library",
+                     extra="episodios",
+                     show=item.show))
         itemlist.append(
-            Item(channel=__channel__,
-                 title="Scarica tutti gli episodi della serie",
-                 url=item.url,
-                 action="download_all_episodes",
-                 extra="episodios",
-                 show=item.show))
+                Item(channel=__channel__,
+                     title="Scarica tutti gli episodi della serie",
+                     url=item.url,
+                     action="download_all_episodes",
+                     extra="episodios",
+                     show=item.show))
 
     return itemlist
 
@@ -232,7 +230,7 @@ def episodios(item):
 def findvid_serie(item):
     logger.info("[filmsenzalimiti.py] findvideos")
 
-    ## Descarga la página
+    # Descarga la página
     data = item.extra
 
     itemlist = servertools.find_video_items(data=data)
