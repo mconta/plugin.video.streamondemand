@@ -225,7 +225,7 @@ def genere(item):
     logger.info("[filmsubitotv.py] genere")
     itemlist = []
 
-    data = scrapertools.cachePage(item.url)
+    data = scrapertools.cache_page(item.url)
 
     patron = '<a href="#" class="dropdown-toggle wide-nav-link" data-toggle="dropdown">Genere <b class="caret"></b></a>(.*?)<li><a href="%sfilm-2015-streaming.html" class="wide-nav-link">Novità</a></li>' % host
     data = scrapertools.find_single_match(data, patron)
@@ -249,7 +249,7 @@ def serie80(item):
     logger.info("[filmsubitotv.py] genere")
     itemlist = []
 
-    data = scrapertools.cachePage(item.url)
+    data = scrapertools.cache_page(item.url)
 
     patron = '<a href="#" class="dropdown-toggle wide-nav-link" data-toggle="dropdown">Serie anni 80<b class="caret"></b></a>(.*?)<li class="dropdown">'
     data = scrapertools.find_single_match(data, patron)
@@ -273,7 +273,7 @@ def anno(item):
     logger.info("[filmsubitotv.py] genere")
     itemlist = []
 
-    data = scrapertools.cachePage(item.url)
+    data = scrapertools.cache_page(item.url)
 
     patron = '<a href="#" class="dropdown-toggle wide-nav-link" data-toggle="dropdown">Anno<b class="caret"></b></a>(.*?)<li class="dropdown">'
     data = scrapertools.find_single_match(data, patron)
@@ -297,7 +297,7 @@ def cartoni80(item):
     logger.info("[filmsubitotv.py] genere")
     itemlist = []
 
-    data = scrapertools.cachePage(item.url)
+    data = scrapertools.cache_page(item.url)
 
     patron = '<a href="#" class="dropdown-toggle wide-nav-link" data-toggle="dropdown">Cartoni anni 80<b class="caret"></b></a>(.*?)<li class="dropdown">'
     data = scrapertools.find_single_match(data, patron)
@@ -316,7 +316,7 @@ def documentari(item):
     logger.info("[filmsubitotv.py] genere")
     itemlist = []
 
-    data = scrapertools.cachePage(item.url)
+    data = scrapertools.cache_page(item.url)
 
     patron = '<a href="#" class="dropdown-toggle wide-nav-link" data-toggle="dropdown">Documentari<b class="caret"></b></a>(.*?)<li class="dropdown">'
     data = scrapertools.find_single_match(data, patron)
