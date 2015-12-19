@@ -4,12 +4,12 @@
 # Canal para italiafilm
 # http://blog.tvalacarta.info/plugin-xbmc/streamondemand.
 # ------------------------------------------------------------
-import urlparse
-import sys
 import re
+import sys
+import urlparse
 
-from core import logger
 from core import config
+from core import logger
 from core import scrapertools
 from core.item import Item
 from servers import servertools
@@ -86,15 +86,15 @@ def categorias(item):
         scrapedplot = ""
         scrapedthumbnail = ""
         if DEBUG: logger.info(
-            "title=[" + scrapedtitle + "], url=[" + scrapedurl + "], thumbnail=[" + scrapedthumbnail + "]")
+                "title=[" + scrapedtitle + "], url=[" + scrapedurl + "], thumbnail=[" + scrapedthumbnail + "]")
         itemlist.append(
-            Item(channel=__channel__,
-                 action='peliculas',
-                 title="[COLOR azure]" + scrapedtitle + "[/COLOR]",
-                 url=scrapedurl,
-                 thumbnail=scrapedthumbnail,
-                 plot=scrapedplot,
-                 folder=True))
+                Item(channel=__channel__,
+                     action='peliculas',
+                     title="[COLOR azure]" + scrapedtitle + "[/COLOR]",
+                     url=scrapedurl,
+                     thumbnail=scrapedthumbnail,
+                     plot=scrapedplot,
+                     folder=True))
 
     return itemlist
 
@@ -123,8 +123,8 @@ def peliculas(item):
 
     for match in matches:
         title = scrapertools.find_single_match(match, '<h3[^<]+<a href="[^"]+"[^<]+>([^<]+)</a>')
-        title = scrapertools.htmlclean(title).strip()
-        title = scrapertools.decodeHtmlentities(title.replace("Streaming", ""))
+        title = title.replace("Streaming", "")
+        title = scrapertools.decodeHtmlentities(title).strip()
         url = scrapertools.find_single_match(match, '<h3[^<]+<a href="([^"]+)"')
         html = scrapertools.cache_page(url)
         start = html.find("<p><br/>")
@@ -137,29 +137,29 @@ def peliculas(item):
         if (DEBUG): logger.info("title=[" + title + "], url=[" + url + "], thumbnail=[" + thumbnail + "]")
 
         itemlist.append(
-            Item(channel=__channel__,
-                 action='episodios' if item.extra == 'serie' else 'findvideos',
-                 fulltitle=title,
-                 show=title,
-                 title="[COLOR azure]" + title + "[/COLOR]",
-                 url=url,
-                 thumbnail=thumbnail,
-                 fanart=thumbnail,
-                 plot=plot,
-                 viewmode="movie_with_plot",
-                 folder=True))
+                Item(channel=__channel__,
+                     action='episodios' if item.extra == 'serie' else 'findvideos',
+                     fulltitle=title,
+                     show=title,
+                     title="[COLOR azure]" + title + "[/COLOR]",
+                     url=url,
+                     thumbnail=thumbnail,
+                     fanart=thumbnail,
+                     plot=plot,
+                     viewmode="movie_with_plot",
+                     folder=True))
 
     # Siguiente
     try:
         pagina_siguiente = scrapertools.get_match(data, '<a class="next page-numbers" href="([^"]+)"')
         itemlist.append(
-            Item(channel=__channel__,
-                 action="peliculas",
-                 extra=item.extra,
-                 title="[COLOR orange]Successivo >> [/COLOR]",
-                 url=pagina_siguiente,
-                 thumbnail="http://2.bp.blogspot.com/-fE9tzwmjaeQ/UcM2apxDtjI/AAAAAAAAeeg/WKSGM2TADLM/s1600/pager+old.png",
-                 folder=True))
+                Item(channel=__channel__,
+                     action="peliculas",
+                     extra=item.extra,
+                     title="[COLOR orange]Successivo >> [/COLOR]",
+                     url=pagina_siguiente,
+                     thumbnail="http://2.bp.blogspot.com/-fE9tzwmjaeQ/UcM2apxDtjI/AAAAAAAAeeg/WKSGM2TADLM/s1600/pager+old.png",
+                     folder=True))
     except:
         pass
 
@@ -169,7 +169,7 @@ def peliculas(item):
 def episodios(item):
     def load_episodios(html, item, itemlist, lang_title):
         for data in scrapertools.decodeHtmlentities(html).splitlines():
-            ## Extrae las entradas
+            # Extrae las entradas
             end = data.find('<a ')
             if end > 0:
                 scrapedtitle = re.sub(r'<[^>]*>', '', data[:end]).strip()
@@ -183,20 +183,20 @@ def episodios(item):
                 title = scrapedtitle
             if title != '':
                 itemlist.append(
-                    Item(channel=__channel__,
-                         action="findvid_serie",
-                         title=title + " (" + lang_title + ")",
-                         url=item.url,
-                         thumbnail=item.thumbnail,
-                         extra=data,
-                         fulltitle=item.fulltitle,
-                         show=item.show))
+                        Item(channel=__channel__,
+                             action="findvid_serie",
+                             title=title + " (" + lang_title + ")",
+                             url=item.url,
+                             thumbnail=item.thumbnail,
+                             extra=data,
+                             fulltitle=item.fulltitle,
+                             show=item.show))
 
     logger.info("[italiafilm.py] episodios")
 
     itemlist = []
 
-    ## Descarga la p√°gina
+    # Descarga la p·gina
     data = scrapertools.cache_page(item.url)
 
     start = data.find('id="pd_rating_holder')
@@ -233,19 +233,19 @@ def episodios(item):
 
     if config.get_library_support() and len(itemlist) != 0:
         itemlist.append(
-            Item(channel=__channel__,
-                 title=item.title,
-                 url=item.url,
-                 action="add_serie_to_library",
-                 extra="episodios",
-                 show=item.show))
+                Item(channel=__channel__,
+                     title=item.title,
+                     url=item.url,
+                     action="add_serie_to_library",
+                     extra="episodios",
+                     show=item.show))
         itemlist.append(
-            Item(channel=item.channel,
-                 title="Scarica tutti gli episodi della serie",
-                 url=item.url,
-                 action="download_all_episodes",
-                 extra="episodios",
-                 show=item.show))
+                Item(channel=item.channel,
+                     title="Scarica tutti gli episodi della serie",
+                     url=item.url,
+                     action="download_all_episodes",
+                     extra="episodios",
+                     show=item.show))
 
     return itemlist
 
@@ -253,7 +253,7 @@ def episodios(item):
 def findvid_serie(item):
     logger.info("[italiafilm.py] findvideos")
 
-    ## Descarga la p√°gina
+    # Descarga la p·gina
     data = item.extra
 
     itemlist = servertools.find_video_items(data=data)
