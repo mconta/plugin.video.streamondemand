@@ -4,14 +4,10 @@
 # Canale per I Cavalieri Dello Zodiaco
 # http://blog.tvalacarta.info/plugin-xbmc/streamondemand.
 # ------------------------------------------------------------
-import urllib2
 import re
-import sys
-import time
-import binascii
 
-from core import logger
 from core import config
+from core import logger
 from core import scrapertools
 from core.item import Item
 from servers import servertools
@@ -22,37 +18,34 @@ __type__ = "generic"
 __title__ = "Hokuto no Ken"
 __language__ = "IT"
 
-headers = [
-    ['User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'],
-    ['Accept-Encoding', 'gzip, deflate']
-]
-#host = "http://videopremium.tv"
 DEBUG = config.get_setting("debug")
+
 
 def isGeneric():
     return True
 
+
 def mainlist(item):
     logger.info("[hokutonoken.py] mainlist")
 
-    itemlist = [Item( channel=__channel__,
-                      title="[COLOR azure]Hokuto no Ken - Prima Serie[/COLOR]",
-                      action="episodi",
-                      url="http://pastebin.com/BUqD13hb",
-                      thumbnail="http://i.imgur.com/MGkqu7c.jpg",
-                      fanart="http://fullhdwp.com/images/wallpapers/Group-fist-of-the-north-star-wallpaper-.jpg"),
-
-                Item( channel=__channel__,
-                      title="[COLOR azure]Hokuto no Ken - Seconda Serie[/COLOR]",
-                      action="episodi",
-                      url="http://pastebin.com/mHXQRBxZ",
-                      thumbnail="http://i159.photobucket.com/albums/t123/Janthem/hnk2.jpg",
-                      fanart="http://fullhdwp.com/images/wallpapers/Group-fist-of-the-north-star-wallpaper-.jpg")]
+    itemlist = [Item(channel=__channel__,
+                     title="[COLOR azure]Hokuto no Ken - Prima Serie[/COLOR]",
+                     action="episodi",
+                     url="http://pastebin.com/BUqD13hb",
+                     thumbnail="http://i.imgur.com/MGkqu7c.jpg",
+                     fanart="http://fullhdwp.com/images/wallpapers/Group-fist-of-the-north-star-wallpaper-.jpg"),
+                Item(channel=__channel__,
+                     title="[COLOR azure]Hokuto no Ken - Seconda Serie[/COLOR]",
+                     action="episodi",
+                     url="http://pastebin.com/mHXQRBxZ",
+                     thumbnail="http://i159.photobucket.com/albums/t123/Janthem/hnk2.jpg",
+                     fanart="http://fullhdwp.com/images/wallpapers/Group-fist-of-the-north-star-wallpaper-.jpg")]
 
     return itemlist
 
-def episodi( item ):
-    logger.info( "hokutonoken.py episodi" )
+
+def episodi(item):
+    logger.info("hokutonoken.py episodi")
 
     itemlist = []
 
@@ -65,11 +58,11 @@ def episodi( item ):
     for scrapedtitle, scrapedurl in matches:
         scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle)
         itemlist.append(
-            Item(channel=__channel__,
-                 action="findvid",
-                 title=scrapedtitle,
-                 thumbnail=item.thumbnail,
-                 url=scrapedurl))
+                Item(channel=__channel__,
+                     action="findvid",
+                     title=scrapedtitle,
+                     thumbnail=item.thumbnail,
+                     url=scrapedurl))
 
     return itemlist
 
