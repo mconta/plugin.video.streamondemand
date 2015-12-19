@@ -4,11 +4,11 @@
 # Canal para streamingpopcorn
 # http://blog.tvalacarta.info/plugin-xbmc/streamondemand.
 # ------------------------------------------------------------
-import urlparse
 import re
+import urlparse
 
-from core import logger
 from core import config
+from core import logger
 from core import scrapertools
 from core.item import Item
 from servers import servertools
@@ -22,7 +22,6 @@ __language__ = "IT"
 DEBUG = config.get_setting("debug")
 
 headers = [
-    ['Host', 'streamingpopcorn.com'],
     ['User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'],
     ['Accept-Encoding', 'gzip, deflate']
 ]
@@ -53,11 +52,12 @@ def peliculas(item):
     data = scrapertools.cache_page(item.url, headers=headers)
 
     # Extrae las entradas (carpetas)
-    patron = '<h4 class="widgettitle"><a href="(.*?)">\s*(.*?)</a>'
+    patron = '<h4 class="widgettitle"><a href="([^"]+)">\s*(.*?)</a>'
     matches = re.compile(patron, re.DOTALL).findall(data)
 
     for scrapedurl, scrapedtitle in matches:
-        html = scrapertools.cache_page(urlparse.urljoin(host, scrapedurl), headers=headers)
+        scrapedurl = urlparse.urljoin(host, scrapedurl)
+        html = scrapertools.cache_page(scrapedurl, headers=headers)
         start = html.find("</figure>")
         end = html.find("</div>", start)
         scrapedplot = html[start:end]
@@ -67,17 +67,17 @@ def peliculas(item):
         scrapedtitle = scrapedtitle.strip()
         scrapedthumbnail = ""
         if (DEBUG): logger.info(
-            "title=[" + scrapedtitle + "], url=[" + scrapedurl + "], thumbnail=[" + scrapedthumbnail + "]")
+                "title=[" + scrapedtitle + "], url=[" + scrapedurl + "], thumbnail=[" + scrapedthumbnail + "]")
         itemlist.append(
-            Item(channel=__channel__,
-                 action="play",
-                 fulltitle=scrapedtitle,
-                 show=scrapedtitle,
-                 title="[COLOR azure]" + scrapedtitle + "[/COLOR]",
-                 url=host + scrapedurl,
-                 thumbnail=scrapedthumbnail,
-                 plot=scrapedplot,
-                 folder=True))
+                Item(channel=__channel__,
+                     action="play",
+                     fulltitle=scrapedtitle,
+                     show=scrapedtitle,
+                     title="[COLOR azure]" + scrapedtitle + "[/COLOR]",
+                     url=scrapedurl,
+                     thumbnail=scrapedthumbnail,
+                     plot=scrapedplot,
+                     folder=True))
 
     # Extrae el paginador
     patron = '<a href="([^"]+)">Pagina successiva</a>'
@@ -86,12 +86,12 @@ def peliculas(item):
     if match != '':
         scrapedurl = urlparse.urljoin(host, match)
         itemlist.append(
-            Item(channel=__channel__,
-                 action="peliculas",
-                 title="[COLOR orange]Successivo>>[/COLOR]",
-                 url=scrapedurl,
-                 thumbnail="http://2.bp.blogspot.com/-fE9tzwmjaeQ/UcM2apxDtjI/AAAAAAAAeeg/WKSGM2TADLM/s1600/pager+old.png",
-                 folder=True))
+                Item(channel=__channel__,
+                     action="peliculas",
+                     title="[COLOR orange]Successivo>>[/COLOR]",
+                     url=scrapedurl,
+                     thumbnail="http://2.bp.blogspot.com/-fE9tzwmjaeQ/UcM2apxDtjI/AAAAAAAAeeg/WKSGM2TADLM/s1600/pager+old.png",
+                     folder=True))
 
     return itemlist
 
