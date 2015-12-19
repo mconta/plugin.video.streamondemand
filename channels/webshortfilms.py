@@ -5,7 +5,6 @@
 # http://blog.tvalacarta.info/plugin-xbmc/streamondemand.
 # ------------------------------------------------------------
 import re
-import urllib2
 import urlparse
 
 from core import config
@@ -21,6 +20,8 @@ __language__ = "IT"
 
 DEBUG = config.get_setting("debug")
 
+host = "https://webshortfilms.wordpress.com"
+
 
 def isGeneric():
     return True
@@ -28,13 +29,11 @@ def isGeneric():
 
 def mainlist(item):
     logger.info("streamondemand.webshortfilms mainlist")
-    itemlist = []
-    itemlist.append(
-            Item(channel=__channel__,
-                 title="[COLOR azure]Best Streaming Shortfilms[/COLOR]",
-                 action="peliculas",
-                 url="https://webshortfilms.wordpress.com/",
-                 thumbnail="http://orig03.deviantart.net/6889/f/2014/079/7/b/movies_and_popcorn_folder_icon_by_matheusgrilo-d7ay4tw.png"))
+    itemlist = [Item(channel=__channel__,
+                     title="[COLOR azure]Best Streaming Shortfilms[/COLOR]",
+                     action="peliculas",
+                     url=host,
+                     thumbnail="http://orig03.deviantart.net/6889/f/2014/079/7/b/movies_and_popcorn_folder_icon_by_matheusgrilo-d7ay4tw.png")]
 
     return itemlist
 
