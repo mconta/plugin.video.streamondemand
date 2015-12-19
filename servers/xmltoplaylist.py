@@ -33,7 +33,7 @@ def MakePlaylistFromXML(xmlurl,title="default"):
         nombrefichero = FULL_FILENAME_PATH_XML
     else:
         nombrefichero = os.path.join( config.get_setting("downloadpath"),title + ".pls")
-    xmldata = scrapertools.cachePage(xmlurl)
+    xmldata = scrapertools.cache_page(xmlurl)
     patron = '<title>([^<]+)</title>.*?<location>([^<]+)</location>'
     matches = re.compile(patron,re.DOTALL).findall(xmldata)
     if len(matches)>0:

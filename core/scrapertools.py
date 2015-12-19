@@ -38,10 +38,7 @@ CACHE_PATH = config.get_setting("cache.dir")
 DEBUG = True
 
 def cache_page(url,post=None,headers=[['User-Agent', 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; es-ES; rv:1.9.2.12) Gecko/20101026 Firefox/3.6.12']],modo_cache=CACHE_ACTIVA, timeout=socket.getdefaulttimeout()):
-    return cachePage(url,post,headers,modo_cache,timeout=timeout)
-
-def cachePage(url,post=None,headers=[['User-Agent', 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; es-ES; rv:1.9.2.12) Gecko/20101026 Firefox/3.6.12']],modoCache=CACHE_ACTIVA, timeout=socket.getdefaulttimeout()):
-    logger.info("streamondemand.core.scrapertools cachePage url="+url)
+    logger.info("streamondemand.core.scrapertools cache_page url="+url)
 
     # Cache desactivada
     modoCache = CACHE_NUNCA #config.get_setting("cache.mode")

@@ -349,9 +349,9 @@ def play_video(channel="",server="",url="",category="",title="", thumbnail="",pl
         from core import scrapertools
         
         if subtitle!="":
-            data = scrapertools.cachePage(config.get_setting("jdownloader")+"/action/add/links/grabber0/start1/web="+url+ " " +thumbnail + " " + subtitle)
+            data = scrapertools.cache_page(config.get_setting("jdownloader")+"/action/add/links/grabber0/start1/web="+url+ " " +thumbnail + " " + subtitle)
         else:
-            data = scrapertools.cachePage(config.get_setting("jdownloader")+"/action/add/links/grabber0/start1/web="+url+ " " +thumbnail)
+            data = scrapertools.cache_page(config.get_setting("jdownloader")+"/action/add/links/grabber0/start1/web="+url+ " " +thumbnail)
 
         return
 

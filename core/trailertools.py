@@ -98,7 +98,7 @@ def GetFrom_Trailersdepeliculas(titulovideo):
             if titulo in (string.lower(LimpiarTitulo(match[1]))):
                 urlpage = urlparse.urljoin(url1,match[0])
                 thumbnail = urlparse.urljoin(url1,match[2])
-                data     = scrapertools.cachePage(urlpage)
+                data     = scrapertools.cache_page(urlpage)
                 logger.info("Trailer elegido :  "+match[1])
                 matches2 = re.compile(patronvideos,re.DOTALL).findall(data)
                 for match2 in matches2:
@@ -128,7 +128,7 @@ def GetFromYoutubePlaylist(titulovideo):
         listyoutubeurl += titulovideo.replace(" ","+")+i+"&uni=1"
         listyoutubeurl = listyoutubeurl.replace(" ","")
         logger.info("Youtube url parametros de busqueda  :"+listyoutubeurl)
-        data = scrapertools.cachePage(listyoutubeurl)
+        data = scrapertools.cache_page(listyoutubeurl)
 
         thumbnail=""
         patronyoutube  = '<span><a class="hLink" title="(.*?)" href="(.*?)">.*?'

@@ -45,7 +45,7 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
     headers.append(["Referer",page_url])
     code = scrapertools.get_match(page_url,"http://www.modovideo.com/video\?v\=([a-zA-Z0-9]+)")
     #http://www.modovideo.com/frame.php?v=teml3hpu3141n0lam2a04iufcsz7q7pt
-    data = scrapertools.cachePage("http://www.modovideo.com/frame.php?v="+code , headers=headers)
+    data = scrapertools.cache_page("http://www.modovideo.com/frame.php?v="+code , headers=headers)
 
     # Extrae la URL real
     #<video id='player' src=http://s07.modovideo.com:80/vid/8734f19b6ec156e285a0e526fdc79566/508ea846/flv/0c4lymiwtfe2m9tdr2fp8dzxmbe3csv3.mp4 style=' width: 100%; height: 75%'  type='video/mp4' poster='' controls='controls' ></video></div>

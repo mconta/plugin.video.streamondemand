@@ -24,7 +24,7 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
     else:
         url = 'http://www.flashvideodownloader.org/download.php?u=http://www.veoh.com/watch/'+page_url
     logger.info("[veoh.py] url="+url)
-    data = scrapertools.cachePage(url)
+    data = scrapertools.cache_page(url)
     
     # Extrae el vídeo
     patronvideos  = '<a href="(http://content.veoh.com.*?)"'

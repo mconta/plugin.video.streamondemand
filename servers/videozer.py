@@ -32,8 +32,8 @@ def get_video_url( page_url , premium = False , user="" , password="", video_pas
 
     # Descarga el json con los detalles del vídeo
     controluri = "http://videozer.com/player_control/settings.php?v=%s&fv=v1.1.03"  %code
-    datajson = scrapertools.cachePage(controluri)
-    logger.info("response="+datajson);
+    datajson = scrapertools.cache_page(controluri)
+    logger.info("response="+datajson)
 
     # Convierte el json en un diccionario
     datajson = datajson.replace("false","False").replace("true","True")
