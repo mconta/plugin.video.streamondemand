@@ -71,23 +71,22 @@ def categorias(item):
     bloque = scrapertools.get_match(data, '<nav>(.*?)</nav>')
 
     # The categories are the options for the combo
-    patron = '<a href="(.*?)" class="color-code" title="(.*?)">'
+    patron = '<a href="([^"]+)" class="color-code" title="([^"]+)">'
     matches = re.compile(patron, re.DOTALL).findall(bloque)
 
-    for url, titulo in matches:
-        scrapedtitle = titulo
-        scrapedurl = urlparse.urljoin(item.url, url)
+    for scrapedurl, scrapedtitle in matches:
+        scrapedurl = urlparse.urljoin(item.url, scrapedurl)
         scrapedthumbnail = ""
         scrapedplot = ""
         if (DEBUG): logger.info(
-            "title=[" + scrapedtitle + "], url=[" + scrapedurl + "], thumbnail=[" + scrapedthumbnail + "]")
+                "title=[" + scrapedtitle + "], url=[" + scrapedurl + "], thumbnail=[" + scrapedthumbnail + "]")
         itemlist.append(
-            Item(channel=__channel__,
-                 action="peliculas",
-                 title="[COLOR azure]" + scrapedtitle + "[/COLOR]",
-                 url=scrapedurl,
-                 thumbnail=scrapedthumbnail,
-                 plot=scrapedplot))
+                Item(channel=__channel__,
+                     action="peliculas",
+                     title="[COLOR azure]" + scrapedtitle + "[/COLOR]",
+                     url=scrapedurl,
+                     thumbnail=scrapedthumbnail,
+                     plot=scrapedplot))
 
     return itemlist
 
@@ -113,7 +112,7 @@ def peliculas(item):
     data = scrapertools.cache_page(item.url)
 
     # Extrae las entradas (carpetas)
-    patron = '<div class="img"><img[^=]+=[^=]+=[^=]+="(.*?)"[^>]+>[^>]+>\s*[^>]+>[^>]+>\s*[^>]+>\s*<a href="(.*?)">(.*?)</a>'
+    patron = '<div class="img"><img[^=]+=[^=]+=[^=]+="([^"]+)"[^>]+>[^>]+>\s*[^>]+>[^>]+>\s*[^>]+>\s*<a href="([^"]+)">(.*?)</a>'
     matches = re.compile(patron, re.DOTALL).findall(data)
 
     for scrapedthumbnail, scrapedurl, scrapedtitle in matches:
@@ -124,31 +123,31 @@ def peliculas(item):
         scrapedplot = re.sub(r'<[^>]*>', '', scrapedplot)
         scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle)
         if (DEBUG): logger.info(
-            "title=[" + scrapedtitle + "], url=[" + scrapedurl + "], thumbnail=[" + scrapedthumbnail + "]")
+                "title=[" + scrapedtitle + "], url=[" + scrapedurl + "], thumbnail=[" + scrapedthumbnail + "]")
         itemlist.append(
-            Item(channel=__channel__,
-                 action='episodios' if item.extra == 'serie' else 'findvideos',
-                 fulltitle=scrapedtitle,
-                 show=scrapedtitle,
-                 title=scrapedtitle,
-                 url=scrapedurl,
-                 thumbnail=scrapedthumbnail,
-                 plot=scrapedplot,
-                 folder=True))
+                Item(channel=__channel__,
+                     action='episodios' if item.extra == 'serie' else 'findvideos',
+                     fulltitle=scrapedtitle,
+                     show=scrapedtitle,
+                     title=scrapedtitle,
+                     url=scrapedurl,
+                     thumbnail=scrapedthumbnail,
+                     plot=scrapedplot,
+                     folder=True))
 
     # Extrae el paginador
-    patronvideos = '<div id="older" class="alignright"><a href="(.*?)".*?>>>> Post vecchi >>>'
+    patronvideos = '<div id="older" class="alignright"><a href="([^"]+)".*?>>>> Post vecchi >>>'
     matches = re.compile(patronvideos, re.DOTALL).findall(data)
 
     if len(matches) > 0:
         scrapedurl = urlparse.urljoin(item.url, matches[0])
         itemlist.append(
-            Item(channel=__channel__,
-                 extra=item.extra,
-                 action="peliculas",
-                 title="[COLOR orange]Avanti >>[/COLOR]",
-                 url=scrapedurl,
-                 folder=True))
+                Item(channel=__channel__,
+                     extra=item.extra,
+                     action="peliculas",
+                     title="[COLOR orange]Avanti >>[/COLOR]",
+                     url=scrapedurl,
+                     folder=True))
 
     return itemlist
 
@@ -171,14 +170,14 @@ def episodios(item):
                 title = scrapedtitle
             if title != '':
                 itemlist.append(
-                    Item(channel=__channel__,
-                         action="findvid_serie",
-                         title=title + " (" + lang_title + ")",
-                         url=item.url,
-                         thumbnail=item.thumbnail,
-                         extra=data,
-                         fulltitle=item.fulltitle,
-                         show=item.show))
+                        Item(channel=__channel__,
+                             action="findvid_serie",
+                             title=title + " (" + lang_title + ")",
+                             url=item.url,
+                             thumbnail=item.thumbnail,
+                             extra=data,
+                             fulltitle=item.fulltitle,
+                             show=item.show))
 
     logger.info("streamondemand.liberoita episodios")
 
@@ -213,19 +212,19 @@ def episodios(item):
 
     if config.get_library_support() and len(itemlist) != 0:
         itemlist.append(
-            Item(channel=__channel__,
-                 title=item.title,
-                 url=item.url,
-                 action="add_serie_to_library",
-                 extra="episodios",
-                 show=item.show))
+                Item(channel=__channel__,
+                     title=item.title,
+                     url=item.url,
+                     action="add_serie_to_library",
+                     extra="episodios",
+                     show=item.show))
         itemlist.append(
-            Item(channel=item.channel,
-                 title="Scarica tutti gli episodi della serie",
-                 url=item.url,
-                 action="download_all_episodes",
-                 extra="episodios",
-                 show=item.show))
+                Item(channel=item.channel,
+                     title="Scarica tutti gli episodi della serie",
+                     url=item.url,
+                     action="download_all_episodes",
+                     extra="episodios",
+                     show=item.show))
 
     return itemlist
 
