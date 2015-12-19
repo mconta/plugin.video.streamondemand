@@ -6,7 +6,6 @@
 # ------------------------------------------------------------
 import re
 import sys
-import time
 import urllib2
 
 from core import config
@@ -62,7 +61,7 @@ def search(item, texto):
     try:
         return fichas(item)
 
-    ## Se captura la excepción, para no interrumpir al buscador global si un canal falla.
+    # Se captura la excepción, para no interrumpir al buscador global si un canal falla.
     except:
         import sys
         for line in sys.exc_info():
@@ -76,16 +75,16 @@ def list_a_z(item):
 
     data = anti_cloudflare(item.url)
 
-    patron = '<li><a href="(.*?)" title="(.*?)">.*?</a></li>'
+    patron = '<li><a href="([^"]+)" title="([^"]+)">.*?</a></li>'
 
     matches = re.compile(patron, re.DOTALL).findall(data)
 
     for scrapedurl, scrapedtitle in matches:
         itemlist.append(
-            Item(channel=__channel__,
-                 action="episodios",
-                 title=scrapedtitle,
-                 url=scrapedurl))
+                Item(channel=__channel__,
+                     action="episodios",
+                     title=scrapedtitle,
+                     url=scrapedurl))
 
     return itemlist
 
@@ -96,7 +95,7 @@ def fichas(item):
 
     data = anti_cloudflare(item.url)
 
-    ## ------------------------------------------------
+    # ------------------------------------------------
     cookies = ""
     matches = re.compile('(.vediserie.com.*?)\n', re.DOTALL).findall(config.get_cookie_data())
     for cookie in matches:
@@ -106,11 +105,11 @@ def fichas(item):
     headers.append(['Cookie', cookies[:-1]])
     import urllib
     _headers = urllib.urlencode(dict(headers))
-    ## ------------------------------------------------
+    # ------------------------------------------------
 
     patron = '<h2>[^>]+>\s*'
-    patron += '<img[^=]+=[^=]+=[^=]+="(.*?)"[^>]+>\s*'
-    patron += '<A HREF=(.*?)>[^>]+>[^>]+>[^>]+>\s*'
+    patron += '<img[^=]+=[^=]+=[^=]+="([^"]+)"[^>]+>\s*'
+    patron += '<A HREF=([^>]+)>[^>]+>[^>]+>[^>]+>\s*'
     patron += '[^>]+>[^>]+>(.*?)</[^>]+>[^>]+>'
 
     matches = re.compile(patron, re.DOTALL).findall(data)
@@ -121,22 +120,22 @@ def fichas(item):
         if scrapedtitle.startswith('<span class="year">'):
             scrapedtitle = scrapedtitle[19:]
         itemlist.append(
-            Item(channel=__channel__,
-                 action="episodios",
-                 title=scrapedtitle,
-                 fulltitle=scrapedtitle,
-                 url=scrapedurl.replace('"', ''),
-                 show=scrapedtitle,
-                 thumbnail=scrapedthumbnail))
+                Item(channel=__channel__,
+                     action="episodios",
+                     title=scrapedtitle,
+                     fulltitle=scrapedtitle,
+                     url=scrapedurl.replace('"', ''),
+                     show=scrapedtitle,
+                     thumbnail=scrapedthumbnail))
 
-    patron = '<a class="nextpostslink" rel="next" href="(.*?)">»</a>'
+    patron = '<a class="nextpostslink" rel="next" href="([^"]+)">»</a>'
     next_page = scrapertools.find_single_match(data, patron)
     if next_page != "":
         itemlist.append(
-            Item(channel=__channel__,
-                 action="fichas",
-                 title="[COLOR orange]Successivo>>[/COLOR]",
-                 url=next_page))
+                Item(channel=__channel__,
+                     action="fichas",
+                     title="[COLOR orange]Successivo>>[/COLOR]",
+                     url=next_page))
 
     return itemlist
 
@@ -146,7 +145,7 @@ def episodios(item):
 
     itemlist = []
 
-    ## Descarga la página
+    # Descarga la página
     data = anti_cloudflare(item.url)
 
     patron = r'<div class="list" data-stagione="([^"]+)">\s*'
@@ -161,30 +160,30 @@ def episodios(item):
         if len(episode) == 1: episode = "0" + episode
         title = season + "x" + episode
         itemlist.append(
-            Item(channel=__channel__,
-                 action="findvid_serie",
-                 title=title,
-                 url=item.url,
-                 thumbnail=item.thumbnail,
-                 extra=url,
-                 fulltitle=item.fulltitle,
-                 show=item.show))
+                Item(channel=__channel__,
+                     action="findvid_serie",
+                     title=title,
+                     url=item.url,
+                     thumbnail=item.thumbnail,
+                     extra=url,
+                     fulltitle=item.fulltitle,
+                     show=item.show))
 
     if config.get_library_support() and len(itemlist) != 0:
         itemlist.append(
-            Item(channel=__channel__,
-                 title=item.title,
-                 url=item.url,
-                 action="add_serie_to_library",
-                 extra="episodios",
-                 show=item.show))
+                Item(channel=__channel__,
+                     title=item.title,
+                     url=item.url,
+                     action="add_serie_to_library",
+                     extra="episodios",
+                     show=item.show))
         itemlist.append(
-            Item(channel=item.channel,
-                 title="Scarica tutti gli episodi della serie",
-                 url=item.url,
-                 action="download_all_episodes",
-                 extra="episodios",
-                 show=item.show))
+                Item(channel=item.channel,
+                     title="Scarica tutti gli episodi della serie",
+                     url=item.url,
+                     action="download_all_episodes",
+                     extra="episodios",
+                     show=item.show))
 
     return itemlist
 
@@ -217,6 +216,7 @@ def anti_cloudflare(url):
         resp_headers = e.headers
 
     if 'refresh' in resp_headers:
+        import time
         time.sleep(int(resp_headers['refresh'][:1]))
 
         scrapertools.get_headers_from_response(host + "/" + resp_headers['refresh'][7:], headers=headers)

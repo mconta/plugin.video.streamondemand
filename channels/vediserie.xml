@@ -6,7 +6,7 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/vediserie.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>5</version>
+    <version>6</version>
     <adult>false</adult>
     <date>26/10/2015</date>
     <changes>2nd release: Impaginazione; 3rd: rimozione dei caratteri html da titoli come per GoT; fixata visualizzazione dei titoli nella ricerca. 4th Aggiunta lista alfabetica</changes>
