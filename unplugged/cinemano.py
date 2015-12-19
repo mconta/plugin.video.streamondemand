@@ -12,6 +12,7 @@ from core import config
 from core import logger
 from core import scrapertools
 from core.item import Item
+from servers import servertools
 
 __channel__ = "cinemano"
 __category__ = "F"
@@ -23,7 +24,7 @@ DEBUG = config.get_setting("debug")
 
 host = "http://cinemano.net"
 
-xnode_url = "https://xnode.org/page/Link_Resolver?posturl="
+imninjas_url = "http://www.internetmarketingninjas.com/header-checker/?url="
 
 def isGeneric():
     return True
@@ -106,7 +107,7 @@ def peliculas(item):
             "title=[" + scrapedtitle + "], url=[" + scrapedurl + "], thumbnail=[" + scrapedthumbnail + "]")
         itemlist.append(
             Item(channel=__channel__,
-                 action="findvideos",
+                 action="play",
                  fulltitle=scrapedtitle,
                  show=scrapedtitle,
                  title="[COLOR azure]" + scrapedtitle + "[/COLOR]",
@@ -139,5 +140,27 @@ def peliculas(item):
 def HomePage(item):
     import xbmc
     xbmc.executebuiltin("ReplaceWindow(10024,plugin://plugin.video.streamondemand)")
+
+def play(item):
+    logger.info("[cinemano.py] play")
+
+    ## Sólo es necesario la url
+    if "ok.php" in item.url:
+        data = imninjas_url + item.url
+        data = scrapertools.find_single_match(data, '<a class="response-url" href="(.*?)"[^>]+>[^>]+>[^>]+>[^>]+> 200 OK</span>')
+    else:
+        data = item.url
+
+    itemlist = servertools.find_video_items(data=data)
+
+    for videoitem in itemlist:
+        videoitem.title = "".join([item.title, '[COLOR green][B]' + videoitem.title + '[/B][/COLOR]'])
+        videoitem.fulltitle = item.fulltitle
+        videoitem.show = item.show
+        videoitem.thumbnail = item.thumbnail
+        videoitem.channel = __channel__
+
+    return itemlist
+
 
 
