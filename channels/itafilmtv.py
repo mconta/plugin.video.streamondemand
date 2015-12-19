@@ -4,13 +4,13 @@
 # Canal para itafilmtv
 # http://blog.tvalacarta.info/plugin-xbmc/streamondemand.
 # ------------------------------------------------------------
-import urlparse
 import re
 import sys
+import urlparse
 
-from core import scrapertools
-from core import logger
 from core import config
+from core import logger
+from core import scrapertools
 from core.item import Item
 from servers import servertools
 
@@ -23,8 +23,6 @@ __language__ = "IT"
 host = "http://www.itafilm.tv"
 
 headers = [
-    ['Connection', 'keep-alive'],
-    ['Referer', host],
     ['User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:39.0) Gecko/20100101 Firefox/39.0'],
     ['Accept-Encoding', 'gzip, deflate']
 ]
@@ -60,7 +58,7 @@ def mainlist(item):
                 Item(channel=__channel__,
                      action="fichas",
                      title="[COLOR azure]Contenuti Erotici[/COLOR]",
-                     url="http://www.itafilm.tv/film-erotici-streaming/",
+                     url="%s/film-erotici-streaming/" % host,
                      thumbnail="http://orig08.deviantart.net/8008/f/2013/080/9/4/movies_by_musicopath-d5ysmxe.png"),
                 Item(channel=__channel__,
                      action="search",
@@ -69,7 +67,7 @@ def mainlist(item):
                 Item(channel=__channel__,
                      action="serietv",
                      title="[COLOR azure]Serie TV[/COLOR]",
-                     url=host + "/telefilm-serie-tv-streaming/",
+                     url="%s/telefilm-serie-tv-streaming/" % host,
                      thumbnail="http://xbmc-repo-ackbarr.googlecode.com/svn/trunk/dev/skin.cirrus%20extended%20v2/extras/moviegenres/New%20TV%20Shows.png"),
                 Item(channel=__channel__,
                      action="search",
@@ -80,7 +78,7 @@ def mainlist(item):
     return itemlist
 
 
-## Al llamarse "search" la función, el launcher pide un texto a buscar y lo añade como parámetro
+# Al llamarse "search" la función, el launcher pide un texto a buscar y lo añade como parámetro
 def search(item, texto):
     logger.info("[itafilmtv.py] " + item.url + " search " + texto)
 
@@ -92,7 +90,7 @@ def search(item, texto):
         else:
             return fichas(item)
 
-    ## Se captura la excepción, para no interrumpir al buscador global si un canal falla
+    # Se captura la excepción, para no interrumpir al buscador global si un canal falla
     except:
         import sys
         for line in sys.exc_info():
@@ -105,12 +103,12 @@ def fichas(item):
 
     itemlist = []
 
-    ## Descarga la página
+    # Descarga la página
     data = scrapertools.cache_page(item.url, headers=headers)
 
     action = "findvideos"
 
-    ## Extrae las datos
+    # Extrae las datos
     patron = '<div class="main-news">.*?'
     patron += '<div class="main-news-image"[^<]+'
     patron += '<a href="([^"]+)">'
@@ -123,23 +121,23 @@ def fichas(item):
         scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle)
 
         itemlist.append(
-            Item(channel=__channel__,
-                 action=action,
-                 title=scrapedtitle,
-                 url=scrapedurl,
-                 thumbnail=urlparse.urljoin(host, scrapedthumbnail),
-                 fulltitle=scrapedtitle,
-                 show=scrapedtitle))
+                Item(channel=__channel__,
+                     action=action,
+                     title=scrapedtitle,
+                     url=scrapedurl,
+                     thumbnail=urlparse.urljoin(host, scrapedthumbnail),
+                     fulltitle=scrapedtitle,
+                     show=scrapedtitle))
 
-    ## Paginación
+    # Paginación
     next_page = scrapertools.find_single_match(data, '<span>\d+</span> <a href="([^"]+)">')
     if next_page != "":
         itemlist.append(
-            Item(channel=__channel__,
-                 action="fichas",
-                 title="[COLOR orange]Successivo >>[/COLOR]",
-                 url=next_page,
-                 thumbnail="http://2.bp.blogspot.com/-fE9tzwmjaeQ/UcM2apxDtjI/AAAAAAAAeeg/WKSGM2TADLM/s1600/pager+old.png"))
+                Item(channel=__channel__,
+                     action="fichas",
+                     title="[COLOR orange]Successivo >>[/COLOR]",
+                     url=next_page,
+                     thumbnail="http://2.bp.blogspot.com/-fE9tzwmjaeQ/UcM2apxDtjI/AAAAAAAAeeg/WKSGM2TADLM/s1600/pager+old.png"))
 
     return itemlist
 
@@ -149,12 +147,12 @@ def serietv(item):
 
     itemlist = []
 
-    ## Descarga la página
+    # Descarga la página
     data = scrapertools.cache_page(item.url, headers=headers)
 
     action = "episodios"
 
-    ## Extrae las datos
+    # Extrae las datos
     patron = '<div class="main-news">.*?'
     patron += '<div class="main-news-image"[^<]+'
     patron += '<a href="([^"]+)">'
@@ -167,22 +165,22 @@ def serietv(item):
         scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle)
 
         itemlist.append(
-            Item(channel=__channel__,
-                 action=action,
-                 title=scrapedtitle,
-                 url=scrapedurl,
-                 thumbnail=urlparse.urljoin(host, scrapedthumbnail),
-                 fulltitle=scrapedtitle,
-                 show=scrapedtitle))
+                Item(channel=__channel__,
+                     action=action,
+                     title=scrapedtitle,
+                     url=scrapedurl,
+                     thumbnail=urlparse.urljoin(host, scrapedthumbnail),
+                     fulltitle=scrapedtitle,
+                     show=scrapedtitle))
 
-    ## Paginación
+    # Paginación
     next_page = scrapertools.find_single_match(data, '<span>\d+</span> <a href="([^"]+)">')
     if next_page != "":
         itemlist.append(
-            Item(channel=__channel__,
-                 action="serietv",
-                 title="[COLOR orange]Successivo >>[/COLOR]",
-                 url=next_page))
+                Item(channel=__channel__,
+                     action="serietv",
+                     title="[COLOR orange]Successivo >>[/COLOR]",
+                     url=next_page))
 
     return itemlist
 
@@ -191,23 +189,21 @@ def genere(item):
     logger.info("[itafilmtv.py] genere")
     itemlist = []
 
-    data = scrapertools.cachePage(item.url, headers=headers)
-    logger.info("data=" + data)
+    data = scrapertools.cache_page(item.url, headers=headers)
 
-    data = scrapertools.find_single_match(data, '<div class="menu2">(.*?)<div class="left-wrap">')
-    logger.info("data=" + data)
+    patron = '<div class="menu2">(.*?)<div class="left-wrap">'
+    data = scrapertools.find_single_match(data, patron)
 
-    patron = '<a href="(.*?)">(.*?)</a>'
+    patron = '<a href="([^"]+)">(.*?)</a>'
     matches = re.compile(patron, re.DOTALL).findall(data)
-    scrapertools.printMatches(matches)
 
     for scrapedurl, scrapedtitle in matches:
         itemlist.append(
-            Item(channel=__channel__,
-                 action="fichas",
-                 title="[COLOR azure]" + scrapedtitle + "[/COLOR]",
-                 url=host + scrapedurl,
-                 folder=True))
+                Item(channel=__channel__,
+                     action="fichas",
+                     title="[COLOR azure]" + scrapedtitle + "[/COLOR]",
+                     url=urlparse.urljoin(host, scrapedurl),
+                     folder=True))
 
     return itemlist
 
@@ -216,23 +212,21 @@ def nazione(item):
     logger.info("[itafilmtv.py] genere")
     itemlist = []
 
-    data = scrapertools.cachePage(item.url, headers=headers)
-    logger.info("data=" + data)
+    data = scrapertools.cache_page(item.url, headers=headers)
 
-    data = scrapertools.find_single_match(data, '<div class="menu-block-content">(.*?)<div style="clear: both;"></div>')
-    logger.info("data=" + data)
+    patron = '<div class="menu-block-content">(.*?)<div style="clear: both;"></div>'
+    data = scrapertools.find_single_match(data, patron)
 
-    patron = '<a href="(.*?)">(.*?)</a>'
+    patron = '<a href="([^"]+)">(.*?)</a>'
     matches = re.compile(patron, re.DOTALL).findall(data)
-    scrapertools.printMatches(matches)
 
     for scrapedurl, scrapedtitle in matches:
         itemlist.append(
-            Item(channel=__channel__,
-                 action="fichas",
-                 title="[COLOR azure]" + scrapedtitle + "[/COLOR]",
-                 url=host + scrapedurl,
-                 folder=True))
+                Item(channel=__channel__,
+                     action="fichas",
+                     title="[COLOR azure]" + scrapedtitle + "[/COLOR]",
+                     url=urlparse.urljoin(host, scrapedurl),
+                     folder=True))
 
     return itemlist
 
@@ -241,23 +235,21 @@ def anno(item):
     logger.info("[itafilmtv.py] genere")
     itemlist = []
 
-    data = scrapertools.cachePage(item.url, headers=headers)
-    logger.info("data=" + data)
+    data = scrapertools.cache_page(item.url, headers=headers)
 
     data = scrapertools.find_single_match(data, '<div class="menu-col fixcol2">(.*?)<div style="clear: both;"></div>')
-    logger.info("data=" + data)
 
-    patron = '<a href="(.*?)">(.*?)</a>'
+    patron = '<a href="([^"]+)">(.*?)</a>'
     matches = re.compile(patron, re.DOTALL).findall(data)
     scrapertools.printMatches(matches)
 
     for scrapedurl, scrapedtitle in matches:
         itemlist.append(
-            Item(channel=__channel__,
-                 action="fichas",
-                 title="[COLOR azure]" + scrapedtitle + "[/COLOR]",
-                 url=host + scrapedurl,
-                 folder=True))
+                Item(channel=__channel__,
+                     action="fichas",
+                     title="[COLOR azure]" + scrapedtitle + "[/COLOR]",
+                     url=urlparse.urljoin(host, scrapedurl),
+                     folder=True))
 
     return itemlist
 
@@ -267,20 +259,21 @@ def episodios(item):
 
     itemlist = []
 
-    ## Descarga la página
+    # Descarga la página
     data = scrapertools.cache_page(item.url, headers=headers)
 
-    plot = scrapertools.htmlclean(
-        scrapertools.get_match(data, '<div class="main-news-text main-news-text2">(.*?)</div>')).strip()
+    patron = '<div class="main-news-text main-news-text2">(.*?)</div>'
+    plot = scrapertools.find_single_match(data, patron)
+    plot = scrapertools.htmlclean(plot).strip()
 
-    ## Extrae las datos - Episodios
+    # Extrae las datos - Episodios
     patron = '<br />(\d+x\d+).*?href="//ads.ad-center.com/[^<]+</a>(.*?)<a href="//ads.ad-center.com/[^<]+</a>'
     matches = re.compile(patron, re.DOTALL).findall(data)
     if len(matches) == 0:
         patron = ' />(\d+x\d+)(.*?)<br'
         matches = re.compile(patron, re.DOTALL).findall(data)
 
-    ## Extrae las datos - sub ITA/ITA
+    # Extrae las datos - sub ITA/ITA
     patron = '<b>.*?STAGIONE.*?(sub|ITA).*?</b>'
     lang = re.compile(patron, re.IGNORECASE).findall(data)
 
@@ -302,29 +295,29 @@ def episodios(item):
 
         if urls != "":
             itemlist.append(
-                Item(channel=__channel__,
-                     action="findvideos",
-                     title=title, url=urls[:-1],
-                     thumbnail=item.thumbnail,
-                     plot=plot,
-                     fulltitle=item.fulltitle,
-                     show=item.show))
+                    Item(channel=__channel__,
+                         action="findvideos",
+                         title=title, url=urls[:-1],
+                         thumbnail=item.thumbnail,
+                         plot=plot,
+                         fulltitle=item.fulltitle,
+                         show=item.show))
 
     if config.get_library_support() and len(itemlist) != 0:
         itemlist.append(
-            Item(channel=__channel__,
-                 title=item.show,
-                 url=item.url,
-                 action="add_serie_to_library",
-                 extra="episodios",
-                 show=item.show))
+                Item(channel=__channel__,
+                     title=item.show,
+                     url=item.url,
+                     action="add_serie_to_library",
+                     extra="episodios",
+                     show=item.show))
         itemlist.append(
-            Item(channel=item.channel,
-                 title="Scarica tutti gli episodi della serie",
-                 url=item.url,
-                 action="download_all_episodes",
-                 extra="episodios",
-                 show=item.show))
+                Item(channel=item.channel,
+                     title="Scarica tutti gli episodi della serie",
+                     url=item.url,
+                     action="download_all_episodes",
+                     extra="episodios",
+                     show=item.show))
 
     return itemlist
 
@@ -334,9 +327,9 @@ def findvideos(item):
 
     itemlist = []
 
-    ## Extrae las datos
+    # Extrae las datos
     if "|" not in item.url:
-        ## Descarga la página
+        # Descarga la página
         data = scrapertools.cache_page(item.url, headers=headers)
 
         sources = scrapertools.get_match(data, '(<noindex> <div class="video-player-plugin">.*?</noindex>)')
@@ -357,13 +350,13 @@ def findvideos(item):
         title = "[" + server + "] " + item.fulltitle
 
         itemlist.append(
-            Item(channel=__channel__,
-                 action="play",
-                 title=title,
-                 url=scrapedurl,
-                 thumbnail=item.thumbnail,
-                 fulltitle=item.fulltitle,
-                 show=item.show, folder=False))
+                Item(channel=__channel__,
+                     action="play",
+                     title=title,
+                     url=scrapedurl,
+                     thumbnail=item.thumbnail,
+                     fulltitle=item.fulltitle,
+                     show=item.show, folder=False))
 
     return itemlist
 
@@ -371,7 +364,7 @@ def findvideos(item):
 def play(item):
     logger.info("[itafilmtv.py] play")
 
-    ## Sólo es necesario la url
+    # Sólo es necesario la url
     data = item.url
 
     itemlist = servertools.find_video_items(data=data)
