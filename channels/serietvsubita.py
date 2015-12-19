@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
-#------------------------------------------------------------
+# ------------------------------------------------------------
 # streamondemand.- XBMC Plugin
 # Canale per http://serietvsubita.net/
 # http://www.mimediacenter.info/foro/viewforum.php?f=36
-#------------------------------------------------------------
-import urlparse,urllib2,urllib,re
-import os, sys
+# ------------------------------------------------------------
+import re
+import sys
+import urlparse
 
-from core import logger
 from core import config
+from core import logger
 from core import scrapertools
 from core.item import Item
-from servers import servertools
 
 __channel__ = "serietvsubita"
 __category__ = "S"
@@ -21,21 +21,39 @@ __language__ = "IT"
 
 DEBUG = config.get_setting("debug")
 
+host = "http://serietvsubita.net"
+
+
 def isGeneric():
     return True
+
 
 def mainlist(item):
     logger.info("streamondemand.channels.serietvsubita mainlist")
 
-    itemlist = []
-    itemlist.append( Item(channel=__channel__, action="episodios" , title="[COLOR azure]Novità[/COLOR]" , url="http://serietvsubita.net/", thumbnail="http://xbmc-repo-ackbarr.googlecode.com/svn/trunk/dev/skin.cirrus%20extended%20v2/extras/moviegenres/New%20TV%20Shows.png", folder=True))
-    itemlist.append( Item(channel=__channel__, action="series"    , title="[COLOR azure]Indice A-Z[/COLOR]" , url="http://serietvsubita.net/", thumbnail="http://repository-butchabay.googlecode.com/svn/branches/eden/skin.cirrus.extended.v2/extras/moviegenres/A-Z.png", folder=True))
-    itemlist.append( Item(channel=__channel__, action="search"    , title="[COLOR yellow]Cerca...[/COLOR]", thumbnail="http://dc467.4shared.com/img/fEbJqOum/s7/13feaf0c8c0/Search", folder=True))
+    itemlist = [Item(channel=__channel__,
+                     action="episodios",
+                     title="[COLOR azure]Novità[/COLOR]",
+                     url=host,
+                     thumbnail="http://xbmc-repo-ackbarr.googlecode.com/svn/trunk/dev/skin.cirrus%20extended%20v2/extras/moviegenres/New%20TV%20Shows.png",
+                     folder=True),
+                Item(channel=__channel__,
+                     action="series",
+                     title="[COLOR azure]Indice A-Z[/COLOR]",
+                     url=host,
+                     thumbnail="http://repository-butchabay.googlecode.com/svn/branches/eden/skin.cirrus.extended.v2/extras/moviegenres/A-Z.png",
+                     folder=True),
+                Item(channel=__channel__,
+                     action="search",
+                     title="[COLOR yellow]Cerca...[/COLOR]",
+                     thumbnail="http://dc467.4shared.com/img/fEbJqOum/s7/13feaf0c8c0/Search",
+                     folder=True)]
     return itemlist
 
-def search(item,texto):
+
+def search(item, texto):
     logger.info("streamondemand.channels.serietvsubita search")
-    item.url="http://serietvsubita.net/?s="+texto+"&op.x=0&op.y=0"
+    item.url = host + "/?s=" + texto + "&op.x=0&op.y=0"
 
     try:
         return episodios(item)
@@ -43,91 +61,130 @@ def search(item,texto):
     except:
         import sys
         for line in sys.exc_info():
-            logger.error( "%s" % line )
+            logger.error("%s" % line)
         return []
+
 
 def episodios(item):
     logger.info("streamondemand.channels.serietvsubita episodios")
     itemlist = []
 
-    data = scrapertools.cachePage(item.url)
-    logger.info("data="+data)
+    data = scrapertools.cache_page(item.url)
 
-    #patron  = '</div><div class="clear"></div>.*?'
-    patron = '<h2><a href="([^"]+)".*?title="([^"]+)".*?<p><a href.*?<img.*?src="(.*?)"'
-    matches = re.compile(patron,re.DOTALL).findall(data)
-    scrapertools.printMatches(matches)
+    # patron  = '</div><div class="clear"></div>.*?'
+    patron = '<h2><a href="([^"]+)".*?title="([^"]+)".*?<p><a href.*?<img.*?src="([^"]+)"'
+    matches = re.compile(patron, re.DOTALL).findall(data)
 
-    for scrapedurl,scrapedtitle,scrapedthumbnail in matches:
+    for scrapedurl, scrapedtitle, scrapedthumbnail in matches:
         scrapedplot = ""
-        scrapedtitle=scrapertools.decodeHtmlentities(scrapedtitle)
+        scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle)
         if scrapedtitle.startswith("Link to "):
             scrapedtitle = scrapedtitle[8:]
-        if (DEBUG): logger.info("title=["+scrapedtitle+"], url=["+scrapedurl+"], thumbnail=["+scrapedthumbnail+"]")
-        itemlist.append( Item(channel=__channel__, action="findvideos", fulltitle=scrapedtitle, show=scrapedtitle, title="[COLOR azure]" + scrapedtitle + "[/COLOR]" , url=scrapedurl , thumbnail=scrapedthumbnail , plot=scrapedplot , folder=True) )
+        if (DEBUG): logger.info(
+                "title=[" + scrapedtitle + "], url=[" + scrapedurl + "], thumbnail=[" + scrapedthumbnail + "]")
+        itemlist.append(
+                Item(channel=__channel__,
+                     action="findvideos",
+                     fulltitle=scrapedtitle,
+                     show=scrapedtitle,
+                     title="[COLOR azure]" + scrapedtitle + "[/COLOR]",
+                     url=scrapedurl,
+                     thumbnail=scrapedthumbnail,
+                     plot=scrapedplot,
+                     folder=True))
 
-    ## paginación
+    # paginación
     patron = '<div id="navigation">.*?\d+</a> <a href="([^"]+)"'
-    matches = re.compile(patron,re.DOTALL).findall(data)
-    for scrapedurl in matches:
-        itemlist.append( Item(channel=__channel__, title="[COLOR orange]Post più vecchi...[/COLOR]", url=scrapedurl, action="episodios", extra=item.extra, thumbnail="http://2.bp.blogspot.com/-fE9tzwmjaeQ/UcM2apxDtjI/AAAAAAAAeeg/WKSGM2TADLM/s1600/pager+old.png") )
+    next_page = scrapertools.find_single_match(data, patron)
+    if next_page != "":
+        itemlist.append(
+                Item(channel=__channel__,
+                     title="[COLOR orange]Post più vecchi...[/COLOR]",
+                     url=next_page,
+                     action="episodios",
+                     extra=item.extra,
+                     thumbnail="http://2.bp.blogspot.com/-fE9tzwmjaeQ/UcM2apxDtjI/AAAAAAAAeeg/WKSGM2TADLM/s1600/pager+old.png"))
 
     return itemlist
+
 
 def series(item):
     logger.info("streamondemand.channels.serietvsubita series")
     itemlist = []
 
-    data = scrapertools.cachePage(item.url)
-    logger.info("data="+data)
+    data = scrapertools.cache_page(item.url)
 
-    data = scrapertools.find_single_match(data,'<li id="widget_categories" class="widget png_scale"><h2 class="blocktitle"><span>Serie</span>(.*?)</ul>')
-    logger.info("data="+data)
+    patron = '<li id="widget_categories" class="widget png_scale"><h2 class="blocktitle"><span>Serie</span>(.*?)</ul>'
+    data = scrapertools.find_single_match(data, patron)
 
-    patron  = '<li class="cat-item[^<]+<a href="([^"]+)[^>]+>([^<]+)</a>'
-    matches = re.compile(patron,re.DOTALL).findall(data)
-    scrapertools.printMatches(matches)
+    patron = '<li class="cat-item[^<]+<a href="([^"]+)[^>]+>([^<]+)</a>'
+    matches = re.compile(patron, re.DOTALL).findall(data)
 
-    for scrapedurl,scrapedtitle in matches:
+    for scrapedurl, scrapedtitle in matches:
         scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle)
         thumbnail = ""
         title = scrapedtitle.strip()
-        url = urlparse.urljoin(item.url,scrapedurl)
-        plot = ""
+        url = urlparse.urljoin(item.url, scrapedurl)
 
-        if (DEBUG): logger.info("title=["+title+"], url=["+url+"], thumbnail=["+thumbnail+"]")
-        itemlist.append( Item(channel=__channel__, action="episodiosearch", title="[COLOR azure]" + title + "[/COLOR]", url=url , thumbnail="http://xbmc-repo-ackbarr.googlecode.com/svn/trunk/dev/skin.cirrus%20extended%20v2/extras/moviegenres/New%20TV%20Shows.png", folder=True))
+        if (DEBUG): logger.info("title=[" + title + "], url=[" + url + "], thumbnail=[" + thumbnail + "]")
+        itemlist.append(
+                Item(channel=__channel__,
+                     action="episodiosearch",
+                     title="[COLOR azure]" + title + "[/COLOR]",
+                     url=url,
+                     thumbnail="http://xbmc-repo-ackbarr.googlecode.com/svn/trunk/dev/skin.cirrus%20extended%20v2/extras/moviegenres/New%20TV%20Shows.png",
+                     folder=True))
 
-    ## paginación
+    # paginación
     patron = '<div id="navigation">.*?\d+</a> <a href="([^"]+)"'
-    matches = re.compile(patron,re.DOTALL).findall(data)
-    for scrapedurl in matches:
-        itemlist.append( Item(channel=__channel__, title="[COLOR orange]Episodi precedenti...[/COLOR]", url=scrapedurl, action="series", extra=item.extra, thumbnail="http://2.bp.blogspot.com/-fE9tzwmjaeQ/UcM2apxDtjI/AAAAAAAAeeg/WKSGM2TADLM/s1600/pager+old.png") )
-
+    next_page = scrapertools.find_single_match(data, patron)
+    if next_page != "":
+        itemlist.append(
+                Item(channel=__channel__,
+                     title="[COLOR orange]Episodi precedenti...[/COLOR]",
+                     url=next_page,
+                     action="series",
+                     extra=item.extra,
+                     thumbnail="http://2.bp.blogspot.com/-fE9tzwmjaeQ/UcM2apxDtjI/AAAAAAAAeeg/WKSGM2TADLM/s1600/pager+old.png"))
 
     return itemlist
+
 
 def episodiosearch(item):
     logger.info("streamondemand.channels.serietvsubita episodios")
     itemlist = []
 
-    data = scrapertools.cachePage(item.url)
-    logger.info("data="+data)
+    data = scrapertools.cache_page(item.url)
 
-    patron = '<div class="post-meta">.*?<a href="(.*?)" title="(.*?)".*?<img.*?src="(.*?)"'
-    matches = re.compile(patron,re.DOTALL).findall(data)
-    scrapertools.printMatches(matches)
+    patron = '<div class="post-meta">.*?<a href="([^"]+)" title="([^"]+)".*?<img.*?src="([^"]+)"'
+    matches = re.compile(patron, re.DOTALL).findall(data)
 
-    for scrapedurl,scrapedtitle,scrapedthumbnail in matches:
+    for scrapedurl, scrapedtitle, scrapedthumbnail in matches:
         scrapedplot = ""
         scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle)
-        if (DEBUG): logger.info("title=["+scrapedtitle+"], url=["+scrapedurl+"], thumbnail=["+scrapedthumbnail+"]")
-        itemlist.append( Item(channel=__channel__, action="findvideos", fulltitle=scrapedtitle, show=scrapedtitle, title="[COLOR azure]" + scrapedtitle + "[/COLOR]" , url=scrapedurl , thumbnail=scrapedthumbnail , plot=scrapedplot , folder=True) )
+        if (DEBUG): logger.info(
+                "title=[" + scrapedtitle + "], url=[" + scrapedurl + "], thumbnail=[" + scrapedthumbnail + "]")
+        itemlist.append(
+                Item(channel=__channel__,
+                     action="findvideos",
+                     fulltitle=scrapedtitle,
+                     show=scrapedtitle,
+                     title="[COLOR azure]" + scrapedtitle + "[/COLOR]",
+                     url=scrapedurl,
+                     thumbnail=scrapedthumbnail,
+                     plot=scrapedplot,
+                     folder=True))
 
-    ## paginación
+    # paginación
     patron = '<div id="navigation">.*?\d+</a> <a href="([^"]+)"'
-    matches = re.compile(patron,re.DOTALL).findall(data)
-    for scrapedurl in matches:
-        itemlist.append( Item(channel=__channel__, title="[COLOR orange]Episodi precedenti...[/COLOR]", url=scrapedurl, action="episodios", extra=item.extra, thumbnail="http://2.bp.blogspot.com/-fE9tzwmjaeQ/UcM2apxDtjI/AAAAAAAAeeg/WKSGM2TADLM/s1600/pager+old.png") )
+    next_page = scrapertools.find_single_match(data, patron)
+    if next_page != "":
+        itemlist.append(
+                Item(channel=__channel__,
+                     title="[COLOR orange]Episodi precedenti...[/COLOR]",
+                     url=next_page,
+                     action="episodios",
+                     extra=item.extra,
+                     thumbnail="http://2.bp.blogspot.com/-fE9tzwmjaeQ/UcM2apxDtjI/AAAAAAAAeeg/WKSGM2TADLM/s1600/pager+old.png"))
 
     return itemlist
