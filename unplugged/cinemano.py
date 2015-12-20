@@ -107,7 +107,7 @@ def peliculas(item):
             "title=[" + scrapedtitle + "], url=[" + scrapedurl + "], thumbnail=[" + scrapedthumbnail + "]")
         itemlist.append(
             Item(channel=__channel__,
-                 action="play",
+                 action="findvideos",
                  fulltitle=scrapedtitle,
                  show=scrapedtitle,
                  title="[COLOR azure]" + scrapedtitle + "[/COLOR]",
@@ -141,15 +141,22 @@ def HomePage(item):
     import xbmc
     xbmc.executebuiltin("ReplaceWindow(10024,plugin://plugin.video.streamondemand)")
 
-def play(item):
+def findvideos(item):
     logger.info("[cinemano.py] play")
 
+    itemlist = []
+
+    data = scrapertools.cache_page(item.url)
+
+    patron = '<iframe.*src=(?:\'|")(.*?)(?:\'|")[^/]+/iframe>'
+    url = scrapertools.find_single_match(data, patron)
+
     ## Sólo es necesario la url
-    if "ok.php" in item.url:
-        data = imninjas_url + item.url
-        data = scrapertools.find_single_match(data, '<a class="response-url" href="(.*?)"[^>]+>[^>]+>[^>]+>[^>]+> 200 OK</span>')
+    if "ok.php" in url:
+        data = imninjas_url + url
+        data = scrapertools.find_single_match(data, '<a class="response-url" href="([^"]+)"[^>]+>[^>]+>[^>]+>[^>]+> 200 OK</span>')
     else:
-        data = item.url
+        data = url
 
     itemlist = servertools.find_video_items(data=data)
 
