@@ -47,6 +47,8 @@ MONTH_TIME = (DTTIME - datetime.timedelta(days=30)).strftime('%Y-%m-%d')
 MONTH2_TIME = (DTTIME - datetime.timedelta(days=60)).strftime('%Y-%m-%d')
 YEAR_DATE = (DTTIME - datetime.timedelta(days=365)).strftime('%Y-%m-%d')
 
+TIMEOUT_TOTAL = 60
+
 NLS_Search_by_Title = config.get_localized_string(30980)
 NLS_Search_by_Person = config.get_localized_string(30981)
 NLS_Search_by_Company = config.get_localized_string(30982)
@@ -165,13 +167,13 @@ def list_movie(item):
     itemlist = build_movie_list(item, tmdb_get_data('%spage=%d&' % (item.url, page), results=results))
     if page < results[0]:
         itemlist.append(Item(
-            channel=item.channel,
-            title="[COLOR orange]%s (%d/%d)[/COLOR]" % (NLS_Next_Page, page * len(itemlist), results[1]),
-            action="list_movie",
-            url=item.url,
-            plot="%d" % (page + 1),
-            type=item.type,
-            viewmode="" if page<=1 else "paged_list"))
+                channel=item.channel,
+                title="[COLOR orange]%s (%d/%d)[/COLOR]" % (NLS_Next_Page, page * len(itemlist), results[1]),
+                action="list_movie",
+                url=item.url,
+                plot="%d" % (page + 1),
+                type=item.type,
+                viewmode="" if page <= 1 else "paged_list"))
 
     return itemlist
 
@@ -183,12 +185,12 @@ def list_genres(item):
     itemlist = []
     for genre_id, genre_name in TMDb_genres.iteritems():
         itemlist.append(
-            Item(channel=item.channel,
-                 title=genre_name,
-                 action="list_movie",
-                 url='genre/%d/movies?primary_release_date.gte=%s&primary_release_date.lte=%s&' % (
-                     genre_id, YEAR_DATE, TODAY_TIME),
-                 plot="1"))
+                Item(channel=item.channel,
+                     title=genre_name,
+                     action="list_movie",
+                     url='genre/%d/movies?primary_release_date.gte=%s&primary_release_date.lte=%s&' % (
+                         genre_id, YEAR_DATE, TODAY_TIME),
+                     plot="1"))
 
     return itemlist
 
@@ -204,29 +206,29 @@ def search_tvshow_by_title(item, search_terms):
     logger.info("streamondemand.channels.database search_tvshow_by_title '%s'" % (search_terms))
 
     return list_movie(
-        Item(channel=item.channel,
-             url='search/tv?query=%s&' % url_quote_plus(search_terms),
-             plot="1",
-             type="serie"))
+            Item(channel=item.channel,
+                 url='search/tv?query=%s&' % url_quote_plus(search_terms),
+                 plot="1",
+                 type="serie"))
 
 
 def search_movie_by_title(item, search_terms):
     logger.info("streamondemand.channels.database search_movie_by_title '%s'" % (search_terms))
 
     return list_movie(
-        Item(channel=item.channel,
-             url='search/movie?query=%s&' % url_quote_plus(search_terms),
-             plot="1"))
+            Item(channel=item.channel,
+                 url='search/movie?query=%s&' % url_quote_plus(search_terms),
+                 plot="1"))
 
 
 def search_similar_movie_by_title(item, search_terms):
     logger.info("streamondemand.channels.database search_movie_by_title '%s'" % (search_terms))
 
     return list_movie(
-        Item(channel=item.channel,
-             url='search/movie?append_to_response=similar_movies,alternative_title&query=%s&' % url_quote_plus(
-                 search_terms),
-             plot="1"))
+            Item(channel=item.channel,
+                 url='search/movie?append_to_response=similar_movies,alternative_title&query=%s&' % url_quote_plus(
+                         search_terms),
+                 plot="1"))
 
 
 def search_movie_by_year(item, search_terms):
@@ -236,10 +238,10 @@ def search_movie_by_year(item, search_terms):
     result = []
     if len(year) == 4:
         result.extend(
-            list_movie(
-                Item(channel=item.channel,
-                     url='discover/movie?primary_release_year=%s&' % year,
-                     plot="1")))
+                list_movie(
+                        Item(channel=item.channel,
+                             url='discover/movie?primary_release_year=%s&' % year,
+                             plot="1")))
     return result
 
 
@@ -258,18 +260,19 @@ def search_person_by_name(item, search_terms):
                 fanart = tmdb_image(movie, 'backdrop_path', 'w1280')
                 break
 
-        extracmds = [(NLS_Info_Person, "RunScript(script.extendedinfo,info=extendedactorinfo,id=%d)" % tmdb_tag(person, 'id'))] \
+        extracmds = [
+            (NLS_Info_Person, "RunScript(script.extendedinfo,info=extendedactorinfo,id=%d)" % tmdb_tag(person, 'id'))] \
             if xbmc.getCondVisibility('System.HasAddon(script.extendedinfo)') else []
 
         itemlist.append(Item(
-            channel=item.channel,
-            action='search_movie_by_person',
-            extra=str(tmdb_tag(person, 'id')),
-            title=name,
-            thumbnail=poster,
-            viewmode='list',
-            fanart=fanart,
-            extracmds=extracmds
+                channel=item.channel,
+                action='search_movie_by_person',
+                extra=str(tmdb_tag(person, 'id')),
+                title=name,
+                thumbnail=poster,
+                viewmode='list',
+                fanart=fanart,
+                extracmds=extracmds
         ))
 
     return itemlist
@@ -285,8 +288,8 @@ def search_movie_by_person(item):
     #          plot="1"))
 
     person_movie_credits = tmdb_get_data(
-        "person/%s/movie_credits?primary_release_date.lte=%s&sort_by=primary_release_date.desc&" % (
-            item.extra, TODAY_TIME))
+            "person/%s/movie_credits?primary_release_date.lte=%s&sort_by=primary_release_date.desc&" % (
+                item.extra, TODAY_TIME))
     movies = []
     if person_movie_credits:
         movies.extend(tmdb_tag(person_movie_credits, 'cast', []))
@@ -308,13 +311,13 @@ def search_collection_by_name(item, search_terms):
         fanart = tmdb_image(collection, 'backdrop_path', 'w1280')
 
         itemlist.append(Item(
-            channel=item.channel,
-            action='search_movie_by_collection',
-            extra=str(tmdb_tag(collection, 'id')),
-            title=name,
-            thumbnail=poster,
-            viewmode='list',
-            fanart=fanart,
+                channel=item.channel,
+                action='search_movie_by_collection',
+                extra=str(tmdb_tag(collection, 'id')),
+                title=name,
+                thumbnail=poster,
+                viewmode='list',
+                fanart=fanart,
         ))
 
     return itemlist
@@ -342,16 +345,17 @@ def build_movie_list(item, movies):
         poster = tmdb_image(movie, 'poster_path')
         fanart = tmdb_image(movie, 'backdrop_path', 'w1280')
         jobrole = normalize_unicode(
-            ' [COLOR yellow][' + tmdb_tag(movie, 'job') + '][/COLOR]' if tmdb_tag_exists(movie, 'job') else '')
-        genres = normalize_unicode(' / '.join([tmdb_genre(genre).upper() for genre in tmdb_tag(movie, 'genre_ids', [])]))
+                ' [COLOR yellow][' + tmdb_tag(movie, 'job') + '][/COLOR]' if tmdb_tag_exists(movie, 'job') else '')
+        genres = normalize_unicode(
+            ' / '.join([tmdb_genre(genre).upper() for genre in tmdb_tag(movie, 'genre_ids', [])]))
         year = tmdb_tag(movie, 'release_date')[0:4] if tmdb_tag_exists(movie, 'release_date') else ''
         plot = normalize_unicode(tmdb_tag(movie, 'overview'))
         rating = tmdb_tag(movie, 'vote_average')
         votes = tmdb_tag(movie, 'vote_count')
 
         extrameta = {}
-        if year!="": extrameta["Year"] = year
-        if genres!="": extrameta["Genre"] = genres
+        if year != "": extrameta["Year"] = year
+        if genres != "": extrameta["Genre"] = genres
         if votes:
             extrameta["Rating"] = rating
             extrameta["Votes"] = "%d" % votes
@@ -366,35 +370,35 @@ def build_movie_list(item, movies):
             if year == str(kodi_db_movie["year"]):
                 found = True
                 itemlist.append(Item(
-                    channel=item.channel,
-                    action='play',
-                    url=kodi_db_movie["file"],
-                    title='[COLOR orange][%s][/COLOR] ' % NLS_Library + kodi_db_movie["title"] + jobrole,
-                    thumbnail=kodi_db_movie["art"]["poster"],
-                    category=genres,
-                    plot=plot,
-                    viewmode='movie_with_plot',
-                    fanart=kodi_db_movie["art"]["fanart"],
-                    extrameta=extrameta,
-                    extracmds=extracmds,
-                    folder=False,
+                        channel=item.channel,
+                        action='play',
+                        url=kodi_db_movie["file"],
+                        title='[COLOR orange][%s][/COLOR] ' % NLS_Library + kodi_db_movie["title"] + jobrole,
+                        thumbnail=kodi_db_movie["art"]["poster"],
+                        category=genres,
+                        plot=plot,
+                        viewmode='movie_with_plot',
+                        fanart=kodi_db_movie["art"]["fanart"],
+                        extrameta=extrameta,
+                        extracmds=extracmds,
+                        folder=False,
                 ))
 
         if not found:
             logger.info('streamondemand.database set for channels search(%s)' % title)
             itemlist.append(Item(
-                channel=item.channel,
-                action='do_channels_search',
-                extra=("%4s" % year) + title_search,
-                title=title + jobrole,
-                thumbnail=poster,
-                category=genres,
-                plot=plot,
-                viewmode='movie_with_plot',
-                fanart=fanart,
-                extrameta=extrameta,
-                extracmds=extracmds,
-                url=item.type
+                    channel=item.channel,
+                    action='do_channels_search',
+                    extra=("%4s" % year) + title_search,
+                    title=title + jobrole,
+                    thumbnail=poster,
+                    category=genres,
+                    plot=plot,
+                    viewmode='movie_with_plot',
+                    fanart=fanart,
+                    extrameta=extrameta,
+                    extracmds=extracmds,
+                    url=item.type
             ))
 
     return itemlist
@@ -403,7 +407,7 @@ def build_movie_list(item, movies):
 def normalize_unicode(string, encoding='utf-8'):
     if string is None: string = ''
     return normalize('NFKD', string if isinstance(string, unicode) else unicode(string, encoding, 'ignore')).encode(
-        encoding, 'ignore')
+            encoding, 'ignore')
 
 
 def tmdb_get_data(url="", results=[0, 0]):
@@ -493,7 +497,7 @@ def do_channels_search(item):
 
     try:
         title_year = int(item.extra[0:4])
-    except Exception:
+    except:
         title_year = 0
     mostra = item.extra[4:]
     tecleado = urllib.quote_plus(mostra)
@@ -561,7 +565,7 @@ def do_channels_search(item):
     start_time = int(time.time())
 
     for t in threads:
-        t.daemon = True     # NOTE: setting dameon to True allows the main thread to exit even if there are threads still running
+        t.daemon = True  # NOTE: setting dameon to True allows the main thread to exit even if there are threads still running
         t.start()
 
     number_of_channels = len(channel_files)
@@ -570,21 +574,21 @@ def do_channels_search(item):
 
         delta_time = int(time.time()) - start_time
         if len(itemlist) <= 0:
-            timeout = None              # No result so far,lets the thread to continue working until a result is returned
-        elif delta_time >= 60:
-            break                       # At least a result matching the searched title has been found, lets stop the search
+            timeout = None  # No result so far,lets the thread to continue working until a result is returned
+        elif delta_time >= TIMEOUT_TOTAL:
+            break  # At least a result matching the searched title has been found, lets stop the search
         else:
-            timeout = 60 - delta_time   # Still time to gather other results
+            timeout = TIMEOUT_TOTAL - delta_time  # Still time to gather other results
 
         if show_dialog:
             progreso.update(completed_channels * 100 / number_of_channels)
 
         try:
             result_itemlist = result.get(timeout=timeout)
-            completed_channels = completed_channels + 1
+            completed_channels += 1
         except:
             # Expired timeout raise an exception
-            break;
+            break
 
         for item in result_itemlist:
             title = item.fulltitle
@@ -596,8 +600,8 @@ def do_channels_search(item):
                     continue
 
             # Clean up a bit the returned title to improve the fuzzy matching
-            title = re.sub(r'\(.*\)', '', title)    # Anything within ()
-            title = re.sub(r'\[.*\]', '', title)    # Anything within []
+            title = re.sub(r'\(.*\)', '', title)  # Anything within ()
+            title = re.sub(r'\[.*\]', '', title)  # Anything within []
 
             # Check if the found title fuzzy matches the searched one
             if fuzz.token_sort_ratio(mostra, title) > 85: itemlist.append(item)

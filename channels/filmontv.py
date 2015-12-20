@@ -5,6 +5,7 @@
 # http://blog.tvalacarta.info/plugin-xbmc/pelisalacarta/
 # ------------------------------------------------------------
 import re
+import urllib
 
 from core import config
 from core import logger
@@ -20,6 +21,8 @@ __language__ = "IT"
 DEBUG = config.get_setting("debug")
 
 host = "http://www.comingsoon.it"
+
+TIMEOUT_TOTAL = 60
 
 
 def isGeneric():
@@ -79,11 +82,9 @@ def tvoggi(item):
     matches = re.compile(patron, re.DOTALL).findall(data)
 
     for scrapedthumbnail, scrapedtitle, scrapedtv in matches:
-        scrapedplot = ""
         scrapedurl = ""
-        # space = " "
         scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle).strip()
-        titolo = scrapedtitle.replace(" ", "+")
+        titolo = urllib.quote_plus(scrapedtitle)
         if (DEBUG): logger.info("title=[" + scrapedtitle + "], url=[" + scrapedurl + "]")
         itemlist.append(
                 Item(channel=__channel__,
@@ -114,6 +115,8 @@ def do_search(item):
     from lib.fuzzywuzzy import fuzz
     import threading
     import Queue
+    import time
+    import re
 
     master_exclude_data_file = os.path.join(config.get_runtime_path(), "resources", "sodsearch.txt")
     logger.info("streamondemand.channels.buscador master_exclude_data_file=" + master_exclude_data_file)
@@ -164,22 +167,47 @@ def do_search(item):
     result = Queue.Queue()
     threads = [threading.Thread(target=worker, args=(infile, result)) for infile in channel_files]
 
+    start_time = int(time.time())
+
     for t in threads:
+        t.daemon = True  # NOTE: setting dameon to True allows the main thread to exit even if there are threads still running
         t.start()
 
     number_of_channels = len(channel_files)
+    completed_channels = 0
+    while completed_channels < number_of_channels:
 
-    for index, t in enumerate(threads):
-        percentage = index * 100 / number_of_channels
+        delta_time = int(time.time()) - start_time
+        if len(itemlist) <= 0:
+            timeout = None  # No result so far,lets the thread to continue working until a result is returned
+        elif delta_time >= TIMEOUT_TOTAL:
+            break  # At least a result matching the searched title has been found, lets stop the search
+        else:
+            timeout = TIMEOUT_TOTAL - delta_time  # Still time to gather other results
+
         if show_dialog:
-            progreso.update(percentage, ' Sto cercando "' + mostra + '"')
-        t.join()
-        itemlist.extend(result.get())
+            progreso.update(completed_channels * 100 / number_of_channels)
 
-    itemlist = sorted([item for item in itemlist if fuzz.WRatio(mostra, item.fulltitle) > 85],
-                      key=lambda Item: Item.title)
+        try:
+            result_itemlist = result.get(timeout=timeout)
+            completed_channels += 1
+        except:
+            # Expired timeout raise an exception
+            break
+
+        for item in result_itemlist:
+            title = item.fulltitle
+
+            # Clean up a bit the returned title to improve the fuzzy matching
+            title = re.sub(r'\(.*\)', '', title)  # Anything within ()
+            title = re.sub(r'\[.*\]', '', title)  # Anything within []
+
+            # Check if the found title fuzzy matches the searched one
+            if fuzz.WRatio(mostra, title) > 85: itemlist.append(item)
 
     if show_dialog:
         progreso.close()
+
+    itemlist = sorted(itemlist, key=lambda item: item.fulltitle)
 
     return itemlist
