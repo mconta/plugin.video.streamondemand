@@ -347,7 +347,7 @@ def findvideos(item):
         else:
             server = server[0]
 
-        title = "[" + server + "] " + item.fulltitle
+        title = "[COLOR azure]" + item.fulltitle + "[/COLOR]" + " - [" + server + "]"
 
         itemlist.append(
                 Item(channel=__channel__,
