@@ -108,14 +108,22 @@ def peliculas(item):
         scrapedurl = urlparse.urljoin(item.url, matches[0])
         itemlist.append(
             Item(channel=__channel__,
+                 action="HomePage",
+                 title="[COLOR yellow]Torna Home[/COLOR]",
+                 folder=True)),
+        itemlist.append(
+            Item(channel=__channel__,
                  action="peliculas",
-                 title="[COLOR orange]Successivo>>[/COLOR]",
+                 title="[COLOR orange]Successivo >>[/COLOR]",
                  url=scrapedurl,
                  thumbnail="http://2.bp.blogspot.com/-fE9tzwmjaeQ/UcM2apxDtjI/AAAAAAAAeeg/WKSGM2TADLM/s1600/pager+old.png",
                  folder=True))
 
     return itemlist
 
+def HomePage(item):
+    import xbmc
+    xbmc.executebuiltin("ReplaceWindow(10024,plugin://plugin.video.streamondemand)")
 
 def findvideos(item):
     logger.info("streamondemand.mondolunatico findvideos")
