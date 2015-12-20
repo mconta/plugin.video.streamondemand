@@ -127,13 +127,14 @@ def ultimi(item):
 
     for scrapedurl, scrapedtitle in matches:
         scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle)
+        fulltitle = scrapedtitle[:scrapedtitle.find('-')]
         scrapedurl = urlparse.urljoin(host, scrapedurl)
         itemlist.append(
                 Item(channel=__channel__,
                      action="episodios",
                      title=scrapedtitle,
-                     fulltitle=scrapedtitle,
-                     show=scrapedtitle,
+                     fulltitle=fulltitle,
+                     show=fulltitle,
                      url=scrapedurl))
 
     return itemlist
@@ -255,6 +256,8 @@ def cerca(item):
 def episodios(item):
     logger.info("streamondemand.channels.guardaserie episodios")
 
+    item.title = item.fulltitle
+
     itemlist = []
 
     data = scrapertools.cache_page(item.url)
@@ -283,7 +286,8 @@ def episodios(item):
             itemlist.append(
                     Item(channel=__channel__,
                          action="findvideos",
-                         title=title, url=url,
+                         title=title,
+                         url=url,
                          fulltitle=item.title,
                          show=item.title,
                          thumbnail=item.thumbnail))
