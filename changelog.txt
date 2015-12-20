@@ -1,6 +1,4 @@
-v5.1.7
-- Update (again) Ricerca Globale (thanks giordiz999)
-- Added channels: cineflm
-- Fixed channels: ItaliaSerie, GuardaSerie, AnimeSubITA
-- Fixed servers: youwatch
+v5.1.8
+- Optimized whole add-on
+- Fixed channels: Altadefinizioneclick, Guardaserie
 
