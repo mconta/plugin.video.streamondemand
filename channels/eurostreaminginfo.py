@@ -49,6 +49,16 @@ def mainlist(item):
                 Item(channel=__channel__, 
                      title="[COLOR yellow]Cerca...[/COLOR]", 
                      action="search", 
+                     thumbnail="http://dc467.4shared.com/img/fEbJqOum/s7/13feaf0c8c0/Search"),
+                Item(channel=__channel__,
+                     title="[COLOR azure]Serie TV[/COLOR]",
+                     action="peliserie",
+                     url="%s/serie-tv/" % host,
+                     thumbnail="http://xbmc-repo-ackbarr.googlecode.com/svn/trunk/dev/skin.cirrus%20extended%20v2/extras/moviegenres/New%20TV%20Shows.png"),
+                Item(channel=__channel__,
+                     title="[COLOR yellow]Cerca Serie TV...[/COLOR]",
+                     action="search",
+                     extra="serie",
                      thumbnail="http://dc467.4shared.com/img/fEbJqOum/s7/13feaf0c8c0/Search")]
 
     return itemlist
@@ -58,7 +68,10 @@ def search(item, texto):
     logger.info("[eurostreaminginfo.py] " + item.url + " search " + texto)
     item.url = host + "/?s=" + texto
     try:
-        return pelisrc(item)
+        if item.extra == "serie":
+            return pelisrc(item)
+        else:
+            return pelisrc(item)
     # Se captura la excepción, para no interrumpir al buscador global si un canal falla
     except:
         import sys
@@ -106,6 +119,38 @@ def peliculas(item):
 
     return itemlist
 
+def peliserie(item):
+    logger.info("streamondemand.eurostreaminginfo peliculas")
+    itemlist = []
+
+    # Descarga la pagina
+    data = scrapertools.cache_page(item.url, headers=headers)
+
+    # Extrae las entradas (carpetas)
+    patron = '<li>[^=]+="(.*?)">(.*?)</a>[^l]+li>'
+    matches = re.compile(patron, re.DOTALL).findall(data)
+
+    for scrapedurl, scrapedtitle in matches:
+        scrapedthumbnail = ""
+        scrapedplot = ""
+        scrapedtitle = scrapedtitle.replace("</strong>", "").replace("</strong>", "")
+        scrapedtitle = scrapedtitle.replace("<strong>", "").replace("<strong>", "")
+        scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle)
+        if DEBUG: logger.info(
+            "title=[" + scrapedtitle + "], url=[" + scrapedurl + "], thumbnail=[" + scrapedthumbnail + "]")
+        itemlist.append(
+            Item(channel=__channel__,
+                 action="findvideos",
+                 fulltitle=scrapedtitle,
+                 show=scrapedtitle,
+                 title="[COLOR azure]" + scrapedtitle + "[/COLOR]",
+                 url=scrapedurl,
+                 thumbnail=scrapedthumbnail,
+                 plot=scrapedplot,
+                 folder=True))
+
+    return itemlist
+
 def pelisrc(item):
     logger.info("streamondemand.eurostreaminginfo peliculas")
     itemlist = []
@@ -120,11 +165,6 @@ def pelisrc(item):
     for scrapedurl, scrapedtitle, scrapedthumbnail in matches:
         scrapedplot = ""
         scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle)
-        #html = scrapertools.cache_page(scrapedurl)
-        #start = html.find("<strong>Trama:")
-        #end = html.find("<div class=\"product-profile-box-middlerow\">", start)
-        #scrapedplot = re.sub(r'<[^>]*>', '', html[start:end])
-        #scrapedplot = scrapertools.decodeHtmlentities(scrapedplot)
         if DEBUG: logger.info(
             "title=[" + scrapedtitle + "], url=[" + scrapedurl + "], thumbnail=[" + scrapedthumbnail + "]")
         itemlist.append(
