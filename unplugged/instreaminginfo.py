@@ -9,11 +9,9 @@ import sys
 import time
 import urllib2
 import urlparse
-import binascii
 
 from core import config
 from core import logger
-from servers import adfly
 from core import scrapertools
 from core.item import Item
 from servers import servertools
@@ -26,7 +24,7 @@ __language__ = "IT"
 
 DEBUG = config.get_setting("debug")
 
-host = "http://instreaming.info/news/"
+host = "http://instreaming.info"
 
 headers = [
     ['User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:38.0) Gecko/20100101 Firefox/38.0'],
@@ -38,17 +36,60 @@ headers = [
 def isGeneric():
     return True
 
-
 def mainlist(item):
-    logger.info("streamondemand.instreaminginfo mainlist")
+    logger.info("streamondemand.cinemano mainlist")
     itemlist = [Item(channel=__channel__,
                      title="[COLOR azure]Ultimi Film Inseriti[/COLOR]",
                      action="peliculas",
-                     url=host,
-                     thumbnail="http://orig03.deviantart.net/6889/f/2014/079/7/b/movies_and_popcorn_folder_icon_by_matheusgrilo-d7ay4tw.png")]
+                     url="%s/news/" %host,
+                     thumbnail="http://orig03.deviantart.net/6889/f/2014/079/7/b/movies_and_popcorn_folder_icon_by_matheusgrilo-d7ay4tw.png"),
+                Item(channel=__channel__,
+                     title="[COLOR azure]Film Per Categoria[/COLOR]",
+                     action="categorias",
+                     url="%s/news/" %host,
+                     thumbnail="http://xbmc-repo-ackbarr.googlecode.com/svn/trunk/dev/skin.cirrus%20extended%20v2/extras/moviegenres/All%20Movies%20by%20Genre.png"),
+                Item(channel=__channel__,
+                     title="[COLOR yellow]Cerca...[/COLOR]",
+                     action="search",
+                     thumbnail="http://dc467.4shared.com/img/fEbJqOum/s7/13feaf0c8c0/Search")]
 
     return itemlist
 
+def categorias(item):
+    itemlist = []
+
+    # Descarga la pagina
+    data = scrapertools.cache_page(item.url, headers=headers)
+
+    # Extrae las entradas (carpetas)
+    patron = '<li class="cat-item cat-item-[^>]+><a href="(.*?)"[^>]+>(.*?)</a>\s*</li>'
+    matches = re.compile(patron, re.DOTALL).findall(data)
+
+    for scrapedurl, scrapedtitle in matches:
+        scrapedplot = ""
+        scrapedthumbnail = ""
+        if DEBUG: logger.info("title=[" + scrapedtitle + "], url=[" + scrapedurl + "]")
+        itemlist.append(
+            Item(channel=__channel__,
+                 action="peliculas",
+                 title="[COLOR azure]" + scrapedtitle + "[/COLOR]",
+                 url=scrapedurl,
+                 thumbnail="http://xbmc-repo-ackbarr.googlecode.com/svn/trunk/dev/skin.cirrus%20extended%20v2/extras/moviegenres/All%20Movies%20by%20Genre.png",
+                 folder=True))
+
+    return itemlist
+
+def search(item, texto):
+    logger.info("[instreaminginfo.py] " + item.url + " search " + texto)
+    item.url = host + "/?s=" + texto
+    try:
+        return peliculas(item)
+    # Se captura la excepción, para no interrumpir al buscador global si un canal falla
+    except:
+        import sys
+        for line in sys.exc_info():
+            logger.error("%s" % line)
+        return []
 
 def peliculas(item):
     logger.info("streamondemand.instreaminginfo peliculas")
@@ -84,7 +125,7 @@ def peliculas(item):
         ## ------------------------------------------------
         itemlist.append(
             Item(channel=__channel__,
-                 action="play",
+                 action="findvideos",
                  fulltitle=scrapedtitle,
                  show=scrapedtitle,
                  title="[COLOR azure]" + scrapedtitle + "[/COLOR]",
@@ -106,18 +147,16 @@ def peliculas(item):
 
     return itemlist
 
-def play(item):
-    logger.info("[streamingpopcorn.py] play")
+def findvideos(item):
+    logger.info("[instreaminginfo.py] findvideos")
 
     data = scrapertools.cache_page(item.url, headers=headers)
 
-    # <a target='_blank' href='linker.php?id=yeTp0t%2BjkqLr6dyP5tjj2%2BXD05LE3%2BKR48rX1tyx257M09DeqMbamKadtg%3D%3D&umId=5493&src='><img src='images/icons/youtube.png'>&nbsp;Guarda su YouTube</a>
+    patron = '<a href="https://href.li/?(.*?)" rel="nofollow" target="_blank">'
+    #url = scrapertools.find_single_match(data, patron)
+    url = scrapertools.get_match(data, patron)
 
-    path = scrapertools.find_single_match(data, 'href="(https://href.li/.[^"]+)"')
-    url = urlparse.urljoin(host, path)
-    location = scrapertools.get_header_from_response(url, header_to_get="Location")
-
-    itemlist = servertools.find_video_items(data=location)
+    itemlist = servertools.find_video_items(data=url)
 
     for videoitem in itemlist:
         videoitem.title = item.show
