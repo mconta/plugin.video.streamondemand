@@ -151,7 +151,7 @@ def do_search(item):
     import threading
     import Queue
 
-    master_exclude_data_file = os.path.join(config.get_runtime_path(), "resources", "biblioteca.txt")
+    master_exclude_data_file = os.path.join(config.get_runtime_path(), "resources", "sodsearch.txt")
     logger.info("streamondemand.channels.buscador master_exclude_data_file=" + master_exclude_data_file)
 
     channels_path = os.path.join(config.get_runtime_path(), "channels", '*.py')
