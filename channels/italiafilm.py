@@ -117,7 +117,7 @@ def peliculas(item):
     logger.info("[italiafilm.py] peliculas")
     itemlist = []
 
-    data = scrapertools.cachePage(item.url)
+    data = scrapertools.cache_page(item.url)
     patron = '<article(.*?)</article>'
     matches = re.compile(patron, re.DOTALL).findall(data)
 
@@ -127,8 +127,8 @@ def peliculas(item):
         title = scrapertools.decodeHtmlentities(title).strip()
         url = scrapertools.find_single_match(match, '<h3[^<]+<a href="([^"]+)"')
         html = scrapertools.cache_page(url)
-        start = html.find("<p><br/>")
-        end = html.find("</h2>", start)
+        start = html.find("<div class=\"entry-content\">")
+        end = html.find("</p>", start)
         plot = html[start:end]
         plot = re.sub(r'<[^>]*>', '', plot)
         plot = scrapertools.decodeHtmlentities(plot)
@@ -153,6 +153,11 @@ def peliculas(item):
     try:
         pagina_siguiente = scrapertools.get_match(data, '<a class="next page-numbers" href="([^"]+)"')
         itemlist.append(
+            Item(channel=__channel__,
+                 action="HomePage",
+                 title="[COLOR yellow]Torna Home[/COLOR]",
+                 folder=True)),
+        itemlist.append(
                 Item(channel=__channel__,
                      action="peliculas",
                      extra=item.extra,
@@ -165,6 +170,9 @@ def peliculas(item):
 
     return itemlist
 
+def HomePage(item):
+    import xbmc
+    xbmc.executebuiltin("ReplaceWindow(10024,plugin://plugin.video.streamondemand)")
 
 def episodios(item):
     def load_episodios(html, item, itemlist, lang_title):
