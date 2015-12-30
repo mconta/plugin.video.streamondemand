@@ -22,7 +22,7 @@ __type__ = "generic"
 __title__ = "AltaDefinizione01"
 __language__ = "IT"
 
-host = "http://www.altadefinizione01.com"
+host = "http://www.altadefinizione01.click/"
 
 headers = [
     ['User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:38.0) Gecko/20100101 Firefox/38.0'],
@@ -49,7 +49,7 @@ def mainlist(item):
                 Item(channel=__channel__,
                      title="[COLOR azure]Film Sub-Ita[/COLOR]",
                      action="peliculas",
-                     url=host + "genere/sub-ita/",
+                     url=host+"genere/sub-ita/",
                      thumbnail="http://i.imgur.com/qUENzxl.png"),
                 Item(channel=__channel__,
                      title="[COLOR azure]Categorie film[/COLOR]",
