@@ -40,7 +40,7 @@ def peliculas(item):
     data = scrapertools.cache_page(item.url)
 
     # Extrae las entradas (carpetas)
-    patron  = '<div class="post-thumb single-img-box">\s*'
+    patron  = '<div class="recipe-list-thumb">\s*'
     patron  += '<a href="(.*?)"><img[^=]+=[^=]+=[^=]+="(.*?)"[^>]+></a>\s*'
     patron  += '</div>\s*'
     patron  += '<div[^>]+>\s*'
