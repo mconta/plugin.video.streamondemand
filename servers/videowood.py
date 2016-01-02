@@ -8,8 +8,8 @@
 
 import re
 
-from core import scrapertools
 from core import logger
+from core import scrapertools
 from core import unpackerjs3
 
 
@@ -63,4 +63,3 @@ def find_videos(text):
             logger.info("  url duplicada=" + url)
 
     return devuelve
-
