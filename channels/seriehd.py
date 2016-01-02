@@ -4,7 +4,6 @@
 # Canal para seriehd - based on guardaserie channel
 # http://blog.tvalacarta.info/plugin-xbmc/streamondemand.
 # ------------------------------------------------------------
-import binascii
 import re
 import sys
 import urllib2
@@ -205,6 +204,8 @@ def episodios(item):
 def findvideos(item):
     logger.info("[seriehd.py] findvideos")
 
+    itemlist = []
+
     url = item.url.split('?')[0]
     post = item.url.split('?')[1]
     referer = item.url.split('?')[2]
@@ -238,17 +239,26 @@ def findvideos(item):
                 get_data = '%s=%s&%s=%s&%s=%s&%s=%s' % (name1, val1, name2, val2, name3, val3, name4, val4)
             tmp_data = scrapertools.cache_page('http://hdpass.link/film.php?randid=0&' + get_data, headers=headers)
             patron = r'; eval\(unescape\("(.*?)",(\[".*?;"\]),(\[".*?\])\)\);'
-            [(par1, par2, par3)] = re.compile(patron, re.DOTALL).findall(tmp_data)
+            try:
+                [(par1, par2, par3)] = re.compile(patron, re.DOTALL).findall(tmp_data)
+            except:
+                patron = r'<source src="([^"]+)"\s*type="video/mp4"(?:\s*label="([^"]+)")?'
+                for media_url, media_label in re.compile(patron).findall(tmp_data):
+                    itemlist.append(
+                            Item(server='directo',
+                                 action="play",
+                                 title=' - [Player]' if media_label == '' else ' - [Player @%s]' % media_label,
+                                 url=media_url,
+                                 folder=False))
+                continue
+
             par2 = eval(par2, {'__builtins__': None}, {})
             par3 = eval(par3, {'__builtins__': None}, {})
             tmp_data = unescape(par1, par2, par3)
-            if 'Google' in get_data:
-                tmp_data = scrapertools.find_single_match(tmp_data, r'tvar Data = \\"([^\\]+)\\";')
-                tmp_data = binascii.unhexlify(tmp_data)
             html.append(tmp_data.replace(r'\/', '/'))
         url = ''.join(html)
 
-    itemlist = servertools.find_video_items(data=url)
+    itemlist.extend(servertools.find_video_items(data=url))
 
     for videoitem in itemlist:
         videoitem.title = item.title + videoitem.title
