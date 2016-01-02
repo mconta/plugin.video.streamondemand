@@ -7,14 +7,14 @@
 # ------------------------------------------------------------
 
 import re
+import urllib
 
 from core import logger
 from core import scrapertools
 
 headers = [
     ['User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:38.0) Gecko/20100101 Firefox/38.0'],
-    ['Accept-Encoding', 'gzip, deflate'],
-    ['Connection', 'keep-alive']
+    ['Accept-Encoding', 'gzip, deflate']
 ]
 
 
@@ -509,11 +509,12 @@ def get_video_url(page_url, premium=False, user="", password="", video_password=
             content = JJDecoder(unpacked).decode()
 
     if content:
-        patron = r'window\.vr=\s*?"(.*?)\?'
+        patron = r'window\.vr\s*=\s*"(.*?)\?'
         matches = re.compile(patron, re.IGNORECASE).findall(content.replace('\\', ''))
         if len(matches) > 0:
+            _headers = urllib.urlencode(dict(headers))
             # URL del vídeo
-            url = matches[0]
+            url = matches[0] + '|' + _headers
             video_urls.append([".mp4" + " [Openload]", url])
 
     return video_urls
