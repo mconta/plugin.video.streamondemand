@@ -298,6 +298,7 @@ def channels_list():
     itemlist.append( Item( title="[COLOR azure]Play Cinema[/COLOR]"    , channel="playcinema"           , language="IT"    , category="F"   , type="generic", thumbnail="http://www.playcinema.org/wp-content/uploads/2015/10/playcinemaimmagine.png"  ))
     itemlist.append( Item( title="[COLOR azure]PortaleHD[/COLOR]"   , channel="portalehd"           , language="IT"    , category="F,B"   , type="generic"))
     itemlist.append( Item( title="[COLOR azure]Saint Seiya[/COLOR]"     , channel="saintseiya"       , language="IT"    , category="A"        , thumbnail="http://vignette2.wikia.nocookie.net/nonciclopedia/images/1/12/Logo_Cavalieri_dello_Zodiaco.png/revision/latest?cb=20140308215438", type="generic"))
+    itemlist.append( Item( title="[COLOR azure]Scambio Etico - TNT Village[/COLOR]"     , channel="scambioetico"       , language="IT"    , category="F" , thumbnail="http://forum.tntvillage.scambioetico.org/style_images/mkportal-636/tntlogo2012.png", type="generic"))
     itemlist.append( Item( title="[COLOR azure]Serie HD[/COLOR]"     , channel="seriehd"       , language="IT"    , category="S"        , type="generic"))
     itemlist.append( Item( title="[COLOR azure]Serie TV Sub ITA[/COLOR]"    , channel="serietvsubita"         , language="IT" , category="S"        , type="generic" , extra="Series"))
     #itemlist.append( Item( title="[COLOR azure]SimpsonITA Streaming[/COLOR]"      , channel="simpsonita"           , language="IT"    , category="S"   , type="generic",thumbnail="http://i.imgur.com/o8JAj9j.jpg"))
