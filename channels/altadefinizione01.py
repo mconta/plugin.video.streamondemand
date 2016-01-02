@@ -22,13 +22,12 @@ __type__ = "generic"
 __title__ = "AltaDefinizione01"
 __language__ = "IT"
 
-host = "http://www.altadefinizione01.click/"
+host = "http://www.altadefinizione01.click"
 
 headers = [
     ['User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:38.0) Gecko/20100101 Firefox/38.0'],
     ['Accept-Encoding', 'gzip, deflate'],
-    ['Referer', host],
-    ['Connection', 'keep-alive']
+    ['Referer', host]
 ]
 
 DEBUG = config.get_setting("debug")
@@ -49,7 +48,7 @@ def mainlist(item):
                 Item(channel=__channel__,
                      title="[COLOR azure]Film Sub-Ita[/COLOR]",
                      action="peliculas",
-                     url=host+"genere/sub-ita/",
+                     url="%s/genere/sub-ita/" % host,
                      thumbnail="http://i.imgur.com/qUENzxl.png"),
                 Item(channel=__channel__,
                      title="[COLOR azure]Categorie film[/COLOR]",
@@ -75,7 +74,7 @@ def peliculas(item):
 
     ## ------------------------------------------------
     cookies = ""
-    matches = re.compile('(.altadefinizione01.com.*?)\n', re.DOTALL).findall(config.get_cookie_data())
+    matches = re.compile('(.altadefinizione01.click.*?)\n', re.DOTALL).findall(config.get_cookie_data())
     for cookie in matches:
         name = cookie.split('\t')[5]
         value = cookie.split('\t')[6]
