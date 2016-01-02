@@ -32,17 +32,6 @@ def mainlist(item):
     
     return itemlist
 
-def search(item,texto):
-    logger.info("[scambioetico.py] "+item.url+" search "+texto)
-    item.url = "http://ilscambioetico.info/argh.php?search="+texto
-    try:
-        return peliculas(item)
-    # Se captura la excepción, para no interrumpir al buscador global si un canal falla
-    except:
-        import sys
-        for line in sys.exc_info():
-            logger.error( "%s" % line )
-        return []
 
 def peliculas(item):
     logger.info("streamondemand.scambioetico peliculas")
@@ -70,9 +59,9 @@ def peliculas(item):
     scrapertools.printMatches(matches)
 
     if len(matches)>0:
-        scrapedurl = urlparse.urljoin(item.url,matches[0])
-        scrapedurl = scrapedurl.replace("&amp;", "&")
-        itemlist.append( Item(channel=__channel__, action="peliculas", title="[COLOR orange]Successivo>>[/COLOR]" , url=scrapedurl , thumbnail="http://2.bp.blogspot.com/-fE9tzwmjaeQ/UcM2apxDtjI/AAAAAAAAeeg/WKSGM2TADLM/s1600/pager+old.png", folder=True) )
+        url = urlparse.urljoin(item.url,matches[0])
+        url = url.replace("&amp;", "&")
+        itemlist.append( Item(channel=__channel__, action="peliculas", title="[COLOR orange]Successivo>>[/COLOR]" , url=url , thumbnail="http://2.bp.blogspot.com/-fE9tzwmjaeQ/UcM2apxDtjI/AAAAAAAAeeg/WKSGM2TADLM/s1600/pager+old.png", folder=True) )
 
     return itemlist
 
