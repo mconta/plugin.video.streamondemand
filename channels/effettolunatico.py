@@ -21,6 +21,17 @@ __language__ = "IT"
 
 host = "http://effettolunatico.altervista.org"
 
+headers = [
+    ['Host', 'effettolunatico.altervista.org'],
+    ['User-Agent', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:43.0) Gecko/20100101 Firefox/43.0'],
+    ['Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'],
+    ['Accept-Encoding', 'gzip, deflate'],
+    ['Referer', 'http://effettolunatico.altervista.org/forum/forum.php'],
+    ['Connection', 'keep-alive'],
+    ['Upgrade-Insecure-Requests', '1'],
+    ['Cache-Control', 'max-age=0']
+]
+
 DEBUG = config.get_setting("debug")
 
 
@@ -61,7 +72,7 @@ def peliculas(item):
     itemlist = []
 
     # Descarga la pagina
-    data = scrapertools.cache_page(item.url)
+    data = scrapertools.cache_page(item.url, headers=headers)
 
     # Extrae las entradas (carpetas)
     patron = '<td[^>]+><a href="([^"]+)"><img src="([^"]+)"[^>]+>[^>]+>[^>]+>\s*[^>]+>[^>]+>\s*[^>]+>[^>]+><b>(.*?)</b>'
@@ -69,7 +80,7 @@ def peliculas(item):
 
     for scrapedurl, scrapedthumbnail, scrapedtitle in matches:
         scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle.replace("]...", "]"))
-        html = scrapertools.cache_page(scrapedurl)
+        html = scrapertools.cache_page(scrapedurl, headers=headers)
         start = html.find("Trama del film")
         end = html.find("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\" />", start)
         scrapedplot = re.sub(r'<[^>]*>', '', html[start:end])
