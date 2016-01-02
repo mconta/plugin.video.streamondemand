@@ -12,6 +12,7 @@ from core import logger
 from core import scrapertools
 
 headers = [
+    ['Accept-Encoding', 'gzip, deflate'],
     ['User-Agent',
      'Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5376e Safari/8536.25'],
 ]
@@ -23,10 +24,11 @@ def get_video_url(page_url, premium=False, user="", password="", video_password=
 
     data = scrapertools.cache_page(page_url, headers=headers)
 
-    vid = scrapertools.find_single_match(data, '<input type="hidden" name="streamLink" value="([^"]+)">')
+    stream_link = scrapertools.find_single_match(data, '<input type="hidden" name="streamLink" value="([^"]+)">')
+    temp_link = scrapertools.find_single_match(data, '<input type="hidden" name="templink" value="([^"]+)">')
 
     headers.append(['Referer', page_url])
-    post_data = 'streamLink=%s' % vid
+    post_data = 'streamLink=%s&templink=%s' % (stream_link, temp_link)
     data = scrapertools.cache_page('http://abysstream.com/viewvideo.php', post=post_data, headers=headers)
 
     # URL
