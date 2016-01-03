@@ -20,7 +20,7 @@ __type__ = "generic"
 __title__ = "Liberoita (IT)"
 __language__ = "IT"
 
-host = "http://liberoita.org"
+host = "http://liberoita.co"
 
 DEBUG = config.get_setting("debug")
 
