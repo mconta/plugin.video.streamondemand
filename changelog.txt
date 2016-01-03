@@ -1,4 +1,6 @@
-v5.1.8
-- Optimized whole add-on
-- Fixed channels: Altadefinizioneclick, Guardaserie
+v5.1.9
+- Fixed servers: openload, akstream, torrent
+- Added channels: cinemano, corsaronero, scambioetico
+- Added torrent section
+- Removed: animesubita, foxycinema
 
