@@ -6,10 +6,10 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/cineblog01.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>21</version>
+    <version>22</version>
     <adult>false</adult>
-    <date>08/11/2015</date>
-    <changes>Aggiornamenti Anime</changes>
+    <date>09/01/2016</date>
+    <changes>Aggiornamento / Update</changes>
     <categories>
         <category>movie</category>
         <category>serie</category>
