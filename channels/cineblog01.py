@@ -22,12 +22,12 @@ __type__ = "generic"
 __title__ = "CineBlog 01"
 __language__ = "IT"
 
-sito = "http://www.cb01.eu"
+sito = "http://www.cb01.co"
 
 headers = [
     ['User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:38.0) Gecko/20100101 Firefox/38.0'],
     ['Accept-Encoding', 'gzip, deflate'],
-    ['Referer', 'http://www.cb01.eu'],
+    ['Referer', 'http://www.cb01.co'],
     ['Connection', 'keep-alive']
 ]
 
@@ -52,7 +52,7 @@ def mainlist(item):
                 Item(channel=__channel__,
                      action="peliculasrobalo",
                      title="[COLOR azure]Alta Definizione [HD][/COLOR]",
-                     url="http://www.cb01.eu/tag/film-hd-altadefinizione/",
+                     url="http://www.cb01.co/tag/film-hd-altadefinizione/",
                      thumbnail="http://jcrent.com/apple%20tv%20final/HD.png"),
                 Item(channel=__channel__,
                      action="menuhd",
@@ -76,7 +76,7 @@ def mainlist(item):
                 Item(channel=__channel__,
                      action="listserie",
                      title="[COLOR azure]Serie Tv - Novita'[/COLOR]",
-                     url="http://www.cb01.eu/serietv/",
+                     url="http://www.cb01.co/serietv/",
                      thumbnail="http://xbmc-repo-ackbarr.googlecode.com/svn/trunk/dev/skin.cirrus%20extended%20v2/extras/moviegenres/New%20TV%20Shows.png"),
                 Item(channel=__channel__,
                      action="search",
@@ -355,13 +355,13 @@ def search(item, texto):
     try:
 
         if item.extra == "serie":
-            item.url = "http://www.cb01.eu/serietv/?s=" + texto
+            item.url = "http://www.cb01.co/serietv/?s=" + texto
             return listserie(item)
         if item.extra == "cartoni":
             item.url = "http://www.cineblog01.cc/anime/?s=" + texto
             return listanime(item)
         else:
-            item.url = "http://www.cb01.eu/?s=" + texto
+            item.url = "http://www.cb01.co/?s=" + texto
             return peliculasrobalo(item)
 
     # Se captura la excepción, para no interrumpir al buscador global si un canal falla
