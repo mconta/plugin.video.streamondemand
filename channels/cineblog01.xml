@@ -6,7 +6,7 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/cineblog01.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>22</version>
+    <version>23</version>
     <adult>false</adult>
     <date>09/01/2016</date>
     <changes>Aggiornamento / Update</changes>

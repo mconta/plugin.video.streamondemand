@@ -886,7 +886,8 @@ def play(item):
         from core import jsunpack
 
         try:
-            data = scrapertools.get_match(data, "(eval.function.p,a,c,k,e,.*?)</script>")
+            data = scrapertools.get_match(data, "(eval\(function\(p,a,c,k,e,d.*?)</script>")
+            #data = scrapertools.get_match(data, "(eval.function.p,a,c,k,e,.*?)</script>")
             data = jsunpack.unpack(data)
             print "##### play /link/ unpack ##\n%s\n##" % data
         except IndexError:
