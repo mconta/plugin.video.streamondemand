@@ -20,7 +20,7 @@ __type__ = "generic"
 __title__ = "filmpertutti"
 __language__ = "IT"
 
-host = "http://www.filmpertutti.co"
+host = "http://www.filmpertutti.click"
 
 DEBUG = config.get_setting("debug")
 
