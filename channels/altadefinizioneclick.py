@@ -236,8 +236,10 @@ def findvideos(item):
 
         patron = '<form method="get" action="">\s*'
         patron += '<input type="hidden" name="([^"]+)" value="([^"]+)"/>\s*'
-        patron += '<input type="hidden" name="([^"]+)" value="([^"]+)"/><input type="hidden" name="([^"]+)" value="([^"]+)"/> <input type="submit" class="[^"]*" name="([^"]+)" value="([^"]+)"/>\s*'
-        patron += '</form>' 
+        patron += '<input type="hidden" name="([^"]+)" value="([^"]+)"/>\s*'
+        patron += '(?:<input type="hidden" name="([^"]+)" value="([^"]+)"/>\s*)?'
+        patron += '<input type="submit" class="[^"]*" name="([^"]+)" value="([^"]+)"/>\s*'
+        patron += '</form>'
 
         html = []
         for name1, val1, name2, val2, name3, val3, name4, val4 in re.compile(patron).findall(data):
