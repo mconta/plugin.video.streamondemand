@@ -868,7 +868,7 @@
     <id>servertools</id>
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/servers/servertools.py</update_url>
     <active>true</active>
-    <version>6</version>
+    <version>7</version>
     <date>29/09/2015</date>
     <changes>Prima versione di Pelisalacarta 4</changes>
 </server>
@@ -894,6 +894,15 @@
 <server>
     <id>sockshare</id>
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/servers/sockshare.py</update_url>
+    <active>true</active>
+    <version>1</version>
+    <date>12/09/2015</date>
+    <changes>Prima versione di Pelisalacarta 4</changes>
+</server>
+
+<server>
+    <id>speedvid</id>
+    <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/servers/speedvid.py</update_url>
     <active>true</active>
     <version>1</version>
     <date>12/09/2015</date>
