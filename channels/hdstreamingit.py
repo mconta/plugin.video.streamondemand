@@ -50,7 +50,7 @@ def mainlist(item):
                      title="[COLOR azure]Film 3D[/COLOR]",
                      action="pelis3d",
                      url="%s/event_categories/film-3d/" % host,
-                     thumbnail="http://xbmc-repo-ackbarr.googlecode.com/svn/trunk/dev/skin.cirrus%20extended%20v2/extras/moviegenres/All%20Movies%20by%20Genre.png"),
+                     thumbnail="http://i.imgur.com/wXMmQie.png"),
                 Item(channel=__channel__,
                      title="[COLOR yellow]Cerca...[/COLOR]",
                      action="search",
