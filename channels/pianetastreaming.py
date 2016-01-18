@@ -64,12 +64,13 @@ def peliculas(item):
     matches = re.compile(patron, re.DOTALL).findall(data)
 
     for scrapedurl, scrapedthumbnail, scrapedtitle in matches:
-        html = scrapertools.cache_page(scrapedurl)
-        start = html.find("<h2>")
-        end = html.find("</iframe></p>", start)
-        scrapedplot = html[start:end]
-        scrapedplot = re.sub(r'<[^>]*>', '', scrapedplot)
-        scrapedplot = scrapertools.decodeHtmlentities(scrapedplot)
+        scrapedplot = ""
+        #html = scrapertools.cache_page(scrapedurl)
+        #start = html.find("<h2>")
+        #end = html.find("</iframe></p>", start)
+        #scrapedplot = html[start:end]
+        #scrapedplot = re.sub(r'<[^>]*>', '', scrapedplot)
+        #scrapedplot = scrapertools.decodeHtmlentities(scrapedplot)
         if (DEBUG): logger.info(
                 "url=[" + scrapedurl + "], thumbnail=[" + scrapedthumbnail + "], title=[" + scrapedtitle + "]")
         itemlist.append(
