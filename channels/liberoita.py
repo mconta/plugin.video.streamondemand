@@ -136,7 +136,7 @@ def peliculas(item):
                      folder=True))
 
     # Extrae el paginador
-    patronvideos = '<div id="older" class="alignright"><a href="([^"]+)".*?>>>> Post vecchi >>>'
+    patronvideos = '<div class="nav-previous"><a href="(.*?)" >'
     matches = re.compile(patronvideos, re.DOTALL).findall(data)
 
     if len(matches) > 0:

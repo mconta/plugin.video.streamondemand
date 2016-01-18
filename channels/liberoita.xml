@@ -6,9 +6,9 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/liberoita.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>9</version>
+    <version>10</version>
     <adult>false</adult>
-    <date>19/11/2015</date>
+    <date>18/01/2016</date>
     <changes>Re-Added Categories</changes>
     <categories>
         <category>movie</category>
