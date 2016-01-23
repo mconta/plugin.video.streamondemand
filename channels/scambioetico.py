@@ -14,7 +14,7 @@ from core.item import Item
 from servers import servertools
 
 __channel__ = "scambioetico"
-__category__ = "F"
+__category__ = "F,T"
 __type__ = "generic"
 __title__ = "Scambio Etico(IT)"
 __language__ = "IT"
@@ -41,7 +41,8 @@ def peliculas(item):
     data = scrapertools.cache_page(item.url)
 
     # Extrae las entradas (carpetas)
-    patron = '<td class=\'row4\'>\s*<a href="(.*?)"[^>]+>(.*?)</a>'
+    #patron = '<td class=\'row4\'>\s*<a href="(.*?)"[^>]+>(.*?)</a>'
+    patron = '<a href="(.*?)" title="discussione inviata[^>]+>(.*?)</a>'
     matches = re.compile(patron,re.DOTALL).findall(data)
     scrapertools.printMatches(matches)
 
