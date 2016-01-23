@@ -118,7 +118,7 @@ def peliculas(item):
     itemlist = []
 
     # Descarga la pagina
-    data = scrapertools.cache_page(item.url)
+    data = scrapertools.cache_page(item.url, timeout=95)
 
     # Extrae las entradas (carpetas)
     patron = '<div class="moviefilm">\s*<a href="(.*?)">\s*<img src="(.*?)" alt="(.*?)"[^>]+>'
