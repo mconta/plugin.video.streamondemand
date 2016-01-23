@@ -19,6 +19,13 @@ __type__ = "generic"
 __title__ = "Scambio Etico(IT)"
 __language__ = "IT"
 
+headers = [
+    ['User-Agent', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:43.0) Gecko/20100101 Firefox/43.0'],
+    ['Accept-Encoding', 'gzip, deflate'],
+    ['Host', 'forum.tntvillage.scambioetico.org'],
+    ['Connection', 'keep-alive']
+]
+
 DEBUG = config.get_setting("debug")
 
 def isGeneric():
@@ -38,7 +45,7 @@ def peliculas(item):
     itemlist = []
 
     # Descarga la pagina
-    data = scrapertools.cache_page(item.url)
+    data = scrapertools.cache_page(item.url,headers=headers,timeout=95)
 
     # Extrae las entradas (carpetas)
     #patron = '<td class=\'row4\'>\s*<a href="(.*?)"[^>]+>(.*?)</a>'
