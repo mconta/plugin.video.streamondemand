@@ -77,7 +77,7 @@ def play(item):
     logger.info("[scambioetico.py] play")
     itemlist = []
 
-    data = scrapertools.cache_page(item.url)
+    data = scrapertools.cache_page(item.url,timeout=95)
     logger.info("data="+data)
     link = scrapertools.get_match(data,'<a href=\'(magnet[^&]+)[^ ]+ title =\'Magnet link\'>')
     link = urlparse.urljoin(item.url,link)
