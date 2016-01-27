@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<channel>
+    <id>toonitalia</id>
+    <name>toonitalia</name>
+    <language>it</language>
+    <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/toonitalia.py</update_url>
+    <active>true</active>
+    <include_in_global_search>false</include_in_global_search>
+    <version>1</version>
+    <adult>false</version>
+    <date>27/01/2016</date>
+    <changes>New anime channel</changes>
+    <categories>
+        <category>Anime</category>
+    </categories>
+</channel>
