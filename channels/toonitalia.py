@@ -60,7 +60,7 @@ def anime( item ):
     itemlist = []
 
     ## Descarga la pagina
-    data = scrapertools.cache_page( item.url )
+    data = scrapertools.cache_page( item.url, timeout=15 )
 
     ## Extrae las entradas (carpetas)
     patron  = '<figure class="post-image left">.*?<a href="([^"]+)"><img src="([^"]+)".*?alt="([^"]+)" /></a>'
@@ -90,7 +90,7 @@ def animazione( item ):
     itemlist = []
 
     ## Descarga la pagina
-    data = scrapertools.cache_page( item.url )
+    data = scrapertools.cache_page( item.url, timeout=15 )
 
     ## Extrae las entradas (carpetas)
     patron  = '<figure class="post-image left">.*?<a href="([^"]+)"><img src="([^"]+)".*?alt="([^"]+)" /></a>'
@@ -119,7 +119,7 @@ def episodi(item):
     itemlist = []
 
     # Downloads page
-    data = scrapertools.cache_page(item.url)
+    data = scrapertools.cache_page(item.url, timeout=15)
     # Extracts the entries
     patron = '<a href="([^"]+)" target="_blank">([^"]+)</a>'
     matches = re.compile(patron, re.DOTALL).findall(data)
@@ -141,7 +141,7 @@ def film(item):
     itemlist = []
 
     # Downloads page
-    data = scrapertools.cache_page(item.url)
+    data = scrapertools.cache_page(item.url, timeout=15)
     # Extracts the entries
     patron = '<strong><a href="([^"]+)" target="_blank">([^"]+)</a></strong></p>'
     matches = re.compile(patron, re.DOTALL).findall(data)
