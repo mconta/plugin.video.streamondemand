@@ -6,7 +6,7 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/biblioteca.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>30</version>
+    <version>31</version>
     <adult>false</adult>
     <date>26/11/2015</date>
     <changes>Smail fix customization</changes>

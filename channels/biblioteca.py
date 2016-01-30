@@ -81,7 +81,7 @@ def isGeneric():
 def mainlist(item):
     logger.info("streamondemand.biblioteca mainlist")
     itemlist = [Item(channel="buscador",
-                     title="[COLOR yellow]Cerca nei Canali...[/COLOR]",
+                     title="[COLOR lightgreen]Cerca nei Canali...[/COLOR]",
                      action="mainlist",
                      thumbnail="http://i.imgur.com/pE5WSZp.png"),
                 Item(channel=__channel__,
@@ -110,9 +110,15 @@ def mainlist(item):
                      url="search_similar_movie_by_title",
                      thumbnail="http://i.imgur.com/JmcvZDL.png"),
                 Item(channel=__channel__,
-                     title="[COLOR yellow]%s...[/COLOR]" % NLS_Search_Tvshow_by_Title,
+                     title="[COLOR lightyellow]%s...[/COLOR]" % NLS_Search_Tvshow_by_Title,
                      action="search",
                      url="search_tvshow_by_title",
+                     thumbnail="https://i.imgur.com/2ZWjLn5.jpg?1"),
+                Item(channel=__channel__,
+                     title="[COLOR lightyellow]SerieTV Ultimi Episodi - On-Air[/COLOR]",
+                     action="list_tvshow",
+                     url="tv/on_the_air?",
+                     plot="1",
                      thumbnail="https://i.imgur.com/2ZWjLn5.jpg?1"),
                 Item(channel=__channel__,
                      title="[COLOR yellow]%s[/COLOR]" % NLS_Now_Playing,
@@ -177,6 +183,23 @@ def list_movie(item):
 
     return itemlist
 
+def list_tvshow(item):
+    logger.info("streamondemand.channels.database list_tvshow '%s/%s'" % (item.url, item.plot))
+
+    results = [0, 0]
+    page = int(item.plot)
+    itemlist = build_movie_list(item, tmdb_get_data('%spage=%d&' % (item.url, page), results=results))
+    if page < results[0]:
+        itemlist.append(Item(
+                channel=item.channel,
+                title="[COLOR orange]%s (%d/%d)[/COLOR]" % (NLS_Next_Page, page * len(itemlist), results[1]),
+                action="list_tvshow",
+                url=item.url,
+                plot="%d" % (page + 1),
+                type=item.type,
+                viewmode="" if page <= 1 else "paged_list"))
+
+    return itemlist
 
 def list_genres(item):
     logger.info("streamondemand.channels.database list_genres")
