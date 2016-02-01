@@ -25,8 +25,13 @@ DEBUG = config.get_setting("debug")
 host = "http://www.cinemalibero.com"
 
 headers = [
-    ['User-Agent', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0'],
-    ['Accept-Encoding', 'gzip, deflate']
+    ['Host', 'www.cinemalibero.com'],
+    ['User-Agent', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:44.0) Gecko/20100101 Firefox/44.0'],
+    ['Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'],
+    ['Accept-Encoding', 'gzip, deflate'],
+    ['Referer', 'http://www.cinemalibero.com'],
+    ['Connection', 'keep-alive'],
+    ['Cache-Control', 'max-age=0']
 ]
 
 
@@ -39,22 +44,17 @@ def mainlist(item):
     itemlist = [Item(channel=__channel__,
                      title="[COLOR azure]Ultimi Film Inseriti[/COLOR]",
                      action="peliculas",
-                     url = host,
+                     url="http://www.cinemalibero.com/category/film/",
                      thumbnail="http://orig03.deviantart.net/6889/f/2014/079/7/b/movies_and_popcorn_folder_icon_by_matheusgrilo-d7ay4tw.png"),
                 Item(channel=__channel__,
                      title="[COLOR azure]Film Per Categoria[/COLOR]",
                      action="categorias",
-                     url="%s/genere-film/" % host,
+                     url="http://www.cinemalibero.com/category/film/",
                      thumbnail="http://xbmc-repo-ackbarr.googlecode.com/svn/trunk/dev/skin.cirrus%20extended%20v2/extras/moviegenres/All%20Movies%20by%20Genre.png"),
-                Item(channel=__channel__,
-                     title="[COLOR azure]Film Sub-Ita[/COLOR]",
-                     action="peliculas",
-                     url="%s/category/film/subita-film/" % host,
-                     thumbnail="http://i.imgur.com/qUENzxl.png"),
                 Item(channel=__channel__,
                      title="[COLOR azure]Anime[/COLOR]",
                      action="peliculas",
-                     url="%s/category/anime/" % host,
+                     url="http://www.cinemalibero.com/category/anime/",
                      thumbnail="http://xbmc-repo-ackbarr.googlecode.com/svn/trunk/dev/skin.cirrus%20extended%20v2/extras/moviegenres/A-Z.png"),
                 Item(channel=__channel__,
                      title="[COLOR yellow]Cerca...[/COLOR]",
@@ -82,7 +82,7 @@ def categorias(item):
     data = scrapertools.cache_page(item.url)
 
     # Extrae las entradas (carpetas)
-    patron = '<span style="color: #ABC72C;"><a href="(.*?)"[^>]+>(.*?) <'
+    patron = '<li><small>[^>]+><a href="(.*?)">(.*?)</a></li>'
     matches = re.compile(patron, re.DOTALL).findall(data)
 
     for scrapedurl, scrapedtitle in matches:
@@ -118,14 +118,15 @@ def peliculas(item):
     itemlist = []
 
     # Descarga la pagina
-    data = scrapertools.cache_page(item.url, timeout=95)
+    data = scrapertools.cache_page(item.url, timeout=95, headers=headers)
 
     # Extrae las entradas (carpetas)
-    patron = '<a href="(.*?)" class="locandina"[^:]+: url\((.*?)\)">\s*<[^>]+>[^>]+>[^<]+<div class="titolo">(.*?)<'
+    patron = '<a href="(.*?)" class="locandi[^>]+>\s*<div class="titolo">(.*?)<'
     matches = re.compile(patron, re.DOTALL).findall(data)
 
-    for scrapedurl, scrapedthumbnail, scrapedtitle in matches:
+    for scrapedurl, scrapedtitle in matches:
         scrapedplot = ""
+        scrapedthumbnail = ""
         scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle)
         if DEBUG: logger.info(
             "title=[" + scrapedtitle + "], url=[" + scrapedurl + "], thumbnail=[" + scrapedthumbnail + "]")
@@ -141,7 +142,7 @@ def peliculas(item):
                  folder=True))
 
     # Extrae el paginador
-    patronvideos = '<a class="nextpostslink" rel="next" href="(.*?)">'
+    patronvideos = '<link rel=\'next\' href=\'(.*?)\' />'
     matches = re.compile(patronvideos, re.DOTALL).findall(data)
 
     if len(matches) > 0:
