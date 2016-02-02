@@ -14,6 +14,7 @@ from core import logger
 from core import config
 from core.item import Item
 from servers import servertools
+from servers import adfly
 
 __channel__ = "toonitalia"
 __category__ = "A"
@@ -60,7 +61,7 @@ def anime( item ):
     itemlist = []
 
     ## Descarga la pagina
-    data = scrapertools.cache_page( item.url, timeout=15 )
+    data = scrapertools.cache_page(item.url)
 
     ## Extrae las entradas (carpetas)
     patron  = '<figure class="post-image left">.*?<a href="([^"]+)"><img src="([^"]+)".*?alt="([^"]+)" /></a>'
@@ -90,7 +91,7 @@ def animazione( item ):
     itemlist = []
 
     ## Descarga la pagina
-    data = scrapertools.cache_page( item.url, timeout=15 )
+    data = scrapertools.cache_page( item.url )
 
     ## Extrae las entradas (carpetas)
     patron  = '<figure class="post-image left">.*?<a href="([^"]+)"><img src="([^"]+)".*?alt="([^"]+)" /></a>'
@@ -119,7 +120,7 @@ def episodi(item):
     itemlist = []
 
     # Downloads page
-    data = scrapertools.cache_page(item.url, timeout=15)
+    data = scrapertools.cache_page(item.url)
     # Extracts the entries
     patron = '<a href="([^"]+)" target="_blank">([^"]+)</a>'
     matches = re.compile(patron, re.DOTALL).findall(data)
@@ -136,23 +137,25 @@ def episodi(item):
     return itemlist
 
 def film(item):
-    logger.info("toonitalia.py episodi")
+    logger.info("toonitalia.py film")
 
     itemlist = []
 
     # Downloads page
-    data = scrapertools.cache_page(item.url, timeout=15)
+    data = scrapertools.cache_page(item.url)
     # Extracts the entries
-    patron = '<strong><a href="([^"]+)" target="_blank">([^"]+)</a></strong></p>'
+#    patron = '<img class="aligncenter.*?src="([^"]+)" alt="([^"]+)".*?<strong><a href="([^"]+)" target="_blank">'
+    patron = '<img.*?src="([^"]+)".*?alt="([^"]+)".*?strong><a href="([^"]+)" target="_blank">'
     matches = re.compile(patron, re.DOTALL).findall(data)
 
-    for scrapedurl, scrapedtitle in matches:
+    for scrapedthumbnail,scrapedtitle,scrapedurl in matches:
         scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle)
+
         itemlist.append(
                 Item(channel=__channel__,
                      action="findvid",
                      title=scrapedtitle,
-                     thumbnail=item.thumbnail,
+                     thumbnail=scrapedthumbnail,
                      url=scrapedurl))
     # Older Entries
     patron = '<link rel="next" href="([^"]+)" />'
@@ -165,11 +168,13 @@ def film(item):
                      action="film",
                      thumbnail="http://2.bp.blogspot.com/-fE9tzwmjaeQ/UcM2apxDtjI/AAAAAAAAeeg/WKSGM2TADLM/s1600/pager+old.png"))
     return itemlist	
-
+	
 def findvid(item):
     logger.info("[toonitalia.py] findvideos")
-
     # Downloads page
+    if "http://bc.vc/" in item.url:
+        data = adfly.get_long_url( item.url )
+		
     data = item.url
     itemlist = servertools.find_video_items(data=data)
     for videoitem in itemlist:
