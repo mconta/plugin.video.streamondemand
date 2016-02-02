@@ -6,10 +6,10 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/toonitalia.py</update_url>
     <active>true</active>
     <include_in_global_search>false</include_in_global_search>
-    <version>2</version>
+    <version>3</version>
     <adult>false</version>
-    <date>27/01/2016</date>
-    <changes>New anime channel</changes>
+    <date>02/02/2016</date>
+    <changes>Fixes</changes>
     <categories>
         <category>Anime</category>
     </categories>
