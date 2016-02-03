@@ -11,6 +11,7 @@
 </network>
 <gui>
     <algorithmdirtyregions>0</algorithmdirtyregions>
+    <nofliptimeout>0</nofliptimeout>
 </gui>
 <playlistasfolders1>false</playlistasfolders1>
 <audio>
