@@ -7,7 +7,6 @@
 import urlparse
 import re
 import sys
-import time
 
 from core import scrapertools
 from core import logger
@@ -122,7 +121,7 @@ def episodi(item):
     # Downloads page
     data = scrapertools.cache_page(item.url)
     # Extracts the entries
-    patron = '<a href="([^"]+)" target="_blank">([^"]+)</a>'
+    patron = '<a.*?href="([^"]+)".*?target="_blank">([^"]+)</a>'
     matches = re.compile(patron, re.DOTALL).findall(data)
 
     for scrapedurl, scrapedtitle in matches:
@@ -171,10 +170,11 @@ def film(item):
 	
 def findvid(item):
     logger.info("[toonitalia.py] findvideos")
+    #Avoids flashx 503 error on winOS
+    import time
+    time.sleep(10)
+
     # Downloads page
-    if "http://bc.vc/" in item.url:
-        data = adfly.get_long_url( item.url )
-		
     data = item.url
     itemlist = servertools.find_video_items(data=data)
     for videoitem in itemlist:
