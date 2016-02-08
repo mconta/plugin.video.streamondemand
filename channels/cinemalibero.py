@@ -118,15 +118,15 @@ def peliculas(item):
     itemlist = []
 
     # Descarga la pagina
-    data = scrapertools.cache_page(item.url, timeout=95, headers=headers)
+    data = scrapertools.cache_page(item.url, timeout=35, headers=headers)
+    data = scrapertools.find_single_match(data, '<nav class="navigation pagination" role="navigation">[^*]*</section>')
 
     # Extrae las entradas (carpetas)
-    patron = '<a href="(.*?)" class="locandi[^>]+>\s*<div class="titolo">(.*?)<'
+    patron = '<a href="(.*?)" class="locandina"[^:]+: url\((.*?)\)">\s*<div[^/]+/div>\s*<div class="titolo">(.*?)<'
     matches = re.compile(patron, re.DOTALL).findall(data)
 
-    for scrapedurl, scrapedtitle in matches:
+    for scrapedurl, scrapedthumbnail, scrapedtitle in matches:
         scrapedplot = ""
-        scrapedthumbnail = ""
         scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle)
         if DEBUG: logger.info(
             "title=[" + scrapedtitle + "], url=[" + scrapedurl + "], thumbnail=[" + scrapedthumbnail + "]")
@@ -142,7 +142,8 @@ def peliculas(item):
                  folder=True))
 
     # Extrae el paginador
-    patronvideos = '<link rel=\'next\' href=\'(.*?)\' />'
+    patronvideos = '<a class="next page-numbers" href="(.*?)">'
+    #patronvideos = '<link rel=\'next\' href=\'(.*?)\' />'
     matches = re.compile(patronvideos, re.DOTALL).findall(data)
 
     if len(matches) > 0:
