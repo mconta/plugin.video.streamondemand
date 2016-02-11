@@ -7,6 +7,8 @@
 import re
 import sys
 import urlparse
+import urllib2
+import time
 
 from core import config
 from core import logger
@@ -89,7 +91,14 @@ def fichas(item):
 
     itemlist = []
 
-    data = scrapertools.cache_page(item.url)
+#    data = scrapertools.cache_page(item.url)
+
+    ## Descarga la página
+    data = re.sub(
+        r'\t|\n|\r',
+        '',
+        anti_cloudflare(item.url)
+    )
 
     data = scrapertools.find_single_match(data, '<a[^>]+>Serie Tv</a><ul>(.*?)</ul>')
 
@@ -116,8 +125,13 @@ def ultimi(item):
 
     itemlist = []
 
-    data = scrapertools.cache_page(item.url)
-
+    ## Descarga la página
+    data = re.sub(
+        r'\t|\n|\r',
+        '',
+        anti_cloudflare(item.url)
+    )
+ #   data = scrapertools.cache_page(item.url)
     patron = '<p>Nuove Puntate delle SERIE TV, Aggiunte OGGI:</p>(.*?)<div id="disclamer">'
     data = scrapertools.find_single_match(data, patron)
 
@@ -141,11 +155,18 @@ def ultimi(item):
 
 
 def anime(item):
-    logger.info("streamondemand.channels.guardaserie fichas")
+    logger.info("streamondemand.channels.guardaserie anime")
 
     itemlist = []
 
-    data = scrapertools.cache_page(item.url)
+#    data = scrapertools.cache_page(item.url)
+
+    ## Descarga la página
+    data = re.sub(
+        r'\t|\n|\r',
+        '',
+        anti_cloudflare(item.url)
+    )
 
     data = scrapertools.find_single_match(data, '<a[^>]+>Anime</a><ul>(.*?)</ul>')
 
@@ -173,8 +194,13 @@ def cartoni(item):
 
     itemlist = []
 
-    data = scrapertools.cache_page(item.url)
-
+    ## Descarga la página
+    data = re.sub(
+        r'\t|\n|\r',
+        '',
+        anti_cloudflare(item.url)
+    )
+	
     data = scrapertools.find_single_match(data, '<a[^>]+>Cartoni</a><ul>(.*?)</ul>')
 
     patron = '<li><a href="([^"]+)[^>]+>([^<]+)</a></li>'
@@ -201,8 +227,13 @@ def progs(item):
 
     itemlist = []
 
-    data = scrapertools.cache_page(item.url)
-
+    ## Descarga la página
+    data = re.sub(
+        r'\t|\n|\r',
+        '',
+        anti_cloudflare(item.url)
+    )
+	
     data = scrapertools.find_single_match(data, '<a[^>]+>Programmi TV</a><ul>(.*?)</ul>')
 
     patron = '<li><a href="([^"]+)[^>]+>([^<]+)</a></li>'
@@ -229,8 +260,13 @@ def cerca(item):
 
     itemlist = []
 
-    data = scrapertools.cache_page(item.url)
-
+    ## Descarga la página
+    data = re.sub(
+        r'\t|\n|\r',
+        '',
+        anti_cloudflare(item.url)
+    )
+	
     patron = '<div class="search_thumbnail">.*?<a class="search_link" href="([^"]+)" rel="bookmark" title="([^"]+)">.*?<img src="([^"]+)" />.*?</a>'
 
     matches = re.compile(patron, re.DOTALL).findall(data)
@@ -260,8 +296,13 @@ def episodios(item):
 
     itemlist = []
 
-    data = scrapertools.cache_page(item.url)
-
+    ## Descarga la página
+    data = re.sub(
+        r'\t|\n|\r',
+        '',
+        anti_cloudflare(item.url)
+    )
+	
     serie_id = scrapertools.get_match(data, '/?id=(\d+)" rel="nofollow"')
 
     data = scrapertools.get_match(data, '<div id="episode">(.*?)</div>')
@@ -343,3 +384,19 @@ def findvideos(item):
                  folder=False))
 
     return itemlist
+
+def anti_cloudflare(url):
+    # global headers
+
+    try:
+        resp_headers = scrapertools.get_headers_from_response(url, headers=headers)
+        resp_headers = dict(resp_headers)
+    except urllib2.HTTPError, e:
+        resp_headers = e.headers
+
+    if 'refresh' in resp_headers:
+        time.sleep(int(resp_headers['refresh'][:1]))
+
+        scrapertools.get_headers_from_response(host + '/' + resp_headers['refresh'][7:], headers=headers)
+
+    return scrapertools.cache_page(url, headers=headers)
