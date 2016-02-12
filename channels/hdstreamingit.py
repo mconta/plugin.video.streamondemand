@@ -114,25 +114,19 @@ def peliculas(item):
     itemlist = []
 
     # Descarga la pagina
-    data = scrapertools.cache_page(item.url)
+    data = scrapertools.cache_page(item.url, timeout=5)
 
     # Extrae las entradas (carpetas)
-    patron = r'<div class="button_red"><a href="([^"]+)"[^>]+>[^>]+>[^>]+>\s*<div class="button_yellow"><a(?: target="_blank")? href="([^"]+)"'
-    matches = re.compile(patron, re.DOTALL).findall(data)
+    patronvideos = '<a class="link_image" href="[^"]+" title="Permalink to (.*?)">.*?'
+    patronvideos += '<img src="([^"]+)" alt="">.*?'
+    patronvideos += '<div class="button_yellow"><a(?: target="_blank")? href="([^"]+)"'
+    matches = re.compile(patronvideos, re.DOTALL).finditer(data)
 
-    for scrapedtitle, scrapedurl in matches:
+    for match in matches:
+        scrapedurl = urlparse.urljoin(item.url, match.group(3))
+        scrapedthumbnail = urlparse.urljoin(item.url, match.group(2))
+        scrapedtitle = scrapertools.unescape(match.group(1))
         scrapedplot = ""
-        # html = scrapertools.cache_page(scrapedtitle)
-        # start = html.find("<h1>TRAMA</h1>")
-        # end = html.find("</p>", start)
-        # scrapedplot = html[start:end]
-        # scrapedplot = re.sub(r'<[^>]*>', '', scrapedplot)
-        # scrapedplot = scrapertools.decodeHtmlentities(scrapedplot)
-        scrapedtitle = scrapedtitle.replace("http://www.hd-streaming.it/movies/", " ")
-        scrapedtitle = scrapedtitle.replace("/", " ")
-        scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle.replace("-", " "))
-        scrapedtitle = ' '.join(word[0].upper() + word[1:] for word in scrapedtitle.split())
-        scrapedthumbnail = ""
         if (DEBUG): logger.info(
                 "title=[" + scrapedtitle + "], url=[" + scrapedurl + "], thumbnail=[" + scrapedthumbnail + "]")
         itemlist.append(
