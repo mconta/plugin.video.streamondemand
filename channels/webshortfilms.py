@@ -46,18 +46,18 @@ def peliculas(item):
     data = scrapertools.cache_page(item.url)
 
     # Extrae las entradas (carpetas)
-    patron = '<h2 class="entry-title">\s*<a href="([^"]+)"[^>]+>(.*?)<'
+    patron = '<h1 class="entry-title"><a href="([^"]+)"[^>]+>(.*?)<.*?<img.*?src="([^"]+)"'
     matches = re.compile(patron, re.DOTALL).findall(data)
 
-    for scrapedurl, scrapedtitle in matches:
+    for scrapedurl, scrapedtitle, scrapedthumbnail in matches:
         scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle)
-        html = scrapertools.cache_page(scrapedurl)
-        start = html.find("</iframe></span>")
-        end = html.find("</a></p>", start)
-        scrapedplot = html[start:end]
-        scrapedplot = re.sub(r'<.*?>', '', scrapedplot)
-        scrapedplot = scrapertools.decodeHtmlentities(scrapedplot)
-        scrapedthumbnail = ""
+#        html = scrapertools.cache_page(scrapedurl)
+#        start = html.find("</iframe></span>")
+#        end = html.find("</a></p>", start)
+#        scrapedplot = html[start:end]
+#        scrapedplot = re.sub(r'<.*?>', '', scrapedplot)
+#        scrapedplot = scrapertools.decodeHtmlentities(scrapedplot)
+#        scrapedthumbnail = ""
         if (DEBUG): logger.info(
                 "title=[" + scrapedtitle + "], url=[" + scrapedurl + "], thumbnail=[" + scrapedthumbnail + "]")
         itemlist.append(
@@ -68,7 +68,6 @@ def peliculas(item):
                      title=scrapedtitle,
                      url=scrapedurl,
                      thumbnail=scrapedthumbnail,
-                     plot=scrapedplot,
                      folder=True))
 
     # Extrae el paginador
