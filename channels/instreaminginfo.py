@@ -112,7 +112,7 @@ def peliculas(item):
 
 
     # Extrae las entradas (carpetas)
-    patron = '<div class="item">\s*<a href="(.*?)">\s*[^>]+>\s*<img src="(.*?)" alt="(.*?)"[^>]+>'
+    patron = '<div class="item">\s*<a href="([^"]+)">\s*[^>]+>\s*<img src="([^"]+)" alt="([^"]+)"[^>]+>'
     matches = re.compile(patron, re.DOTALL).findall(data)
 
     for scrapedurl, scrapedthumbnail, scrapedtitle in matches:
@@ -150,16 +150,12 @@ def peliculas(item):
 def findvideos(item):
     logger.info("[instreaminginfo.py] findvideos")
 
-    data = scrapertools.cache_page(item.url, headers=headers)
+    data = anti_cloudflare(item.url)
 
-    patron = '<a href="https://href.li/?(.*?)" rel="nofollow" target="_blank">'
-    #url = scrapertools.find_single_match(data, patron)
-    url = scrapertools.get_match(data, patron)
-
-    itemlist = servertools.find_video_items(data=url)
+    itemlist = servertools.find_video_items(data=data)
 
     for videoitem in itemlist:
-        videoitem.title = item.show
+        videoitem.title = "".join([item.title, '[COLOR green][B]' + videoitem.title + '[/B][/COLOR]'])
         videoitem.fulltitle = item.fulltitle
         videoitem.show = item.show
         videoitem.thumbnail = item.thumbnail
