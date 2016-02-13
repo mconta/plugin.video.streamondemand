@@ -52,11 +52,13 @@ def peliculas(item):
     data = scrapertools.cache_page(item.url, headers=headers)
 
     # Extrae las entradas (carpetas)
-    patron = '<h4 class="widgettitle"><a href="([^"]+)">\s*(.*?)</a>'
+    patron = '<img style="[^"]+" rel="image_src" src="(.*?)" />.*?'
+    patron += '<h4 class="widgettitle"><a href="([^"]+)">\s*(.*?)</a>'
     matches = re.compile(patron, re.DOTALL).findall(data)
 
-    for scrapedurl, scrapedtitle in matches:
+    for scrapedthumbnail, scrapedurl, scrapedtitle in matches:
         scrapedurl = urlparse.urljoin(host, scrapedurl)
+        scrapedthumbnail = urlparse.urljoin(host, scrapedthumbnail)
         html = scrapertools.cache_page(scrapedurl, headers=headers)
         start = html.find("</figure>")
         end = html.find("</div>", start)
@@ -65,7 +67,7 @@ def peliculas(item):
         scrapedplot = scrapertools.decodeHtmlentities(scrapedplot)
         scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle)
         scrapedtitle = scrapedtitle.strip()
-        scrapedthumbnail = ""
+        #scrapedthumbnail = ""
         if (DEBUG): logger.info(
                 "title=[" + scrapedtitle + "], url=[" + scrapedurl + "], thumbnail=[" + scrapedthumbnail + "]")
         itemlist.append(
