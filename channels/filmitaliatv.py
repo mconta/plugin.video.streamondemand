@@ -21,7 +21,7 @@ __language__ = "IT"
 
 DEBUG = config.get_setting("debug")
 
-host = "http://www.film-italia.tv/"
+host = "http://www.fastvideo.tv/"
 
 
 def isGeneric():
@@ -95,12 +95,14 @@ def peliculas(item):
     data = scrapertools.cache_page(item.url)
 
     # Extrae las entradas (carpetas)
-    patron = '<div class="post-img small-post-img">\s*<a href="([^"]+)"[^>]+>\s*<img width="135" height="200" src="([^"]+)" [^=]+=[^=]+="([^"]+)" />'
+    patron = '<div class="post-img small-post-img">\s*<a href="([^"]+)"[^>]+>\s*<img width="135" height="200" src="([^"]+)" [^=]+=[^=]+="([^"]+)" />.*?'
+    patron += '<div class="entry-content post-excerpt">\s*'
+    patron += '<p>(.*?)</p>'
     matches = re.compile(patron, re.DOTALL).findall(data)
 
-    for scrapedurl, scrapedthumbnail, scrapedtitle in matches:
-        #scrapedplot = scrapertools.decodeHtmlentities(scrapedplot)
-        scrapedplot = ""
+    for scrapedurl, scrapedthumbnail, scrapedtitle, scrapedplot in matches:
+        scrapedplot = scrapertools.decodeHtmlentities(scrapedplot)
+        #scrapedplot = ""
         scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle)
         if DEBUG: logger.info(
             "title=[" + scrapedtitle + "], url=[" + scrapedurl + "], thumbnail=[" + scrapedthumbnail + "]")
