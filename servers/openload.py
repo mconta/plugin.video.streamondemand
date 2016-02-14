@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 # ------------------------------------------------------------
-# pelisalacarta - XBMC Plugin
+# streamondemand - Kodi add-on
 # Conector for openload.io
 # http://blog.tvalacarta.info/plugin-xbmc/pelisalacarta/
-# by DrZ3r0
+# Fix imported by DrZ3r0, credits to Djeman and Nahuel Riva
 # ------------------------------------------------------------
 import json
 import re
