@@ -1,6 +1,2 @@
-v5.1.9
-- Fixed servers: openload, akstream, torrent
-- Added channels: cinemano, corsaronero, scambioetico
-- Added torrent section
-- Removed: animesubita, foxycinema
-
+v5.2.0
+- new update system for channels and servers
