@@ -6,9 +6,9 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/filmsubitotv.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>7</version>
+    <version>8</version>
     <adult>false</adult>
-    <date>13/12/2015</date>
+    <date>14/02/2016</date>
     <changes>Modifiche</changes>
     <categories>
         <category>movie</category>
