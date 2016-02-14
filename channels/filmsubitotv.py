@@ -36,11 +36,11 @@ def mainlist(item):
                      action="peliculas",
                      url=host + "film-2015-streaming.html?&page=2",
                      thumbnail="http://orig03.deviantart.net/6889/f/2014/079/7/b/movies_and_popcorn_folder_icon_by_matheusgrilo-d7ay4tw.png"),
-                #Item(channel=__channel__,
-                     #title="[COLOR azure]Film per Genere[/COLOR]",
-                     #action="genere",
-                     #url=host,
-                     #thumbnail="http://xbmc-repo-ackbarr.googlecode.com/svn/trunk/dev/skin.cirrus%20extended%20v2/extras/moviegenres/All%20Movies%20by%20Genre.png"),
+                Item(channel=__channel__,
+                     title="[COLOR azure]Film per Genere[/COLOR]",
+                     action="genere",
+                     url=host,
+                     thumbnail="http://xbmc-repo-ackbarr.googlecode.com/svn/trunk/dev/skin.cirrus%20extended%20v2/extras/moviegenres/All%20Movies%20by%20Genre.png"),
                 Item(channel=__channel__,
                      title="[COLOR azure]Film per Anno[/COLOR]",
                      action="anno",
@@ -181,62 +181,16 @@ def serietv80(item):
 
     return itemlist
 
-
-def findvid(item):
-    logger.info("[filmsubitotv.py] findvideos")
-
-    # Descarga la página
-    data = scrapertools.cache_page(item.url)
-
-    # ---------------------------------------------------------------
-    servers = {
-        '2': 'http://embed.nowvideo.li/embed.php?v=%s',
-        '11': 'https://openload.co/embed/%s/',
-        '16': 'http://youwatch.org/embed-%s-640x360.html',
-        '17': 'http://youwatch.org/embed-%s-640x360.html',
-        '21': 'http://vidto.me/embed-%s',
-        '22': 'http://www.exashare.com/embed-%s-700x400.html',
-        '23': 'http://videomega.tv/cdn.php?ref=%s&width=700&height=430',
-        '29': 'http://embed.novamov.com/embed.php?v=%s',
-        '30': 'http://streamin.to/embed-%s-700x370.html'
-    }
-
-    patron = "=.setupNewPlayer.'([^']+)','(\d+)'"
-    matches = re.compile(patron, re.DOTALL).findall(data)
-
-    data = ""
-    for video_id, i in matches:
-        try:
-            data += servers[i] % video_id + "\n"
-        except:
-            pass
-    # ---------------------------------------------------------------
-
-    itemlist = servertools.find_video_items(data=data)
-
-    for videoitem in itemlist:
-        videoitem.title = "".join([item.title, videoitem.title])
-        videoitem.fulltitle = item.fulltitle
-        videoitem.thumbnail = item.thumbnail
-        videoitem.show = item.show
-        videoitem.channel = __channel__
-
-    return itemlist
-
-
 def genere(item):
     logger.info("[filmsubitotv.py] genere")
     itemlist = []
 
     data = scrapertools.cache_page(item.url)
 
-    patron = '<a href="#" class="dropdown-toggle wide-nav-link" data-toggle="dropdown">Genere <b class="caret"></b></a>(.*?)<li><a href="%sfilm-2015-streaming.html" class="wide-nav-link">Novità</a></li>' % host
-    data = scrapertools.find_single_match(data, patron)
-
-    patron = '<a.*?href="([^"]+)" class=".*?>(.*?)</a>'
+    patron = '<li class=".*?"><a title="([^"]+)" alt=".*?" href="([^"]+)" class="">.*?</a></li>'
     matches = re.compile(patron, re.DOTALL).findall(data)
 
-    for scrapedurl, scrapedtitle in matches:
+    for scrapedtitle, scrapedurl  in matches:
         title = scrapertools.decodeHtmlentities(scrapedtitle)
         itemlist.append(
                 Item(channel=__channel__,
@@ -254,13 +208,13 @@ def serie80(item):
 
     data = scrapertools.cache_page(item.url)
 
-    patron = '<a href="#" class="dropdown-toggle wide-nav-link" data-toggle="dropdown">Serie anni 80<b class="caret"></b></a>(.*?)<li class="dropdown">'
-    data = scrapertools.find_single_match(data, patron)
+#    patron = '<a href="#" class="dropdown-toggle wide-nav-link" data-toggle="dropdown">Serie anni 80<b class="caret"></b></a>(.*?)<li class="dropdown">'
+#    data = scrapertools.find_single_match(data, patron)
 
-    patron = '<a.*?href="([^"]+)">(.*?)</a></li>'
+    patron = '<li class=".*?" ><a title="([^"]+)" alt=".*?" href="([^"]+)">.*?</a></li>'
     matches = re.compile(patron, re.DOTALL).findall(data)
 
-    for scrapedurl, scrapedtitle in matches:
+    for scrapedtitle, scrapedurl in matches:
         title = scrapertools.decodeHtmlentities(scrapedtitle)
         itemlist.append(
                 Item(channel=__channel__,
@@ -381,6 +335,47 @@ def serie(item):
 
     return itemlist
 
+def findvid(item):
+    logger.info("[filmsubitotv.py] findvideos")
+
+    # Descarga la página
+    data = scrapertools.cache_page(item.url)
+
+    # ---------------------------------------------------------------
+    servers = {
+        '2': 'http://embed.nowvideo.li/embed.php?v=%s',
+        '11': 'https://openload.co/embed/%s/',
+        '16': 'http://youwatch.org/embed-%s-640x360.html',
+        '17': 'http://youwatch.org/embed-%s-640x360.html',
+        '21': 'http://vidto.me/embed-%s',
+        '22': 'http://www.exashare.com/embed-%s-700x400.html',
+        '23': 'http://videomega.tv/cdn.php?ref=%s&width=700&height=430',
+        '29': 'http://embed.novamov.com/embed.php?v=%s',
+        '30': 'http://streamin.to/embed-%s-700x370.html'
+    }
+
+    patron = "=.setupNewPlayer.'([^']+)','(\d+)'"
+    matches = re.compile(patron, re.DOTALL).findall(data)
+
+    data = ""
+    for video_id, i in matches:
+        try:
+            data += servers[i] % video_id + "\n"
+        except:
+            pass
+    # ---------------------------------------------------------------
+
+    itemlist = servertools.find_video_items(data=data)
+
+    for videoitem in itemlist:
+        videoitem.title = "".join([item.title, videoitem.title])
+        videoitem.fulltitle = item.fulltitle
+        videoitem.thumbnail = item.thumbnail
+        videoitem.show = item.show
+        videoitem.channel = __channel__
+
+    return itemlist	
+	
 def HomePage(item):
     import xbmc
     xbmc.executebuiltin("ReplaceWindow(10024,plugin://plugin.video.streamondemand)")
