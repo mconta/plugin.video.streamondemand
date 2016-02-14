@@ -78,18 +78,18 @@ def run():
 
         # El resto de acciones vienen en el parámetro "action", y el canal en el parámetro "channel"
         else:
-            
-            if action=="mainlist" and config.get_setting("updatechannels")=="true":
-                try:
-                    from core import updater
-                    actualizado = updater.updatechannel(channel_name)
 
-                    if actualizado:
-                        import xbmcgui
-                        advertencia = xbmcgui.Dialog()
-                        advertencia.ok("plugin",channel_name,config.get_localized_string(30063))
-                except:
-                    pass
+            # if action == "mainlist" and config.get_setting("updatechannels") == "true":
+            #     try:
+            #         from core import updater
+            #         actualizado = updater.updatechannel(channel_name)
+            #
+            #         if actualizado:
+            #             import xbmcgui
+            #             advertencia = xbmcgui.Dialog()
+            #             advertencia.ok("plugin", channel_name, config.get_localized_string(30063))
+            #     except:
+            #         pass
             
 
             # La acción puede estar en el core, o ser un canal regular. El buscador es un canal especial que está en pelisalacarta

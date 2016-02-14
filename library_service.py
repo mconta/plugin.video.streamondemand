@@ -24,28 +24,30 @@
 # Service for updating new episodes on library series
 #------------------------------------------------------------
 
-# -- Update servertools and servers from repository pelisalacarta.italiano ------
+# -- Update channels from repository streamondemand ------
+try:
+    from core import update_channels
+except:
+    logger.info("streamondemand.library_service Error in update_channels")
+# ----------------------------------------------------------------------
+
+# -- Update servertools and servers from repository streamondemand ------
 try:
     from core import update_servers
 except:
-    logger.info("streamondemand.library_service Error en update_servers")
+    logger.info("streamondemand.library_service Error in update_servers")
 # ----------------------------------------------------------------------
 
-import urlparse,urllib2,urllib,re
 import os
-import sys
-import xbmc,time
 
-from core import scrapertools
+import xbmc
+
 from core import config
 from core import logger
 from core.item import Item
-from servers import servertools
 
 logger.info("streamondemand.library_service Actualizando series...")
 from platformcode import library
-from platformcode import launcher
-import xbmcgui
 import imp
 
 directorio = os.path.join(config.get_library_path(),"SERIES")
