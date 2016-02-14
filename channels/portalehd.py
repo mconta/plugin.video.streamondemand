@@ -24,14 +24,13 @@ __language__ = "IT"
 
 DEBUG = config.get_setting("debug")
 
-host = "http://www.portalehd.net"
+host = "http://www.portalehd.net/"
 
 headers = [
     ['User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:38.0) Gecko/20100101 Firefox/38.0'],
     ['Accept-Encoding', 'gzip, deflate'],
     ['Referer', host]
 ]
-
 
 def isGeneric():
     return True
@@ -131,7 +130,7 @@ def peliculas(item):
 
     # Extrae las entradas (carpetas)
     patron = '<div class="ThreeTablo T-FilmBaslik">\s*'
-    patron += '<h2><a href="([^"]+)"[^>]+>(.*?)</a></h2>\s*'
+    patron += '<h2><a href="([^"]+)" title="([^"]+)">.*?</h2>\s*'
     patron += '</div>\s*'
     patron += '<a[^>]+>\s*'
     patron += '<figure><img src="([^"]+)"[^>]+>'
@@ -184,10 +183,6 @@ def peliculas(item):
 
     return itemlist
 
-def HomePage(item):
-    import xbmc
-    xbmc.executebuiltin("ReplaceWindow(10024,plugin://plugin.video.streamondemand)")
-
 def findvideos(item):
     logger.info("[portalehd.py] findvideos")
 
@@ -205,7 +200,6 @@ def findvideos(item):
 
     return itemlist
 
-
 def anti_cloudflare(url):
     # global headers
 
@@ -222,3 +216,7 @@ def anti_cloudflare(url):
         scrapertools.get_headers_from_response(host + "/" + resp_headers['refresh'][7:], headers=headers)
 
     return scrapertools.cache_page(url, headers=headers)
+	
+def HomePage(item):
+    import xbmc
+    xbmc.executebuiltin("ReplaceWindow(10024,plugin://plugin.video.streamondemand)")
