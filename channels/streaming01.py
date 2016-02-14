@@ -103,13 +103,23 @@ def peliculas(item):
     matches = re.compile(patron, re.DOTALL).findall(data)
 
     for scrapedurl, scrapedthumbnail, scrapedtitle in matches:
-        html = scrapertools.cache_page(scrapedurl)
-        start = html.find("<div class=\"full-text clearfix desc-text\">")
-        end = html.find("<table>", start)
-        scrapedplot = html[start:end]
-        scrapedplot = re.sub(r'<.*?>', '', scrapedplot)
-        scrapedplot = scrapertools.decodeHtmlentities(scrapedplot)
-        scrapedtitle = scrapedtitle.replace("Streaming download gratis ", "")
+ #		COMMENTING PLOT LINES BECAUSE CHANNELS' TOO SLOW
+ #       html = scrapertools.cache_page(scrapedurl)
+ #       start = html.find("<div class=\"full-text clearfix desc-text\">")
+ #       end = html.find("<table>", start)
+ #       scrapedplot = html[start:end]
+ #       scrapedplot = re.sub(r'<.*?>', '', scrapedplot)
+ #       scrapedplot = scrapertools.decodeHtmlentities(scrapedplot)
+        scrapedtitle = scrapedtitle.replace("Streaming ", "")
+        scrapedtitle = scrapedtitle.replace(" e download", "")
+        scrapedtitle = scrapedtitle.replace("gratis", "")
+        scrapedtitle = scrapedtitle.replace("streaming", "")
+        scrapedtitle = scrapedtitle.replace("ita", "")
+        scrapedtitle = scrapedtitle.replace("ITA", "")
+        scrapedtitle = scrapedtitle.replace("download", "")
+        scrapedtitle = scrapedtitle.replace("GRATIS", "")
+        scrapedtitle = scrapedtitle.replace("[", "")
+        scrapedtitle = scrapedtitle.replace("]", "")
         scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle)
         if DEBUG: logger.info(
                 "title=[" + scrapedtitle + "], url=[" + scrapedurl + "], thumbnail=[" + scrapedthumbnail + "]")
@@ -121,7 +131,6 @@ def peliculas(item):
                      title="[COLOR azure]" + scrapedtitle + "[/COLOR]",
                      url=scrapedurl,
                      thumbnail=scrapedthumbnail,
-                     plot=scrapedplot,
                      folder=True))
 
     # Extrae el paginador
