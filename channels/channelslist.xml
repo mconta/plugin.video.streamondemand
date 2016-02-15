@@ -631,7 +631,7 @@
     <version>5</version>
     <adult>false</adult>
     <date>15/02/2016</date>
-    <changes>Added correct icon</changes>
+    <changes>rewrite for site changes</changes>
     <categories>
         <category>movie</category>
     </categories>
