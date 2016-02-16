@@ -283,6 +283,8 @@ def channels_list():
     #itemlist.append( Item( title="[COLOR azure]GriffinITA Streaming[/COLOR]"      , channel="griffinita"           , language="IT"    , category="S"   , type="generic",thumbnail="http://griffinitastreaming.altervista.org/images/logo.png"))
     #itemlist.append( Item( title="[COLOR azure]Hubberfilm[/COLOR]"          , channel="hubberfilm"           , language="IT"    , category="F,S,A"   , type="generic"))
     #itemlist.append( Item( title="[COLOR azure]ildocumento.it[/COLOR]"      , channel="ildocumento"           , language="IT"    , category="D"   , type="generic"))
+    itemlist.append( Item( title="[COLOR white]HDGratis.net[/COLOR]"        , channel="hdgratis"       , language="IT"    , category="F"       , type="generic" ,	thumbnail="http://imgur.com/4mt0Df1"))
+
     itemlist.append( Item( title="[COLOR azure]HD-Streaming.it[/COLOR]"        , channel="hdstreamingit"       , language="IT"    , category="F,3"       , type="generic" ,	thumbnail="http://www.hd-streaming.it/wp-content/uploads/2015/10/hdstreaminglogo.png"))
     itemlist.append( Item( title="[COLOR azure]Hokuto no Ken[/COLOR]", channel="hokutonoken", language="IT"  , type="generic" , category="A", thumbnail="http://i.imgur.com/dn9ImTf.jpg"))
     itemlist.append( Item( title="[COLOR azure]Instreaming.info[/COLOR]"      , channel="instreaminginfo"           , language="IT"    , category="F"   , type="generic", thumbnail="http://i.imgur.com/Ho1Q9or.png" ))
