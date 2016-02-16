@@ -358,7 +358,7 @@ def findvideos(item):
                     itemlist.append(
                             Item(server='directo',
                                  action="play",
-                                 title=' - [Player]' if media_label == '' else ' - [Player - quality: %sp]' % media_label,
+                                 title=' - [Player]' if media_label == '' else ' - [Player: quality %s]' % media_label,
                                  url=media_url,
                                  folder=False))
                 continue
