@@ -68,7 +68,7 @@
     <active>true</active>
     <include_in_global_search>false</include_in_global_search>
     <version>1</version>
-    <adult>false</version>
+    <adult>false</adult>
     <date>28/08/2015</date>
     <changes>First streamondemand.4 release</changes>
 </channel>
@@ -244,7 +244,7 @@
     <active>true</active>
     <include_in_global_search>false</include_in_global_search>
     <version>8</version>
-    <adult>false</version>
+    <adult>false</adult>
     <date>26/10/2015</date>
     <changes>Quick fix</changes>
     <categories>
@@ -728,7 +728,7 @@
     <active>true</active>
     <include_in_global_search>false</include_in_global_search>
     <version>1</version>
-    <adult>false</version>
+    <adult>false</adult>
     <date>09/11/2015</date>
     <changes>Prima versione di Pastebin</changes>
     <categories>
@@ -821,7 +821,7 @@
     <active>true</active>
     <include_in_global_search>false</include_in_global_search>
     <version>3</version>
-    <adult>false</version>
+    <adult>false</adult>
     <date>06/10/2015</date>
     <changes>First streamondemand.4 release</changes>
 </channel>
@@ -904,7 +904,7 @@
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
     <version>2</version>
-    <adult>false</version>
+    <adult>false</adult>
     <date>22/10/2015</date>
     <changes>added channel</changes>
     <categories>
@@ -1009,7 +1009,7 @@
     <active>true</active>
     <include_in_global_search>false</include_in_global_search>
     <version>3</version>
-    <adult>false</version>
+    <adult>false</adult>
     <date>21/11/2015</date>
     <changes>Bypass new redir</changes>
     <categories>
@@ -1026,7 +1026,7 @@
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
     <version>1</version>
-    <adult>false</version>
+    <adult>false</adult>
     <date>28/08/2015</date>
     <changes>Prima versione di Pelisalacarta 4</changes>
     <categories>
@@ -1047,7 +1047,7 @@
     <active>true</active>
     <include_in_global_search>false</include_in_global_search>
     <version>4</version>
-    <adult>false</version>
+    <adult>false</adult>
     <date>03/02/2016</date>
     <changes>Fixes</changes>
     <categories>
@@ -1081,7 +1081,7 @@
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
     <version>3</version>
-    <adult>false</version>
+    <adult>false</adult>
     <date>03/09/2015</date>
     <changes>Cambio viewmode</changes>
     <categories>
