@@ -12,6 +12,7 @@ from unicodedata import normalize
 
 import xbmc
 import xbmcgui
+import xbmcaddon
 
 from core import scrapertools
 
@@ -34,8 +35,20 @@ host = "http://www.ibs.it"
 
 DEBUG = config.get_setting("debug")
 
+TMDB_KEY = 'f7f51775877e0bb6703520952b3c7840'
+try:
+    TMDBaddon = xbmcaddon.Addon('metadata.themoviedb.org')
+    TMDBpath = TMDBaddon.getAddonInfo('path')
+    with open('%s/tmdb.xml'%TMDBpath, 'r') as tmdbfile:
+        tmdbxml = tmdbfile.read()
+    api_key_match = re.search('\?api_key=([\da-fA-F]+)\&amp;', tmdbxml)
+    if api_key_match:
+        TMDB_KEY = api_key_match.group(1)
+        logger.info('streamondemand.biblioteca use metadata.themoviedb.org api_key')
+except Exception, e:
+    pass
+
 TMDB_URL_BASE = 'http://api.themoviedb.org/3/'
-TMDB_KEY = base64.urlsafe_b64decode('NTc5ODNlMzFmYjQzNWRmNGRmNzdhZmI4NTQ3NDBlYTk=')
 TMDB_IMAGES_BASEURL = 'http://image.tmdb.org/t/p/'
 INCLUDE_ADULT = 'true' if config.get_setting("enableadultmode") else 'false'
 LANGUAGE_ID = 'it'
