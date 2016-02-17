@@ -879,7 +879,9 @@ def play(item):
         try:
             data = scrapertools.get_match(data, 'window.location.href = "([^"]+)";')
         except IndexError:
-            data = scrapertools.get_match(data, r'<a href="([^"]+)">clicca qui</a>')
+#            data = scrapertools.get_match(data, r'<a href="([^"]+)">clicca qui</a>')
+#   In alternativa, dato che a volte compare "Clicca qui per proseguire":
+            data = scrapertools.get_match(data, r'<a href="([^"]+)".*?>clicca.*?</a>')
         print "##### play go.php data ##\n%s\n##" % data
     elif "/link/" in item.url:
         data = anti_cloudflare(item.url)
