@@ -36,17 +36,17 @@ host = "http://www.ibs.it"
 DEBUG = config.get_setting("debug")
 
 TMDB_KEY = 'f7f51775877e0bb6703520952b3c7840'
-try:
-    TMDBaddon = xbmcaddon.Addon('metadata.themoviedb.org')
-    TMDBpath = TMDBaddon.getAddonInfo('path')
-    with open('%s/tmdb.xml'%TMDBpath, 'r') as tmdbfile:
-        tmdbxml = tmdbfile.read()
-    api_key_match = re.search('\?api_key=([\da-fA-F]+)\&amp;', tmdbxml)
-    if api_key_match:
-        TMDB_KEY = api_key_match.group(1)
-        logger.info('streamondemand.biblioteca use metadata.themoviedb.org api_key')
-except Exception, e:
-    pass
+#try:
+#    TMDBaddon = xbmcaddon.Addon('metadata.themoviedb.org')
+#    TMDBpath = TMDBaddon.getAddonInfo('path')
+#    with open('%s/tmdb.xml'%TMDBpath, 'r') as tmdbfile:
+#        tmdbxml = tmdbfile.read()
+#    api_key_match = re.search('\?api_key=([\da-fA-F]+)\&amp;', tmdbxml)
+#    if api_key_match:
+#        TMDB_KEY = api_key_match.group(1)
+#        logger.info('streamondemand.biblioteca use metadata.themoviedb.org api_key')
+#except Exception, e:
+#    pass
 
 TMDB_URL_BASE = 'http://api.themoviedb.org/3/'
 TMDB_IMAGES_BASEURL = 'http://image.tmdb.org/t/p/'
@@ -297,8 +297,8 @@ def search_person_by_name(item, search_terms):
                 break
 
         extracmds = [
-            (NLS_Info_Person, "RunScript(script.extendedinfo,info=extendedactorinfo,id=%d)" % tmdb_tag(person, 'id'))] \
-            if xbmc.getCondVisibility('System.HasAddon(script.extendedinfo)') else []
+            (NLS_Info_Person, "RunScript(_script.extendedinfo,info=extendedactorinfo,id=%d)" % tmdb_tag(person, 'id'))] \
+            if xbmc.getCondVisibility('System.HasAddon(_script.extendedinfo)') else []
 
         itemlist.append(Item(
                 channel=item.channel,
@@ -396,8 +396,8 @@ def build_movie_list(item, movies):
             extrameta["Rating"] = rating
             extrameta["Votes"] = "%d" % votes
 
-        extracmds = [(NLS_Info_Title, "RunScript(script.extendedinfo,info=extendedinfo,id=%d)" % tmdb_tag(movie, 'id'))] \
-            if xbmc.getCondVisibility('System.HasAddon(script.extendedinfo)') else []
+        extracmds = [(NLS_Info_Title, "RunScript(_script.extendedinfo,info=extendedinfo,id=%d)" % tmdb_tag(movie, 'id'))] \
+            if xbmc.getCondVisibility('System.HasAddon(_script.extendedinfo)') else []
 
         found = False
         kodi_db_movies = kodi_database_movies(title)
