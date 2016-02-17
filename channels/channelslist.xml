@@ -81,10 +81,10 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/biblioteca.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>31</version>
+    <version>32</version>
     <adult>false</adult>
     <date>26/11/2015</date>
-    <changes>Smail fix customization</changes>
+    <changes>Fetch the TMDB API key from the metadata.themoviedb.org addon by giordiz999</changes>
     <categories>
         <category>movie</category>
         <category>serie</category>
