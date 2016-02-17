@@ -35,7 +35,7 @@ host = "http://www.ibs.it"
 DEBUG = config.get_setting("debug")
 
 TMDB_URL_BASE = 'http://api.themoviedb.org/3/'
-TMDB_KEY = base64.urlsafe_b64decode('NTc5ODNlMzFmYjQzNWRmNGRmNzdhZmI4NTQ3NDBlYTk=')
+TMDB_KEY = 'f7f51775877e0bb6703520952b3c7840'
 TMDB_IMAGES_BASEURL = 'http://image.tmdb.org/t/p/'
 INCLUDE_ADULT = 'true' if config.get_setting("enableadultmode") else 'false'
 LANGUAGE_ID = 'it'
