@@ -21,12 +21,12 @@ local_folder = os.path.join(config.get_runtime_path(), "channels")
 
 ### Procedures
 def update_channels():
-    xml = scrapertools.cache_page(remote_url + "channelslist.xml")
-    remote_dict = read_channels_list(xml)
-
     with open(os.path.join(local_folder, "channelslist.xml"), 'rb') as f:
         xml = f.read()
     local_dict = read_channels_list(xml)
+
+    xml = scrapertools.cache_page(remote_url + "channelslist.xml")
+    remote_dict = read_channels_list(xml)
 
     # ----------------------------
     import xbmcgui
@@ -61,7 +61,7 @@ def update_channels():
 def read_channels_list(xml):
     ret = {}
     patron = r"<channel>\s*<id>([^<]+)</id>.*?<update_url>([^<]+)</update_url>.*?<version>([^<]+)</version>.*?</channel>"
-    for channel_id, update_url, active, version, date, changes in re.compile(patron).findall(xml):
+    for channel_id, update_url, version in re.compile(patron, re.DOTALL).findall(xml):
         ret[channel_id] = [update_url, int(version)]
 
     return ret
@@ -69,4 +69,3 @@ def read_channels_list(xml):
 
 ### Run
 Thread(target=update_channels).start()
-
