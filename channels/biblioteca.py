@@ -297,8 +297,8 @@ def search_person_by_name(item, search_terms):
                 break
 
         extracmds = [
-            (NLS_Info_Person, "RunScript(_script.extendedinfo,info=extendedactorinfo,id=%d)" % tmdb_tag(person, 'id'))] \
-            if xbmc.getCondVisibility('System.HasAddon(_script.extendedinfo)') else []
+            (NLS_Info_Person, "RunScript(script.extendedinfo,info=extendedactorinfo,id=%s)" % str(tmdb_tag(person, 'id')))] \
+            if xbmc.getCondVisibility('System.HasAddon(script.extendedinfo)') else []
 
         itemlist.append(Item(
                 channel=item.channel,
@@ -396,8 +396,8 @@ def build_movie_list(item, movies):
             extrameta["Rating"] = rating
             extrameta["Votes"] = "%d" % votes
 
-        extracmds = [(NLS_Info_Title, "RunScript(_script.extendedinfo,info=extendedinfo,id=%d)" % tmdb_tag(movie, 'id'))] \
-            if xbmc.getCondVisibility('System.HasAddon(_script.extendedinfo)') else []
+        extracmds = [(NLS_Info_Title, "RunScript(script.extendedinfo,info=extendedinfo,id=%s)" % str(tmdb_tag(movie, 'id')))] \
+            if xbmc.getCondVisibility('System.HasAddon(script.extendedinfo)') else []
 
         found = False
         kodi_db_movies = kodi_database_movies(title)
