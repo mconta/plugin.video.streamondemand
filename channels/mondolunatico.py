@@ -101,7 +101,7 @@ def peliculas(item):
                  viewmode="movie_with_plot"))
 
     # Extrae el paginador
-    patronvideos = '<a class="nextpostslink" rel="next" href="([^"]+)">»</a>'
+    patronvideos = '<a class="nextpostslink" rel="next" href="([^"]+)">'
     matches = re.compile(patronvideos, re.DOTALL).findall(data)
 
     if len(matches) > 0:
