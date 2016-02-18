@@ -231,12 +231,13 @@ def peliculas(item):
     data = scrapertools.cache_page(item.url)
 
     # Extrae las entradas (carpetas)
-    patron = '<h2 class="art-postheader"><a href="([^"]+)"[^>]+>(.*?)</a></h2>'
+    patron = '<h2 class="art-postheader"><a href="([^"]+)"[^>]+>(.*?)</a></h2>.*?'
+    patron += '<img width[^s]+src="(.*?)"'
     matches = re.compile(patron, re.DOTALL).findall(data)
 
-    for scrapedurl, scrapedtitle in matches:
+    for scrapedurl, scrapedtitle, scrapedthumbnail in matches:
         scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle.replace("Streaming", ""))
-        scrapedthumbnail = ""
+        #scrapedthumbnail = ""
         scrapedplot = ""
         if DEBUG: logger.info(
             "title=[" + scrapedtitle + "], url=[" + scrapedurl + "], thumbnail=[" + scrapedthumbnail + "]")
