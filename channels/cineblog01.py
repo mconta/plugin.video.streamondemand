@@ -165,7 +165,11 @@ def peliculasrobalo(item):
             scrapedplot = ""
             if (DEBUG): logger.info(
                 "title=[" + scrapedtitle + "], url=[" + scrapedurl + "], thumbnail=[" + scrapedthumbnail + "]")
-
+            itemlist.append(
+                Item(channel=__channel__,
+                     action="HomePage",
+                     title="[COLOR yellow]Torna Home[/COLOR]",
+                     folder=True)),
             itemlist.append(
                 Item(channel=__channel__,
                      action="peliculasrobalo",
@@ -232,7 +236,11 @@ def peliculas(item):
             scrapedplot = ""
             if (DEBUG): logger.info(
                 "title=[" + scrapedtitle + "], url=[" + scrapedurl + "], thumbnail=[" + scrapedthumbnail + "]")
-
+            itemlist.append(
+                Item(channel=__channel__,
+                     action="HomePage",
+                     title="[COLOR yellow]Torna Home[/COLOR]",
+                     folder=True)),
             itemlist.append(
                 Item(channel=__channel__,
                      action="peliculas",
@@ -407,6 +415,11 @@ def listserie(item):
     # Put the next page mark
     try:
         next_page = scrapertools.get_match(data, "<link rel='next' href='([^']+)'")
+        itemlist.append(
+            Item(channel=__channel__,
+                 action="HomePage",
+                 title="[COLOR yellow]Torna Home[/COLOR]",
+                 folder=True)),
         itemlist.append(
             Item(channel=__channel__,
                  action="listserie",
@@ -650,6 +663,11 @@ def listanime(item):
     # Put the next page mark
     try:
         next_page = scrapertools.get_match(data, "<link rel='next' href='([^']+)'")
+        itemlist.append(
+            Item(channel=__channel__,
+                 action="HomePage",
+                 title="[COLOR yellow]Torna Home[/COLOR]",
+                 folder=True)),
         itemlist.append(
             Item(channel=__channel__,
                  action="listanime",
@@ -929,4 +947,10 @@ def anti_cloudflare(url):
         scrapertools.get_headers_from_response(sito + "/" + resp_headers['refresh'][7:], headers=headers)
 
     return scrapertools.cache_page(url, headers=headers)
+
+def HomePage(item):
+    import xbmc
+    xbmc.executebuiltin("ReplaceWindow(10024,plugin://plugin.video.streamondemand)")
+
+
 
