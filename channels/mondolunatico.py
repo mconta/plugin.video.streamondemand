@@ -22,9 +22,9 @@ __type__ = "generic"
 __title__ = "Mondo Lunatico"
 __language__ = "IT"
 
-host = "http://mondolunatico.altervista.org"
+host = "http://mondolunatico.org"
 
-captcha_url = '%s/offline/script/CaptchaSecurityImages.php?width=100&height=40&characters=5' % host
+captcha_url = '%s/pass/CaptchaSecurityImages.php?width=100&height=40&characters=5' % host
 
 headers = [
     ['User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:38.0) Gecko/20100101 Firefox/38.0'],
@@ -44,7 +44,7 @@ def mainlist(item):
     itemlist = [Item(channel=__channel__,
                      title="[COLOR azure]Novità[/COLOR]",
                      action="peliculas",
-                     url="%s/blog/" % host,
+                     url=host,
                      thumbnail="http://orig03.deviantart.net/6889/f/2014/079/7/b/movies_and_popcorn_folder_icon_by_matheusgrilo-d7ay4tw.png"),
                 Item(channel=__channel__,
                      title="[COLOR yellow]Cerca...[/COLOR]",
@@ -56,7 +56,7 @@ def mainlist(item):
 
 def search(item, texto):
     logger.info("[mondolunatico.py] " + item.url + " search " + texto)
-    item.url = host + "/blog/?s=" + texto
+    item.url = host + "/?s=" + texto
     try:
         return peliculas(item)
     # Se captura la excepción, para no interrumpir al buscador global si un canal falla
@@ -141,7 +141,7 @@ def findvideos(item):
         videoitem.channel = __channel__
 
     # Extrae las entradas
-    patron = r'noshade>(.*?)<br>.*?<a href="(http://mondolunatico\.altervista\.org/offline/script/index\.php\?ID=[^"]+)"'
+    patron = r'noshade>(.*?)<br>.*?<a href="(http://mondolunatico\.org/pass/index\.php\?ID=[^"]+)"'
     matches = re.compile(patron, re.DOTALL).findall(data)
     for scrapedtitle, scrapedurl in matches:
         scrapedtitle = scrapedtitle.replace('*', '').replace('Streaming', '').strip()

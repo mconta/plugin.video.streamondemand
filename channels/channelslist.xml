@@ -695,10 +695,10 @@
     </update_url>
     <active>true</active>
     <include_in_global_search>false</include_in_global_search>
-    <version>3</version>
+    <version>4</version>
     <adult>false</adult>
-    <date>05/09/2015</date>
-    <changes>new</changes>
+    <date>18/02/201</date>
+    <changes>new domain</changes>
     <categories>
         <category>movie</category>
     </categories>
