@@ -81,7 +81,7 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/biblioteca.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>33</version>
+    <version>34</version>
     <adult>false</adult>
     <date>17/02/2016</date>
     <changes>Change TMDB API key and temporary ignoring Extended Info Script _</changes>
