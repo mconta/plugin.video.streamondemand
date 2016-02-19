@@ -25,18 +25,11 @@ __type__ = "generic"
 __title__ = "solostreaming"
 __language__ = "IT"
 
-DEBUG = True
+DEBUG = True #config.get_setting("debug")
 
 host = "http://solo-streaming.com"
 serietvhost = "http://serietv.solo-streaming.com/"
-''''
-if sys.version[0] == '2':
-    print "Python 2"
-    print "Encoding: " + sys.getdefaultencoding()
-    reload(sys)
-    sys.setdefaultencoding("utf-8")
-    print "Encoding: " + sys.getdefaultencoding()
-'''
+
 
 def isGeneric():
     return True
@@ -61,7 +54,7 @@ def mainlist(item):
                      thumbnail="http://solo-streaming.com/images/sod/serietv3_225x330.jpg"),
                 Item(channel=__channel__,
                      title="[B][COLOR royalblue][SERIE TV][/COLOR][/B] [B][COLOR deepskyblue]CERCA...[/COLOR][/B]",
-                     action="elencoserie",
+                     action="search",
                      #url="%s/sod/api.php?get=serietv&type=elenco&order=alphabetic" % host,
                      thumbnail="http://solo-streaming.com/images/sod/serietv4_225x330.jpg"),
                  Item(channel=__channel__,
@@ -224,9 +217,11 @@ def replaceshitchar(string):
             ">": "&gt;",
             "<": "&lt;",
             "'": "&rsquo;",
-            "e": "&egrave;",
+            "e'": "&egrave;",
             "'": "&#8217;",
-            "-": "&#8211;"
+            "-": "&#8211;",
+            "a'": "&agrave;",
+            "...": "&#8230;",
             }
     
     
@@ -380,14 +375,14 @@ def singleepisodios(item):
   
   
 def serietv(item):
-    logger.info("streamondemand.solostreaming serietv")
-    logger.info("[solostreaming.py] " + item.url)
-    print "[solostreaming.py] " + item.url
+    #logger.info("streamondemand.solostreaming serietv")
+    logger.info("[streamondemand.solostreaming serietv] " + item.url)
+    #print "[solostreaming.py] " + item.url
     itemlist = []
 
     # Descarga la pagina
     data = cache_jsonpage(item.url)
-    print "[solostreaming.py] " + str(data)
+    #print "[solostreaming.py] " + str(data)
     
     totalresults = data["total_results"]
     
@@ -397,10 +392,10 @@ def serietv(item):
         itemlist.append(
             Item(channel=__channel__,
                  action="episodios",
-                 fulltitle=serie,
-                 show=serie,
-                 title=serie,
-                 url=serie,
+                 fulltitle="[B][COLOR deepskyblue]" + serie + "[/COLOR][/B]",
+                 show="[B][COLOR deepskyblue]" + serie + "[/COLOR][/B]",
+                 title="[B][COLOR deepskyblue]" + serie + "[/COLOR][/B]",
+                 url=singledata['uri'],
                  thumbnail=singledata['fileName'],
                  plot=scrapedplot,
                  folder=True))
@@ -422,7 +417,8 @@ def HomePage(item):
     
 def search(item, texto):
     logger.info("[solostreaming.py] " + item.url + " search " + texto)
-    item.url = "%s/?s=%s" % (host, texto)
+    #http://solo-streaming.com/sod/api.php?get=serietv&type=data&serie=
+    item.url = "%s/sod/api.php?get=serietv&type=data&serie=%s" % (host, texto)
     try:
         return serietv(item)
     # Se captura la excepción, para no interrumpir al buscador global si un canal falla
@@ -442,30 +438,34 @@ def episodios(item):
     itemlist = []
 
     ## Descarga la página
-    print hosturi + item.url
+    #print hosturi + item.url
     data = cache_jsonpage(hosturi + item.url)
-    print str(data)
-    print str(item)
+    #print str(data)
+    #print str(item)
     for singledata in data:
-        print singledata['ep_num'] + " - " + singledata['ep_title'] +" (" + singledata['type'] + ")"
-        print singledata
+        
+        titolo = replaceshitchar(singledata['ep_title']).strip().lower().capitalize()
+        #print singledata['ep_num'] + " - " + singledata['ep_title'] +" (" + singledata['type'] + ")"
+        #print singledata
         #for link in singledata['links']:
             #print link
         link = ""
         for singlelink in singledata['links']:
             link+=str(singlelink) + " "
-        print link
+        #print link
         itemlist.append(
             Item(channel=__channel__,
                  action="findvid_serie",
-                 title=singledata['ep_num'] + " - " + singledata['ep_title'] +" (" + singledata['type'] + ")",
+                 title= "[COLOR white](" +  singledata['type'].upper() + ") [B][COLOR deepskyblue]- " 
+                     + singledata['ep_num'] + " " 
+                     + titolo + "[/COLOR][/B]",
                  url=item.url,
                  thumbnail=item.thumbnail,
                  extra=link,
                  fulltitle=item.title,
                  show=item.title))
 
-    print "itemlist" + str(itemlist)
+    #print "itemlist" + str(itemlist)
     
     if config.get_library_support() and len(itemlist) != 0:
         itemlist.append(
