@@ -254,23 +254,6 @@
 
 
 <channel>
-    <id>effettolunatico</id>
-    <name>Effettolunatico</name>
-    <language>it</language>
-    <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/effettolunatico.py</update_url>
-    <active>true</active>
-    <include_in_global_search>false</include_in_global_search>
-    <version>6</version>
-    <adult>false</adult>
-    <date>11/12/2015</date>
-    <changes>Added search</changes>
-    <categories>
-        <category>movie</category>
-    </categories>
-</channel>
-
-
-<channel>
     <id>eurostreaming</id>
     <name>Eurostreaming</name>
     <language>it</language>

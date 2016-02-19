@@ -264,7 +264,7 @@ def channels_list():
     itemlist.append( Item( title="[COLOR azure]Darkstream[/COLOR]"        , channel="darkstream"       , language="IT"    , category="F"       , type="generic"))
     itemlist.append( Item( title="[COLOR azure]Documentari Streaming[/COLOR]"  , channel="documentaristreaming"           , language="IT"    , category="D"   , type="generic"))
     #itemlist.append( Item( title="[COLOR azure]Documoo[/COLOR]"      , channel="documoo"           , language="IT"    , category="D"   , type="generic"))
-    itemlist.append( Item( title="[COLOR azure]Effetto Lunatico[/COLOR]"       , channel="effettolunatico"           , language="IT"    , category="F"    , type="generic", thumbnail="http://effettolunatico.altervista.org/forum/images/Future/misc/logoblack.png"))
+    #itemlist.append( Item( title="[COLOR azure]Effetto Lunatico[/COLOR]"       , channel="effettolunatico"           , language="IT"    , category="F"    , type="generic", thumbnail="http://effettolunatico.altervista.org/forum/images/Future/misc/logoblack.png"))
     itemlist.append( Item( title="[COLOR azure]Eurostreaming[/COLOR]"       , channel="eurostreaming"           , language="IT"    , category="F,S"    , type="generic"))
     itemlist.append( Item( title="[COLOR azure]Eurostreaminginfo[/COLOR]"          , channel="eurostreaminginfo"           , language="IT"    , category="F,S"   , type="generic",thumbnail="http://eurostreaming.info/wp-content/uploads/2014/03/logo-e1423479492469.png"))
     #itemlist.append( Item( title="[COLOR azure]Fastvideo.tv[/COLOR]"        , channel="fastvideotv"       , language="IT"    , category="F"       , type="generic"))
