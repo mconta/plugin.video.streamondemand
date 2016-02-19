@@ -6,6 +6,8 @@
 # ------------------------------------------------------------
 import re
 import sys
+import time
+import urllib2
 import urlparse
 
 from core import config
@@ -24,7 +26,11 @@ DEBUG = config.get_setting("debug")
 
 host = "http://cinemano.net"
 
-imninjas_url = "http://www.internetmarketingninjas.com/header-checker/?url="
+headers = [
+    ['User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:38.0) Gecko/20100101 Firefox/38.0'],
+    ['Accept-Encoding', 'gzip, deflate'],
+    ['Referer', host]
+]
 
 def isGeneric():
     return True
@@ -54,11 +60,12 @@ def categorias(item):
     itemlist = []
 
     # Descarga la pagina
-    data = scrapertools.cache_page(item.url)
+    # data = scrapertools.cache_page(item.url)
+    data = anti_cloudflare(item.url)
     bloque = scrapertools.get_match(data, '<ul class="scrolling cat">(.*?)</ul>')
 
     # Extrae las entradas (carpetas)
-    patron = '<li class[^>]+><a href="(.*?)" >(.*?)</a>[^>]+>[^>]+>\s*</li>'
+    patron = '<li class[^>]+><a href="(.*?)" >(.*?)</a>[^>]+>[^>]+>'
     matches = re.compile(patron, re.DOTALL).findall(bloque)
 
     for scrapedurl, scrapedtitle in matches:
@@ -67,7 +74,7 @@ def categorias(item):
         if DEBUG: logger.info("title=[" + scrapedtitle + "], url=[" + scrapedurl + "]")
         itemlist.append(
             Item(channel=__channel__,
-                 action="peliculas",
+                 action="peli_cat",
                  title="[COLOR azure]" + scrapedtitle + "[/COLOR]",
                  url=scrapedurl,
                  thumbnail="http://xbmc-repo-ackbarr.googlecode.com/svn/trunk/dev/skin.cirrus%20extended%20v2/extras/moviegenres/All%20Movies%20by%20Genre.png",
@@ -89,20 +96,99 @@ def search(item, texto):
         return []
 
 
+def peli_cat(item):
+    logger.info("streamondemand.cinemano peliculas")
+    itemlist = []
+
+    # Descarga la pagina
+    #data = scrapertools.cache_page(item.url)
+
+    data = anti_cloudflare(item.url)
+
+    ## ------------------------------------------------
+    cookies = ""
+    matches = re.compile('(.cinenano.net.*?)\n', re.DOTALL).findall(config.get_cookie_data())
+    for cookie in matches:
+        name = cookie.split('\t')[5]
+        value = cookie.split('\t')[6]
+        cookies += name + "=" + value + ";"
+    headers.append(['Cookie', cookies[:-1]])
+    import urllib
+    _headers = urllib.urlencode(dict(headers))
+    ## ------------------------------------------------
+
+    # Extrae las entradas (carpetas)
+    patron = '<div class="image">\s*<a href="([^"]+)"><img src="([^"]+)" alt="([^"]+)" />'
+    matches = re.compile(patron, re.DOTALL).findall(data)
+
+    for scrapedurl, scrapedthumbnail, scrapedtitle in matches:
+        scrapedplot = ""
+        scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle)
+        scrapedplot = scrapertools.decodeHtmlentities(scrapedplot)
+        if DEBUG: logger.info(
+            "title=[" + scrapedtitle + "], url=[" + scrapedurl + "], thumbnail=[" + scrapedthumbnail + "]")
+        itemlist.append(
+            Item(channel=__channel__,
+                 action="findvideos",
+                 fulltitle=scrapedtitle,
+                 show=scrapedtitle,
+                 title="[COLOR azure]" + scrapedtitle + "[/COLOR]",
+                 url=scrapedurl,
+                 thumbnail=scrapedthumbnail,
+                 plot=scrapedplot,
+                 folder=True))
+
+    # Extrae el paginador
+    patronvideos = '<link rel="next" href="(.*?)" />'
+    matches = re.compile(patronvideos, re.DOTALL).findall(data)
+
+    if len(matches) > 0:
+        scrapedurl = urlparse.urljoin(item.url, matches[0])
+        itemlist.append(
+            Item(channel=__channel__,
+                 action="HomePage",
+                 title="[COLOR yellow]Torna Home[/COLOR]",
+                 folder=True)),
+        itemlist.append(
+            Item(channel=__channel__,
+                 action="peliculas",
+                 title="[COLOR orange]Successivo >>[/COLOR]",
+                 url=scrapedurl,
+                 thumbnail="http://2.bp.blogspot.com/-fE9tzwmjaeQ/UcM2apxDtjI/AAAAAAAAeeg/WKSGM2TADLM/s1600/pager+old.png",
+                 folder=True))
+
+    return itemlist
+
 def peliculas(item):
     logger.info("streamondemand.cinemano peliculas")
     itemlist = []
 
     # Descarga la pagina
-    data = scrapertools.cache_page(item.url)
+    #data = scrapertools.cache_page(item.url)
+
+    data = anti_cloudflare(item.url)
+
+    ## ------------------------------------------------
+    cookies = ""
+    matches = re.compile('(.cinenano.net.*?)\n', re.DOTALL).findall(config.get_cookie_data())
+    for cookie in matches:
+        name = cookie.split('\t')[5]
+        value = cookie.split('\t')[6]
+        cookies += name + "=" + value + ";"
+    headers.append(['Cookie', cookies[:-1]])
+    import urllib
+    _headers = urllib.urlencode(dict(headers))
+    ## ------------------------------------------------
 
     # Extrae las entradas (carpetas)
-    patron = 'class="item">\s*<a href="(.*?)">\s*[^>]+>\s*<img src="(.*?)"[^>]+>\s*[^>]+>[^>]+>\s*[^>]+>[^>]+>[^>]+>[^>]+>[^>]+>[^>]+>[^>]+>\s*[^>]+>\s*[^>]+>\s*[^>]+>(.*?)</span>\s*[^>]+>\s*(.*?)<'
+    patron = '<div class="boxinfo">\s*<a href="([^=]+)">\s*<span class="tt">(.*?)</span>\s*<span class="ttx">\s*([^<]+)<'
     matches = re.compile(patron, re.DOTALL).findall(data)
 
-    for scrapedurl, scrapedthumbnail, scrapedtitle, scrapedplot in matches:
+    for scrapedurl, scrapedtitle, scrapedplot in matches:
         #scrapedplot = ""
+        scrapedthumbnail = ""
         scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle)
+        scrapedplot = scrapertools.decodeHtmlentities(scrapedplot)
         if DEBUG: logger.info(
             "title=[" + scrapedtitle + "], url=[" + scrapedurl + "], thumbnail=[" + scrapedthumbnail + "]")
         itemlist.append(
@@ -140,5 +226,22 @@ def peliculas(item):
 def HomePage(item):
     import xbmc
     xbmc.executebuiltin("ReplaceWindow(10024,plugin://plugin.video.streamondemand)")
+
+def anti_cloudflare(url):
+    # global headers
+
+    try:
+        resp_headers = scrapertools.get_headers_from_response(url, headers=headers)
+        resp_headers = dict(resp_headers)
+    except urllib2.HTTPError, e:
+        resp_headers = e.headers
+
+    if 'refresh' in resp_headers:
+        time.sleep(int(resp_headers['refresh'][:1]))
+
+        scrapertools.get_headers_from_response(host + '/' + resp_headers['refresh'][7:], headers=headers)
+
+    return scrapertools.cache_page(url, headers=headers)
+
 
 
