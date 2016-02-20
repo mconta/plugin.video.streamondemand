@@ -406,7 +406,7 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/filmsubitotv.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>8</version>
+    <version>9</version>
     <adult>false</adult>
     <date>14/02/2016</date>
     <changes>Modifiche</changes>
@@ -851,7 +851,7 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/seriehd.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>15</version>
+    <version>16</version>
     <adult>false</adult>
     <date>25/10/2015</date>
     <changes>Aggiunto anti-cloudflare</changes>
