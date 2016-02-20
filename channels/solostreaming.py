@@ -362,7 +362,6 @@ def findvid_serie(item):
     if item.extra != "":
         data = item.extra
     else:
-        print item.url
         data = cache_jsonpage(item.url)
         data = ' '.join(data[0]['links'])
 
