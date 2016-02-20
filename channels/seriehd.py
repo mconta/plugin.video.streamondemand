@@ -118,6 +118,7 @@ def fichas(item):
 
     for scrapedtitle, scrapedthumbnail, scrapedurl in matches:
         scrapedthumbnail += "|" + _headers
+        scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle).strip()
 
         itemlist.append(
                 Item(channel=__channel__,
