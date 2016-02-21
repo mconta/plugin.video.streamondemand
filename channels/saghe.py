@@ -9,7 +9,6 @@ import datetime
 import json
 import re
 import urllib
-import animesubita
 
 from core import config
 from core import logger
@@ -24,7 +23,8 @@ __language__ = "IT"
 
 DEBUG = config.get_setting("debug")
 
-tmdb_key = base64.urlsafe_b64decode('NTc5ODNlMzFmYjQzNWRmNGRmNzdhZmI4NTQ3NDBlYTk=')
+tmdb_key = 'f7f51775877e0bb6703520952b3c7840'
+#tmdb_key = base64.urlsafe_b64decode('NTc5ODNlMzFmYjQzNWRmNGRmNzdhZmI4NTQ3NDBlYTk=')
 dttime = (datetime.datetime.utcnow() - datetime.timedelta(hours=5))
 systime = dttime.strftime('%Y%m%d%H%M%S%f')
 today_date = dttime.strftime('%Y-%m-%d')
