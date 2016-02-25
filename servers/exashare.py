@@ -7,16 +7,13 @@
 # ------------------------------------------------------------
 
 import re
-import time
 
 from core import logger
 from core import scrapertools
 
 headers = [
     ['User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:38.0) Gecko/20100101 Firefox/38.0'],
-    ['Accept-Encoding', 'gzip, deflate, lzma'],
-    ['Connection', 'keep-alive'],
-    ['Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8']]
+    ['Accept-Encoding', 'gzip, deflate, lzma']]
 
 
 def test_video_exists(page_url):
@@ -36,31 +33,22 @@ def get_video_url(page_url, premium=False, user="", password="", video_password=
 
     data = scrapertools.cache_page(page_url, headers=headers)
 
-    time.sleep(10)
+    try:
+        page_url = re.search('src="([^"]+)', data).group(1)
+    except:
+        return video_urls
 
-    post_url = re.findall('form method="POST" action=\'(.*)\'', data)[0]
-    post_selected = re.findall('form method="POST" action=(.*)</Form>', data, re.DOTALL)[0]
-
-    post_data = 'op=%s&usr_login=%s&id=%s&fname=%s&referer=%s&hash=%s&imhuman=Proceed+to+video' % (
-        re.findall('input type="hidden" name="op" value="(.*)"', post_selected)[0],
-        re.findall('input type="hidden" name="usr_login" value="(.*)"', post_selected)[0],
-        re.findall('input type="hidden" name="id" value="(.*)"', post_selected)[0],
-        re.findall('input type="hidden" name="fname" value="(.*)"', post_selected)[0],
-        re.findall('input type="hidden" name="referer" value="(.*)"', post_selected)[0],
-        re.findall('input type="hidden" name="hash" value="(.*)"', post_selected)[0])
-
-    headers.append(['Referer', page_url])
-    data = scrapertools.cache_page(post_url, post=post_data, headers=headers)
+    data = scrapertools.cache_page(page_url, headers=headers)
 
     # URL del vídeo
-    url = re.findall('file:\s*"([^"]+)"', data)[0]
+    url = re.search('file\s*:\s*"(http.+?)"', data)
+    if url:
+        url = url.group(1)
+        video_urls.append([scrapertools.get_filename_from_url(url)[-4:] + " [exashare]", url])
 
-    video_urls.append([scrapertools.get_filename_from_url(url)[-4:] + " [exashare]", url])
-
-    return video_urls
+    return video_urls  # Encuentra vídeos del servidor en el texto pasado
 
 
-# Encuentra vídeos del servidor en el texto pasado
 def find_videos(text):
     encontrados = set()
     devuelve = []
@@ -72,7 +60,7 @@ def find_videos(text):
 
     for media_id in matches:
         titulo = "[exashare]"
-        url = 'http://www.exashare.com/%s' % media_id
+        url = 'http://exashare.com/embed-%s.html' % media_id
         if url not in encontrados:
             logger.info("  url=" + url)
             devuelve.append([titulo, url, 'exashare'])
