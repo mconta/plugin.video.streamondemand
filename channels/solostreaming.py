@@ -114,9 +114,9 @@ def elencoserieletter(item):
     for singledata in data['results']:
 
         if item.extra == 'serietv':
-            serie = normalize_unicode(scrapertools.decodeHtmlentities(singledata['serieNome'])).strip()
+            serie = scrapertools.decodeHtmlentities(normalize_unicode(singledata['serieNome'])).strip()
         else:
-            serie = normalize_unicode(scrapertools.decodeHtmlentities(singledata['serie'])).strip()
+            serie = scrapertools.decodeHtmlentities(normalize_unicode(singledata['serie'])).strip()
 
         scrapedplot = ""
         frm_title = "[B][COLOR deepskyblue]%s[/COLOR][/B]" % serie
