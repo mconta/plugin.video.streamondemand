@@ -70,7 +70,7 @@ def mainlist(item):
                      extra="anime",
                      thumbnail="http://solo-streaming.com/images/sod/anime2_225x330.jpg"),
                 Item(channel=__channel__,
-                     title="[B][COLOR springgreen][ANIME][/COLOR][/B] [B][COLOR deepskyblue]ELENCO COMPLETO SERIE TV[/COLOR][/B]",
+                     title="[B][COLOR springgreen][ANIME][/COLOR][/B] [B][COLOR deepskyblue]ELENCO COMPLETO ANIME[/COLOR][/B]",
                      action="elencoserie",
                      extra="anime",
                      thumbnail="http://solo-streaming.com/images/sod/anime3_225x330.jpg"),
