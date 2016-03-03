@@ -58,23 +58,7 @@ def peliculas(item):
 
 
     # Extrae las entradas (carpetas)
-    patron = '<a class="vw-post-box-thumbnail" href="(.*?)"[^>]+>\s*<img[^=]+=[^=]+=[^=]+="(.*?)"[^>]+>'
-    #patron = '<img[^s]+src="(.*?)"[^>]+>[^<]+<[^<]+<[^<]+<[^<]+<[^<]+</a>\s*'
-    #patron += '<div[^>]+>\s*'
-    #patron += '<div[^<]+<[^<]+<[^<]+</div>\s*'
-    #patron += '<h3[^>]+>\s*'
-    #patron += '<a href="(.*?)"[^>]+>\s*'
-    #patron += '(.*?)</a>\s*'
-    #patron += '</h3>\s*'
-    #patron += '<div[^>]+>\s*'
-    #patron += '<span[^>]+>\s*'
-    #patron += '<a[^<]+<[^<]+</a>\s*'
-    #patron += '<a[^<]+</a>\s*'
-    #patron += '</span>\s*'
-    #patron += '<span[^<]+</span>\s*'
-    #patron += '<a[^<]+<[^<]+<[^<]+<[^<]+<[^<]+</a>\s*'
-    #patron += '</div>\s*'
-    #patron += '<div[^>]+><p>(.*?)</p>'
+    patron = '<a class="vw-post-box-thumbnail" href="([^"]+)"[^>]+>\s*<img[^s]+src="([^"]+)"[^>]+>'
     matches = re.compile(patron, re.DOTALL).findall(data)
     scrapertools.printMatches(matches)
 
@@ -82,7 +66,7 @@ def peliculas(item):
         #scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle).strip()
         #scrapedplot = scrapertools.decodeHtmlentities(scrapedplot)
         scrapedplot = ""
-        scrapedtitle = scrapedurl
+        scrapedtitle=scrapedurl
         scrapedtitle=scrapertools.decodeHtmlentities(scrapedtitle.replace("http://documentaristreaming.net/",""))
         scrapedtitle=scrapertools.decodeHtmlentities(scrapedtitle.replace("-"," "))
         scrapedtitle=scrapertools.decodeHtmlentities(scrapedtitle.replace("/",""))
@@ -101,7 +85,7 @@ def peliculas(item):
                  folder=True))
 
     # Extrae el paginador
-    patronvideos = '<a class="next page-numbers" href="(.*?)"><i class="icon-iconic-right"></i></a>'
+    patronvideos = '<a class="next page-numbers" href="(.*?)">'
     matches = re.compile(patronvideos, re.DOTALL).findall(data)
     scrapertools.printMatches(matches)
 
@@ -134,12 +118,12 @@ def categorias(item):
     logger.info(data)
 
     # Narrow search by selecting only the combo
-    start = data.find('<ul class="sub-menu menu-odd  menu-depth-1">')
+    start = data.find('<ul class="vw-widget-category-list">')
     end = data.find('</ul>', start)
     bloque = data[start:end]
 
     # The categories are the options for the combo  
-    patron = '<li class=[^>]+><a.*?href="(.*?)"[^>]+><span>(.*?)</span></a></li>'
+    patron = '<a class="vw-widget-category-title vw-header-font" href="([^"]+)" title="View posts in ([^"]+)"[^>]+>'
     matches = re.compile(patron, re.DOTALL).findall(bloque)
     scrapertools.printMatches(matches)
 
