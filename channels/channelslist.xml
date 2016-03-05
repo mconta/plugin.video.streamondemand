@@ -166,7 +166,7 @@
 
 <channel>
     <id>cinemalibero</id>
-    <name>inemalibero</name>
+    <name>Cinemalibero</name>
     <language>it</language>
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/cinemalibero.py</update_url>
     <active>true</active>
