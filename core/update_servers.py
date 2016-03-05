@@ -47,7 +47,7 @@ def update_servers():
             progress.update(percentage, ' Update server: ' + server_id)
             # ----------------------------
 
-    for server_id in set(local_dict.keys()) - set(remote_dict.keys()):
+    for server_id in local_dict.viewkeys() - remote_dict.viewkeys():
         os.remove(os.path.join(local_folder, server_id + ".py"))
 
     with open(os.path.join(local_folder, "serverlist.xml"), 'wb') as f:

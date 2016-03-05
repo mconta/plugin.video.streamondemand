@@ -228,7 +228,7 @@ def searchSubtitle(item):
         playlist = xbmc.PlayList( xbmc.PLAYLIST_VIDEO )
         playlist.clear()
         playlist.add( full_path_video_new, listitem )
-        xbmcPlayer = xbmc.Player(  xbmc.PLAYER_CORE_AUTO )
+        xbmcPlayer = xbmc.Player()
         xbmcPlayer.play(playlist)
 
         #xbmctools.launchplayer(full_path_video_new,listitem)
