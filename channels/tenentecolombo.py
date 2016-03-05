@@ -45,10 +45,11 @@ def peliculas( item ):
     data = scrapertools.cache_page( item.url )
 
     ## Extrae las entradas (carpetas)
-    patron  = '<a href="http://put[^>]+>(.*?)</a>.*?.htm.(.*?)"[^>]+>Openload</a>'
+    patron  = '<br>\s*<a href="([^"]+)"[^>]+>(.*?)</a>[^_]+_[^>]+>Openload<'
+    #patron  = '<a href="http://put[^>]+>(.*?)</a>.*?.htm.(.*?)"[^>]+>Openload</a>'
     matches = re.compile( patron, re.DOTALL ).findall( data )
 
-    for scrapedtitle,scrapedurl in matches:
+    for scrapedurl, scrapedtitle in matches:
         scrapedplot = ""
         scrapedthumbnail = ""
         title = scrapertools.decodeHtmlentities( scrapedtitle )
