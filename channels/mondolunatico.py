@@ -47,12 +47,58 @@ def mainlist(item):
                      url=host,
                      thumbnail="http://orig03.deviantart.net/6889/f/2014/079/7/b/movies_and_popcorn_folder_icon_by_matheusgrilo-d7ay4tw.png"),
                 Item(channel=__channel__,
+                     title="[COLOR azure]Categorie[/COLOR]",
+                     action="categorias",
+                     url=host,
+                     thumbnail="http://xbmc-repo-ackbarr.googlecode.com/svn/trunk/dev/skin.cirrus%20extended%20v2/extras/moviegenres/All%20Movies%20by%20Genre.png"),
+                Item(channel=__channel__,
                      title="[COLOR yellow]Cerca...[/COLOR]",
                      action="search",
                      thumbnail="http://dc467.4shared.com/img/fEbJqOum/s7/13feaf0c8c0/Search")]
 
     return itemlist
 
+def categorias(item):
+    logger.info("streamondemand.mondolunatico categorias")
+    itemlist = []
+
+    data = scrapertools.cache_page(item.url)
+
+    # Narrow search by selecting only the combo
+    bloque = scrapertools.get_match(data, '<option class="level-0" value="7">(.*?)<option class="level-0" value="8">')
+
+    # The categories are the options for the combo
+    patron = '<option class=[^=]+="([^"]+)">(.*?)<'
+    matches = re.compile(patron, re.DOTALL).findall(bloque)
+
+    for scrapedurl, scrapedtitle in matches:
+        scrapedtitle=scrapertools.decodeHtmlentities(scrapedtitle.replace("&nbsp;",""))
+        scrapedtitle=scrapertools.decodeHtmlentities(scrapedtitle.replace("(",""))
+        scrapedtitle=scrapertools.decodeHtmlentities(scrapedtitle.replace(")",""))
+        scrapedtitle=scrapertools.decodeHtmlentities(scrapedtitle.replace("0",""))
+        scrapedtitle=scrapertools.decodeHtmlentities(scrapedtitle.replace("1",""))
+        scrapedtitle=scrapertools.decodeHtmlentities(scrapedtitle.replace("2",""))
+        scrapedtitle=scrapertools.decodeHtmlentities(scrapedtitle.replace("3",""))
+        scrapedtitle=scrapertools.decodeHtmlentities(scrapedtitle.replace("4",""))
+        scrapedtitle=scrapertools.decodeHtmlentities(scrapedtitle.replace("5",""))
+        scrapedtitle=scrapertools.decodeHtmlentities(scrapedtitle.replace("6",""))
+        scrapedtitle=scrapertools.decodeHtmlentities(scrapedtitle.replace("7",""))
+        scrapedtitle=scrapertools.decodeHtmlentities(scrapedtitle.replace("8",""))
+        scrapedtitle=scrapertools.decodeHtmlentities(scrapedtitle.replace("9",""))
+        scrapedurl= "http://mondolunatico.org/category/film-per-genere/"+scrapedtitle
+        scrapedthumbnail = ""
+        scrapedplot = ""
+        if (DEBUG): logger.info(
+                "title=[" + scrapedtitle + "], url=[" + scrapedurl + "], thumbnail=[" + scrapedthumbnail + "]")
+        itemlist.append(
+                Item(channel=__channel__,
+                     action="peliculas",
+                     title="[COLOR azure]" + scrapedtitle + "[/COLOR]",
+                     url=scrapedurl,
+                     thumbnail=scrapedthumbnail,
+                     plot=scrapedplot))
+
+    return itemlist
 
 def search(item, texto):
     logger.info("[mondolunatico.py] " + item.url + " search " + texto)

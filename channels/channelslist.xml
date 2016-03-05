@@ -713,10 +713,10 @@
     </update_url>
     <active>true</active>
     <include_in_global_search>false</include_in_global_search>
-    <version>5</version>
+    <version>6</version>
     <adult>false</adult>
-    <date>18/02/201</date>
-    <changes>new domain</changes>
+    <date>05/03/2016</date>
+    <changes>Added category</changes>
     <categories>
         <category>movie</category>
     </categories>
