@@ -64,7 +64,6 @@ def mainlist(item):
              url=host + "/tag/a/",
              thumbnail="http://i.imgur.com/IjCmx5r.png"),
 
-
         Item(channel=__channel__,
              title="[COLOR orange]Cerca...[/COLOR]",
              action="search",
@@ -88,6 +87,7 @@ def search(item, texto):
             logger.error("%s" % line)
         return []
 
+
 def searchfilm(item):
     logger.info("[itastreaming.py] fichas")
 
@@ -97,15 +97,15 @@ def searchfilm(item):
     data = anti_cloudflare(item.url)
     # fix - calidad
     data = re.sub(
-            r'<div class="wrapperImage"[^<]+<a',
-            '<div class="wrapperImage"><fix>SD</fix><a',
-            data
+        r'<div class="wrapperImage"[^<]+<a',
+        '<div class="wrapperImage"><fix>SD</fix><a',
+        data
     )
     # fix - IMDB
     data = re.sub(
-            r'<h5> </div>',
-            '<fix>IMDB: 0.0</fix>',
-            data
+        r'<h5> </div>',
+        '<fix>IMDB: 0.0</fix>',
+        data
     )
     # ------------------------------------------------
     cookies = ""
@@ -118,21 +118,17 @@ def searchfilm(item):
     import urllib
     _headers = urllib.urlencode(dict(headers))
     # ------------------------------------------------
- 
+
     patron = '<li class="s-item">.*?'
     patron += 'src="([^"]+)".*?'
     patron += 'alt="([^"]+)".*?'
     patron += 'href="([^"]+)".*?'
 
-       
-
     matches = re.compile(patron, re.DOTALL).findall(data)
 
-    for scrapedthumbnail, scrapedtitle, scraped_2  in matches:
+    for scrapedthumbnail, scrapedtitle, scraped_2 in matches:
 
         scrapedurl = scraped_2
-        
-
 
         title = scrapertools.decodeHtmlentities(scrapedtitle)
 
@@ -141,27 +137,29 @@ def searchfilm(item):
         # ------------------------------------------------
 
         itemlist.append(
-                Item(channel=__channel__,
-                     action="findvideos",
-                     title=title,
-                     url=scrapedurl,
-                     thumbnail=scrapedthumbnail,
-                     fulltitle=title,
-                     show=scrapedtitle))
+            Item(channel=__channel__,
+                 action="findvideos",
+                 title=title,
+                 url=scrapedurl,
+                 thumbnail=scrapedthumbnail,
+                 fulltitle=title,
+                 show=scrapedtitle))
 
     # Paginación
-	next_page = re.compile('<link rel="next" href="(.+?)"/>', re.DOTALL).findall(data)
-	for page in next_page:
-		next_page = page
+    next_page = re.compile('<link rel="next" href="(.+?)"/>', re.DOTALL).findall(data)
+    for page in next_page:
+        next_page = page
     if next_page != "":
         itemlist.append(
-                Item(channel=__channel__,
-                     action="fichas",
-                     title="[COLOR orange]Successivo >>[/COLOR]",
-                     url=next_page,
-                     thumbnail="http://2.bp.blogspot.com/-fE9tzwmjaeQ/UcM2apxDtjI/AAAAAAAAeeg/WKSGM2TADLM/s1600/pager+old.png"))
+            Item(channel=__channel__,
+                 action="fichas",
+                 title="[COLOR orange]Successivo >>[/COLOR]",
+                 url=next_page,
+                 thumbnail="http://2.bp.blogspot.com/-fE9tzwmjaeQ/UcM2apxDtjI/AAAAAAAAeeg/WKSGM2TADLM/s1600/pager+old.png"))
 
     return itemlist
+
+
 def genere(item):
     logger.info("[itastreaming.py] genere")
     itemlist = []
@@ -169,24 +167,25 @@ def genere(item):
     data = anti_cloudflare(item.url)
     patron = '<a href="http://itastreaming.co/genere/">Genere</a>(.+?)</ul>'
     data = scrapertools.find_single_match(data, patron)
-    
+
     patron = '<li id=".*?'
     patron += 'href="([^"]+)".*?'
     patron += '>([^"]+)</a>'
-    
+
     matches = re.compile(patron, re.DOTALL).findall(data)
     scrapertools.printMatches(matches)
 
     for scrapedurl, scrapedtitle in matches:
-        scrapedtitle = scrapedtitle.replace('&amp;','-')
+        scrapedtitle = scrapedtitle.replace('&amp;', '-')
         itemlist.append(
-                Item(channel=__channel__,
-                     action="fichas",
-                     title=scrapedtitle,
-                     url=scrapedurl,
-                     folder=True))
+            Item(channel=__channel__,
+                 action="fichas",
+                 title=scrapedtitle,
+                 url=scrapedurl,
+                 folder=True))
 
     return itemlist
+
 
 def atoz(item):
     logger.info("[itastreaming.py] genere")
@@ -195,24 +194,25 @@ def atoz(item):
     data = anti_cloudflare(item.url)
     patron = '<div class="generos">(.+?)</ul>'
     data = scrapertools.find_single_match(data, patron)
-    
+
     patron = '<li>.*?'
     patron += 'href="([^"]+)".*?'
     patron += '>([^"]+)</a>'
-    
+
     matches = re.compile(patron, re.DOTALL).findall(data)
     scrapertools.printMatches(matches)
 
     for scrapedurl, scrapedtitle in matches:
-        scrapedtitle = scrapedtitle.replace('&amp;','-')
+        scrapedtitle = scrapedtitle.replace('&amp;', '-')
         itemlist.append(
-                Item(channel=__channel__,
-                     action="fichas",
-                     title=scrapedtitle,
-                     url=scrapedurl,
-                     folder=True))
+            Item(channel=__channel__,
+                 action="fichas",
+                 title=scrapedtitle,
+                 url=scrapedurl,
+                 folder=True))
 
     return itemlist
+
 
 def quality(item):
     logger.info("[itastreaming.py] genere")
@@ -221,25 +221,26 @@ def quality(item):
     data = anti_cloudflare(item.url)
     patron = '<a>Qualità</a>(.+?)</ul>'
     data = scrapertools.find_single_match(data, patron)
-    
+
     patron = '<li id=".*?'
     patron += 'href="([^"]+)".*?'
     patron += '>([^"]+)</a>'
-    
+
     matches = re.compile(patron, re.DOTALL).findall(data)
     scrapertools.printMatches(matches)
 
     for scrapedurl, scrapedtitle in matches:
-        scrapedtitle = scrapedtitle.replace('&amp;','-')
+        scrapedtitle = scrapedtitle.replace('&amp;', '-')
         itemlist.append(
-                Item(channel=__channel__,
-                     action="fichas",
-                     title=scrapedtitle,
-                     url=scrapedurl,
-                     folder=True))
+            Item(channel=__channel__,
+                 action="fichas",
+                 title=scrapedtitle,
+                 url=scrapedurl,
+                 folder=True))
 
     return itemlist
-	
+
+
 def fichas(item):
     logger.info("[itastreaming.py] fichas")
 
@@ -249,15 +250,15 @@ def fichas(item):
     data = anti_cloudflare(item.url)
     # fix - calidad
     data = re.sub(
-            r'<div class="wrapperImage"[^<]+<a',
-            '<div class="wrapperImage"><fix>SD</fix><a',
-            data
+        r'<div class="wrapperImage"[^<]+<a',
+        '<div class="wrapperImage"><fix>SD</fix><a',
+        data
     )
     # fix - IMDB
     data = re.sub(
-            r'<h5> </div>',
-            '<fix>IMDB: 0.0</fix>',
-            data
+        r'<h5> </div>',
+        '<fix>IMDB: 0.0</fix>',
+        data
     )
     # ------------------------------------------------
     cookies = ""
@@ -270,20 +271,17 @@ def fichas(item):
     import urllib
     _headers = urllib.urlencode(dict(headers))
     # ------------------------------------------------
- 
+
     patron = '<div class="item">.*?'
     patron += 'href="([^"]+)".*?'
     patron += 'title="([^"]+)".*?'
     patron += '<img src="([^"]+)".*?'
-       
 
     matches = re.compile(patron, re.DOTALL).findall(data)
 
     for scraped_2, scrapedtitle, scrapedthumbnail in matches:
 
         scrapedurl = scraped_2
-        
-
 
         title = scrapertools.decodeHtmlentities(scrapedtitle)
 
@@ -292,25 +290,25 @@ def fichas(item):
         # ------------------------------------------------
 
         itemlist.append(
-                Item(channel=__channel__,
-                     action="findvideos",
-                     title=title,
-                     url=scrapedurl,
-                     thumbnail=scrapedthumbnail,
-                     fulltitle=title,
-                     show=scrapedtitle))
+            Item(channel=__channel__,
+                 action="findvideos",
+                 title=title,
+                 url=scrapedurl,
+                 thumbnail=scrapedthumbnail,
+                 fulltitle=title,
+                 show=scrapedtitle))
 
     # Paginación
-	next_page = re.compile('<link rel="next" href="(.+?)"/>', re.DOTALL).findall(data)
-	for page in next_page:
-		next_page = page
+    next_page = re.compile('<link rel="next" href="(.+?)"/>', re.DOTALL).findall(data)
+    for page in next_page:
+        next_page = page
     if next_page != "":
         itemlist.append(
-                Item(channel=__channel__,
-                     action="fichas",
-                     title="[COLOR orange]Successivo >>[/COLOR]",
-                     url=next_page,
-                     thumbnail="http://2.bp.blogspot.com/-fE9tzwmjaeQ/UcM2apxDtjI/AAAAAAAAeeg/WKSGM2TADLM/s1600/pager+old.png"))
+            Item(channel=__channel__,
+                 action="fichas",
+                 title="[COLOR orange]Successivo >>[/COLOR]",
+                 url=next_page,
+                 thumbnail="http://2.bp.blogspot.com/-fE9tzwmjaeQ/UcM2apxDtjI/AAAAAAAAeeg/WKSGM2TADLM/s1600/pager+old.png"))
 
     return itemlist
 
@@ -356,11 +354,11 @@ def findvideos(item):
                 patron = r'<source src="([^"]+)"\s*type="video/mp4"(?:\s*data-res="([^"]+)")?'
                 for media_url, media_label in re.compile(patron).findall(tmp_data):
                     itemlist.append(
-                            Item(server='directo',
-                                 action="play",
-                                 title=' - [Player]' if media_label == '' else ' - [Player: quality %s]' % media_label,
-                                 url=media_url,
-                                 folder=False))
+                        Item(server='directo',
+                             action="play",
+                             title=' - [Player]' if media_label == '' else ' - [Player: quality %s]' % media_label,
+                             url=media_url,
+                             folder=False))
                 continue
 
             par2 = eval(par2, {'__builtins__': None}, {})
@@ -381,6 +379,7 @@ def findvideos(item):
         videoitem.channel = __channel__
 
     return itemlist
+
 
 def anti_cloudflare(url):
     try:

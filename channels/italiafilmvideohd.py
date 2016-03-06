@@ -41,7 +41,6 @@ def mainlist(item):
              action="fichas",
              url=host + "/cinema/",
              thumbnail="http://orig03.deviantart.net/6889/f/2014/079/7/b/movies_and_popcorn_folder_icon_by_matheusgrilo-d7ay4tw.png"),
-
         Item(channel=__channel__,
              title="[COLOR azure]Ultimi Film Inseriti[/COLOR]",
              action="fichas",
@@ -52,7 +51,6 @@ def mainlist(item):
              action="genere",
              url=host,
              thumbnail="http://xbmc-repo-ackbarr.googlecode.com/svn/trunk/dev/skin.cirrus%20extended%20v2/extras/moviegenres/All%20Movies%20by%20Genre.png"),
-
         Item(channel=__channel__,
              title="[COLOR orange]Cerca...[/COLOR]",
              action="search",
@@ -85,26 +83,24 @@ def genere(item):
 
     patron = '<div class="sub_title">Genere</div>(.+?)</div>'
     data = scrapertools.find_single_match(data, patron)
-    
+
     patron = '<li>.*?'
     patron += 'href="([^"]+)".*?'
     patron += '<i>([^"]+)</i>'
-    
+
     matches = re.compile(patron, re.DOTALL).findall(data)
     scrapertools.printMatches(matches)
 
     for scrapedurl, scrapedtitle in matches:
-        scrapedtitle = scrapedtitle.replace('&amp;','-')
+        scrapedtitle = scrapedtitle.replace('&amp;', '-')
         itemlist.append(
-                Item(channel=__channel__,
-                     action="fichas",
-                     title=scrapedtitle,
-                     url=scrapedurl,
-                     folder=True))
+            Item(channel=__channel__,
+                 action="fichas",
+                 title=scrapedtitle,
+                 url=scrapedurl,
+                 folder=True))
 
     return itemlist
-
-
 
 
 def fichas(item):
@@ -132,15 +128,12 @@ def fichas(item):
     patron += 'href="([^"]+)".*?'
     patron += 'title="([^"]+)".*?'
     patron += '<img src="([^"]+)".*?'
-       
 
     matches = re.compile(patron, re.DOTALL).findall(data)
 
     for scraped_2, scrapedtitle, scrapedthumbnail in matches:
 
         scrapedurl = scraped_2
-        
-
 
         title = scrapertools.decodeHtmlentities(scrapedtitle)
         # title += " (" + scrapedcalidad + ")
@@ -150,25 +143,26 @@ def fichas(item):
         # ------------------------------------------------
 
         itemlist.append(
-                Item(channel=__channel__,
-                     action="findvideos",
-                     title=title,
-                     url=scrapedurl,
-                     thumbnail=scrapedthumbnail,
-                     fulltitle=title,
-                     show=scrapedtitle))
+            Item(channel=__channel__,
+                 action="findvideos",
+                 title=title,
+                 url=scrapedurl,
+                 thumbnail=scrapedthumbnail,
+                 fulltitle=title,
+                 show=scrapedtitle))
 
     # Paginación
-	next_page = re.compile('<a href="(.+?)" class="single_page" title=".+?">', re.DOTALL).findall(data)
-	for page in next_page:
-		next_page = page
+    next_page = re.compile('<a href="(.+?)" class="single_page" title=".+?">', re.DOTALL).findall(data)
+    for page in next_page:
+        next_page = page
+
     if next_page != "":
         itemlist.append(
-                Item(channel=__channel__,
-                     action="fichas",
-                     title="[COLOR orange]Successivo >>[/COLOR]",
-                     url=next_page,
-                     thumbnail="http://2.bp.blogspot.com/-fE9tzwmjaeQ/UcM2apxDtjI/AAAAAAAAeeg/WKSGM2TADLM/s1600/pager+old.png"))
+            Item(channel=__channel__,
+                 action="fichas",
+                 title="[COLOR orange]Successivo >>[/COLOR]",
+                 url=next_page,
+                 thumbnail="http://2.bp.blogspot.com/-fE9tzwmjaeQ/UcM2apxDtjI/AAAAAAAAeeg/WKSGM2TADLM/s1600/pager+old.png"))
 
     return itemlist
 
@@ -214,11 +208,11 @@ def findvideos(item):
                 patron = r'<source src="([^"]+)"\s*type="video/mp4"(?:\s*data-res="([^"]+)")?'
                 for media_url, media_label in re.compile(patron).findall(tmp_data):
                     itemlist.append(
-                            Item(server='directo',
-                                 action="play",
-                                 title=' - [Player]' if media_label == '' else ' - [Player @%s]' % media_label,
-                                 url=media_url,
-                                 folder=False))
+                        Item(server='directo',
+                             action="play",
+                             title=' - [Player]' if media_label == '' else ' - [Player @%s]' % media_label,
+                             url=media_url,
+                             folder=False))
                 continue
 
             par2 = eval(par2, {'__builtins__': None}, {})
