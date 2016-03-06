@@ -347,13 +347,14 @@ def findvid(item):
     # ---------------------------------------------------------------
     servers = {
         '2': 'http://embed.nowvideo.li/embed.php?v=%s',
+        '3': 'http://speedvideo.net/embed-%s-607x360.html',
+        '4': 'http://www.fastvideo.me/embed-%s-607x360.html',
+        '5': 'http://www.rapidvideo.org/embed-%s-607x360.html',
         '11': 'https://openload.co/embed/%s/',
         '16': 'http://youwatch.org/embed-%s-640x360.html',
-        '17': 'http://youwatch.org/embed-%s-640x360.html',
         '21': 'http://vidto.me/embed-%s',
         '22': 'http://www.exashare.com/embed-%s-700x400.html',
         '23': 'http://videomega.tv/cdn.php?ref=%s&width=700&height=430',
-        '29': 'http://embed.novamov.com/embed.php?v=%s',
         '30': 'http://streamin.to/embed-%s-700x370.html'
     }
 
