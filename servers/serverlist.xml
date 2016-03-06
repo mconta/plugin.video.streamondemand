@@ -220,7 +220,7 @@
     <id>fastvideo</id>
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/servers/fastvideo.py</update_url>
     <active>true</active>
-    <version>2</version>
+    <version>3</version>
     <date>12/09/2015</date>
     <changes>Prima versione di Pelisalacarta 4</changes>
 </server>
@@ -796,7 +796,7 @@
     <id>rapidvideo</id>
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/servers/rapidvideo.py</update_url>
     <active>true</active>
-    <version>6</version>
+    <version>7</version>
     <date>11/02/2016</date>
     <changes>Prima versione di Pelisalacarta 4</changes>
 </server>
