@@ -254,7 +254,7 @@ def channels_list():
     #itemlist.append( Item( title="[COLOR azure]Cine-hd-Streaming[/COLOR]"         , channel="cinehdstreaming"           , language="IT"    , category="F"   , type="generic",thumbnail="https://cinehdstreaming.files.wordpress.com/2015/08/index.jpeg"))
     #itemlist.append( Item( title="[COLOR azure]CineBlog01.FM[/COLOR]"       , channel="cineblogfm"           , language="IT"    , category="F,S"   , type="generic"))
     #itemlist.append( Item( title="[COLOR azure]Cinemagratis[/COLOR]"        , channel="cinemagratis"       , language="IT"    , category="F"       , type="generic"))
-    itemlist.append( Item( title="[COLOR azure]Chimerarevo[/COLOR]"        , channel="chimerarevo"       , language="IT"    , category="D"       , type="generic",thumbnail="http://www.chimerarevo.com/assets/img/chimera-revo.png"))
+    itemlist.append( Item( title="[COLOR azure]Chimerarevo[/COLOR]"        , channel="chimerarevo"       , language="IT"    , category="D"       , type="generic",thumbnail="https://media.licdn.com/media/p/3/005/0a6/099/04a9505.png"))
     #itemlist.append( Item( title="[COLOR azure]Cinefilm[/COLOR]"          , channel="cinefilm"           , language="IT"    , category="F,S"   , type="generic",thumbnail="http://cinefilm.altervista.org/wp-content/uploads/2015/07/logo1.png"))
     itemlist.append( Item( title="[COLOR azure]Cinemalibero[/COLOR]"          , channel="cinemalibero"           , language="IT"    , category="F,S,A,VOS"   , type="generic",thumbnail="http://i.imgur.com/xuz7YWR.png"))
     #itemlist.append( Item( title="[COLOR azure]Cinemano[/COLOR]"          , channel="cinemano"           , language="IT"    , category="F"   , type="generic",thumbnail="http://cinemano.net/wp-content/themes/CINEMANO/images/logo.png"))
