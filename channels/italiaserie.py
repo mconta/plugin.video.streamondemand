@@ -21,7 +21,7 @@ __language__ = "IT"
 
 DEBUG = config.get_setting("debug")
 
-host = "http://www.italiaserie.com"
+host = "http://www.italiaserie.news"
 
 
 def isGeneric():
@@ -31,19 +31,19 @@ def isGeneric():
 def mainlist(item):
     logger.info("streamondemand.filmpertutti mainlist")
     itemlist = [Item(channel=__channel__,
-                     title="[COLOR azure]Tutte Le Serie Tv[/COLOR]",
+                     title="[COLOR azure]Aggiornamenti Serie-TV[/COLOR]",
                      action="peliculas",
                      url=host,
                      thumbnail="http://xbmc-repo-ackbarr.googlecode.com/svn/trunk/dev/skin.cirrus%20extended%20v2/extras/moviegenres/New%20TV%20Shows.png"),
                 Item(channel=__channel__,
-                     title="[COLOR azure]Serie TV - Top 10[/COLOR]",
+                     title="[COLOR azure]Tutte le Serie-TV[/COLOR]",
                      action="peliculas2",
-                     url="%s/top-10/" % host,
-                     thumbnail="http://i.imgur.com/cnnUCXh.png"),
+                     url="%s/lista-completa/" % host,
+                     thumbnail="http://xbmc-repo-ackbarr.googlecode.com/svn/trunk/dev/skin.cirrus%20extended%20v2/extras/moviegenres/New%20TV%20Shows.png"),
                 Item(channel=__channel__,
                      title="[COLOR azure]Sezione Cartoni Animati - Anime[/COLOR]",
                      action="peliculas",
-                     url="%s/genere/anime-e-cartoni/" % host,
+                     url="%s/category/anime-e-cartoon/" % host,
                      thumbnail="http://orig09.deviantart.net/df5a/f/2014/169/2/a/fist_of_the_north_star_folder_icon_by_minacsky_saya-d7mq8c8.png"),
                 Item(channel=__channel__,
                      title="[COLOR yellow]Cerca...[/COLOR]",
@@ -86,7 +86,7 @@ def peliculas(item):
                      folder=True))
 
     # Extrae el paginador
-    patronvideos = '<a class="next page-numbers" href="([^"]+)">Avanti &raquo;</a>'
+    patronvideos = '<a class="next page-numbers" href="(.*?)">Next'
     matches = re.compile(patronvideos, re.DOTALL).findall(data)
 
     if len(matches) > 0:
