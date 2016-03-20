@@ -902,10 +902,10 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/seriehd.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>17</version>
+    <version>18</version>
     <adult>false</adult>
     <date>20/03/2016</date>
-    <changes>fixed hdpass</changes>
+    <changes>reverted hdpass</changes>
     <categories>
         <category>serie</category>
     </categories>
