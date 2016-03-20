@@ -28,6 +28,13 @@ headers = [
     ['Referer', host]
 ]
 
+headers_url = [
+    ['User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:38.0) Gecko/20100101 Firefox/38.0'],
+    ['Accept-Encoding', 'gzip, deflate'],
+    ['Connection', 'keep-alive'],
+    ['Host', 'hdpass.xyz']
+]
+
 
 def isGeneric():
     return True
@@ -325,8 +332,8 @@ def findvideos(item):
 
     url = scrapertools.find_single_match(data, patron)
 
-    if 'hdpass.link' in url:
-        data = scrapertools.cache_page(url, headers=headers)
+    if 'hdpass.xyz' in url:
+        data = scrapertools.cache_page(url, headers=headers_url)
 
         start = data.find('<ul id="mirrors">')
         end = data.find('</ul>', start)
@@ -345,7 +352,7 @@ def findvideos(item):
                 get_data = '%s=%s&%s=%s&%s=%s' % (name1, val1, name2, val2, name4, val4)
             else:
                 get_data = '%s=%s&%s=%s&%s=%s&%s=%s' % (name1, val1, name2, val2, name3, val3, name4, val4)
-            tmp_data = scrapertools.cache_page('http://hdpass.link/film.php?randid=0&' + get_data, headers=headers)
+            tmp_data = scrapertools.cache_page('http://hdpass.xyz/film.php?randid=0&' + get_data, headers=headers_url)
 
             patron = r'; eval\(unescape\("(.*?)",(\[".*?;"\]),(\[".*?\])\)\);'
             try:

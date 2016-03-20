@@ -28,10 +28,10 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/altadefinizioneclick.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>10</version>
+    <version>11</version>
     <adult>false</adult>
-    <date>11/01/2016</date>
-    <changes>Re-added</changes>
+    <date>20/03/2016</date>
+    <changes>fixed hdpass</changes>
     <categories>
         <category>movie</category>
         <category>serie</category>
@@ -498,10 +498,10 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/hdgratis.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>2</version>
+    <version>3</version>
     <adult>false</adult>
-    <date>16/02/2016</date>
-    <changes>added new channel - 21:09 version update test</changes>
+    <date>20/03/2016</date>
+    <changes>fixed hdpass</changes>
     <categories>
         <category>movie</category>
         <category>anime</category>
@@ -607,10 +607,10 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/italiafilmvideohd.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>1</version>
+    <version>2</version>
     <adult>false</adult>
-    <date>13/02/2016</date>
-    <changes>Re-added</changes>
+    <date>20/03/2016</date>
+    <changes>fixed hdpass</changes>
     <categories>
         <category>movie</category>
         <category>anime</category>
@@ -645,7 +645,7 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/italiaserie.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>4</version>
+    <version>5</version>
     <adult>false</adult>
     <date>20/03/2016</date>
     <changes>Changed domain</changes>
@@ -663,9 +663,9 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/itastreaming.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>5</version>
+    <version>6</version>
     <adult>false</adult>
-    <date>16/02/2016</date>
+    <date>20/03/2016</date>
     <changes>fixed hdpass</changes>
     <categories>
         <category>movie</category>
@@ -902,10 +902,10 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/seriehd.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>16</version>
+    <version>17</version>
     <adult>false</adult>
-    <date>25/10/2015</date>
-    <changes>Aggiunto anti-cloudflare</changes>
+    <date>20/03/2016</date>
+    <changes>fixed hdpass</changes>
     <categories>
         <category>serie</category>
     </categories>
@@ -1079,10 +1079,10 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/tenentecolombo.py</update_url>
     <active>true</active>
     <include_in_global_search>false</include_in_global_search>
-    <version>4</version>
+    <version>5</version>
     <adult>false</adult>
-    <date>05/03/2016</date>
-    <changes>Switched to putstream</changes>
+    <date>20/03/2016</date>
+    <changes>Switched to openload</changes>
     <categories>
         <category>Serie</category>
     </categories>
