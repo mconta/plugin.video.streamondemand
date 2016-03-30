@@ -81,10 +81,10 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/biblioteca.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>36</version>
+    <version>37</version>
     <adult>false</adult>
     <date>10/03/2016</date>
-    <changes>Fix by J0rdiZ65</changes>
+    <changes>Fix by kalika303</changes>
     <categories>
         <category>movie</category>
         <category>serie</category>
