@@ -52,7 +52,7 @@ def peliculas(item):
     itemlist = []
 
     # Descarga la pagina
-    data = scrapertools.cache_page(item.url)
+    data = scrapertools.cache_page(item.url, timeout=10)
 
     # Extrae las entradas (carpetas)
     patron = '<A class="tab" HREF="(.*?)"[^>]+>(.*?)</A>'
@@ -61,11 +61,19 @@ def peliculas(item):
 
     for scrapedurl, scrapedtitle in matches:
         scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle)
+        scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle.replace("."," "))
+        title = scrapedtitle.split("(")[0]
+        tmdbtitle = scrapertools.decodeHtmlentities(title)
         url = scrapedurl
         scrapedplot = ""
         scrapedthumbnail = ""
         if (DEBUG): logger.info("title=["+scrapedtitle+"], url=["+url+"], thumbnail=["+scrapedthumbnail+"]")
-        itemlist.append( Item(channel=__channel__, action="play", fulltitle=scrapedtitle, show=scrapedtitle, title="[COLOR darkkhaki].torrent [/COLOR]""[COLOR azure]"+scrapedtitle+"[/COLOR]" , url=url , thumbnail=scrapedthumbnail , plot=scrapedplot , folder=True) )
+        try:
+           plot, fanart, poster, extrameta = info(tmdbtitle, scrapedthumbnail)
+
+           itemlist.append( Item(channel=__channel__, action="play", fulltitle=tmdbtitle, show=tmdbtitle, title="[COLOR darkkhaki].torrent [/COLOR]""[COLOR azure]"+tmdbtitle+"[/COLOR]" , url=url , thumbnail=poster , plot=str(plot) , extrameta=extrameta , fanart=fanart if fanart != "" else poster, folder=True) )
+        except:
+           itemlist.append( Item(channel=__channel__, action="play", fulltitle=scrapedtitle, show=scrapedtitle, title="[COLOR darkkhaki].torrent [/COLOR]""[COLOR azure]"+scrapedtitle+"[/COLOR]" , url=url , thumbnail=scrapedthumbnail , plot=scrapedplot , folder=True) )
 
     # Extrae el paginador
     patronvideos  = '<a href="([^>"]+)">pagine successive'
@@ -92,4 +100,27 @@ def play(item):
     itemlist.append( Item(channel=__channel__, action=play, server="torrent", title=item.title , url=link , thumbnail=item.thumbnail , plot=item.plot , folder=False) )
 
     return itemlist
+
+def info(title, thumbnail):
+    logger.info("streamondemand.corsaronero info")
+    try:
+        from core.tmdb import Tmdb
+        oTmdb= Tmdb(texto_buscado=title, tipo="movie", include_adult="true", idioma_busqueda="it")
+        count = 0
+        if oTmdb.total_results > 0:
+            #Mientras el thumbnail no coincida con el del resultado de la búsqueda, pasa al siguiente resultado
+            while oTmdb.get_poster(size="w185") != thumbnail:
+                count += 1
+                oTmdb.load_resultado(index_resultado=count)
+                if count == oTmdb.total_results : break
+            extrameta = {}
+            extrameta["Year"] = oTmdb.result["release_date"][:4]
+            extrameta["Genre"] = ", ".join(oTmdb.result["genres"])
+            extrameta["Rating"] = float(oTmdb.result["vote_average"])
+            fanart=oTmdb.get_backdrop()
+            poster=oTmdb.get_poster()
+            plot=oTmdb.get_sinopsis()
+            return plot, fanart, poster, extrameta
+    except:
+        pass	
 

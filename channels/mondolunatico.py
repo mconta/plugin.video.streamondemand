@@ -127,24 +127,34 @@ def peliculas(item):
 
     for scrapedurl, scrapedthumbnail, scrapedtitle, in matches:
         scrapedplot = ""
-        #html = scrapertools.cache_page(scrapedurl)
-        #start = html.find("Trama del ")
-        #end = html.find("<div id=\"wrpbody\" class=\"wrphidden\"></div>", start)
-        #scrapedplot = html[start:end]
-        #scrapedplot = re.sub(r'<[^>]*>', '', scrapedplot)
-        #scrapedplot = scrapertools.decodeHtmlentities(scrapedplot)
         title = scrapertools.decodeHtmlentities(scrapedtitle)
+        tmdbtitle = title.split("(")[0]
+        try:
+           plot, fanart, poster, extrameta = info(tmdbtitle, scrapedthumbnail)
 
-        itemlist.append(
-            Item(channel=__channel__,
-                 action="findvideos",
-                 title=title,
-                 url=scrapedurl,
-                 thumbnail=scrapedthumbnail,
-                 fulltitle=title,
-                 show=title,
-                 plot=scrapedplot,
-                 viewmode="movie_with_plot"))
+           itemlist.append(
+               Item(channel=__channel__,
+                    thumbnail=poster,
+                    fanart=fanart if fanart != "" else poster,
+                    extrameta=extrameta,
+                    plot=str(plot),
+                    action="findvideos",
+                    title=title,
+                    url=scrapedurl,
+                    fulltitle=title,
+                    show=title,
+                    folder=True))
+        except:
+           itemlist.append(
+               Item(channel=__channel__,
+                    action="findvideos",
+                    title=title,
+                    url=scrapedurl,
+                    thumbnail=scrapedthumbnail,
+                    fulltitle=title,
+                    show=title,
+                    plot=scrapedplot,
+                    folder=True))
 
     # Extrae el paginador
     patronvideos = '<a class="nextpostslink" rel="next" href="([^"]+)">'
@@ -252,3 +262,27 @@ def play(item):
         itemlist.append(item)
 
     return itemlist
+
+def info(title, thumbnail):
+    logger.info("streamondemand.mondolunatico info")
+    try:
+        from core.tmdb import Tmdb
+        oTmdb= Tmdb(texto_buscado=title, tipo= "movie", include_adult="true", idioma_busqueda="it")
+        count = 0
+        if oTmdb.total_results > 0:
+            #Mientras el thumbnail no coincida con el del resultado de la búsqueda, pasa al siguiente resultado
+            while oTmdb.get_poster(size="w185") != thumbnail:
+                count += 1
+                oTmdb.load_resultado(index_resultado=count)
+                if count == oTmdb.total_results : break
+            extrameta = {}
+            extrameta["Year"] = oTmdb.result["release_date"][:4]
+            extrameta["Genre"] = ", ".join(oTmdb.result["genres"])
+            extrameta["Rating"] = float(oTmdb.result["vote_average"])
+            fanart=oTmdb.get_backdrop()
+            poster=oTmdb.get_poster()
+            plot=oTmdb.get_sinopsis()
+            return plot, fanart, poster, extrameta
+    except:
+        pass	
+

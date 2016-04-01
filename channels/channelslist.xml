@@ -81,10 +81,10 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/biblioteca.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>37</version>
+    <version>36</version>
     <adult>false</adult>
     <date>10/03/2016</date>
-    <changes>Fix by kalika303</changes>
+    <changes>Fix by J0rdiZ65</changes>
     <categories>
         <category>movie</category>
         <category>serie</category>
@@ -114,10 +114,10 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/casacinema.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>8</version>
+    <version>9</version>
     <adult>false</adult>
-    <date>29/11/2015</date>
-    <changes>Added back home</changes>
+    <date>01/04/2016</date>
+    <changes>Added TMDB integration</changes>
     <categories>
         <category>movie</category>
         <category>serie</category>
@@ -208,10 +208,10 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/corsaronero.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>2</version>
+    <version>3</version>
     <adult>false</adult>
-    <date>09/03/2016</date>
-    <changes>.torrent marked</changes>
+    <date>01/04/2016</date>
+    <changes>Addedd TMDB integration</changes>
     <categories>
         <category>movie</category>
     </categories>
@@ -713,10 +713,10 @@
     </update_url>
     <active>true</active>
     <include_in_global_search>false</include_in_global_search>
-    <version>6</version>
+    <version>7</version>
     <adult>false</adult>
-    <date>05/03/2016</date>
-    <changes>Added category</changes>
+    <date>01/04/2016</date>
+    <changes>Added TMDB integration</changes>
     <categories>
         <category>movie</category>
     </categories>
@@ -885,10 +885,10 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/scambioetico.py</update_url>
     <active>true</active>
     <include_in_global_search>false</include_in_global_search>
-    <version>7</version>
+    <version>8</version>
     <adult>false</adult>
-    <date>09/03/2016</date>
-    <changes>.torrent marked</changes>
+    <date>01/04/2016</date>
+    <changes>Added TMDB integration</changes>
     <categories>
         <category>movie</category>
     </categories>

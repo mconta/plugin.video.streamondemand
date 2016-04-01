@@ -1,2 +1,2 @@
-v5.2.3
-- fix system for channels and servers
+v5.2.4
+- integrated TMDB on channels (pre-release)
