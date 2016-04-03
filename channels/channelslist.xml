@@ -462,10 +462,10 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/guardaserie.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>12</version>
+    <version>13</version>
     <adult>false</adult>
     <date>02/04/2016</date>
-    <changes>Added TMDB -experimental-</changes>
+    <changes>Reverted TMDB - too slow-</changes>
     <categories>
         <category>movie</category>
         <category>serie</category>

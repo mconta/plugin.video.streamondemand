@@ -144,29 +144,14 @@ def ultimi(item):
         fulltitle = scrapedtitle[:scrapedtitle.find('-')]
         scrapedurl = urlparse.urljoin(host, scrapedurl)
         scrapedthumbnail = ""
-        try:
-           plot, fanart, poster, extrameta = info_tv(fulltitle, scrapedthumbnail)
 
-           itemlist.append(
-               Item(channel=__channel__,
-                    thumbnail=poster,
-                    fanart=fanart if fanart != "" else poster,
-                    extrameta=extrameta,
-                    plot=str(plot),
-                    action="episodios",
-                    url=scrapedurl,
-                    fulltitle=fulltitle,
-                    title=scrapedtitle,
-                    show=fulltitle,
-                    folder=True))
-        except:
-           itemlist.append(
-               Item(channel=__channel__,
-                    action="episodios",
-                    title=scrapedtitle,
-                    fulltitle=fulltitle,
-                    show=fulltitle,
-                    url=scrapedurl))
+        itemlist.append(
+            Item(channel=__channel__,
+                 action="episodios",
+                 title=scrapedtitle,
+                 fulltitle=fulltitle,
+                 show=fulltitle,
+                 url=scrapedurl))
 
     return itemlist
 
