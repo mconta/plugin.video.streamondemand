@@ -99,7 +99,7 @@ def tvoggi(item):
                     title=scrapedtitle + "[COLOR yellow]   " + scrapedtv + "[/COLOR]",
                     url=scrapedurl,
                     fulltitle=scrapedtitle,
-                    show=scrapedtitle,
+                    extra=titolo,
                     folder=True))
         except:
            itemlist.append(
