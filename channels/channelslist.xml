@@ -114,10 +114,10 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/casacinema.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>9</version>
+    <version>10</version>
     <adult>false</adult>
-    <date>01/04/2016</date>
-    <changes>Added TMDB integration</changes>
+    <date>03/04/2016</date>
+    <changes>fix TMDB integration</changes>
     <categories>
         <category>movie</category>
         <category>serie</category>
@@ -296,10 +296,10 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/eurostreaminginfo.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>3</version>
+    <version>4</version>
     <adult>false</adult>
-    <date>02/04/2016</date>
-    <changes>Added TMDB -experimental-</changes>
+    <date>03/04/2016</date>
+    <changes>Fix TMDB </changes>
     <categories>
         <category>movie</category>
         <category>serie</category>
@@ -713,10 +713,10 @@
     </update_url>
     <active>true</active>
     <include_in_global_search>false</include_in_global_search>
-    <version>7</version>
+    <version>8</version>
     <adult>false</adult>
-    <date>01/04/2016</date>
-    <changes>Added TMDB integration</changes>
+    <date>03/04/2016</date>
+    <changes>Fix TMDB integration</changes>
     <categories>
         <category>movie</category>
     </categories>
@@ -937,10 +937,10 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/solostreaming.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>3</version>
+    <version>5</version>
     <adult>false</adult>
     <date>19/02/2016</date>
-    <changes>Pre-release</changes>
+    <changes>Added TMDB - only on daily updates</changes>
     <categories>
         <category>movie</category>
         <category>serie</category>

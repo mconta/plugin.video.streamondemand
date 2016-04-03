@@ -24,7 +24,8 @@ __language__ = "IT"
 
 host = "http://mondolunatico.org"
 
-captcha_url = '%s/pass/CaptchaSecurityImages.php?width=100&height=40&characters=5' % host
+captcha_url = 'http://www.keeplinks.eu/basiccaptcha/securimage_show.php?sid='
+#captcha_url = '%s/pass/CaptchaSecurityImages.php?width=100&height=40&characters=5' % host
 
 headers = [
     ['User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:38.0) Gecko/20100101 Firefox/38.0'],
@@ -130,7 +131,7 @@ def peliculas(item):
         title = scrapertools.decodeHtmlentities(scrapedtitle)
         tmdbtitle = title.split("(")[0]
         try:
-           plot, fanart, poster, extrameta = info(tmdbtitle, scrapedthumbnail)
+           plot, fanart, poster, extrameta = info(tmdbtitle)
 
            itemlist.append(
                Item(channel=__channel__,
@@ -263,26 +264,21 @@ def play(item):
 
     return itemlist
 
-def info(title, thumbnail):
+def info(title):
     logger.info("streamondemand.mondolunatico info")
     try:
         from core.tmdb import Tmdb
         oTmdb= Tmdb(texto_buscado=title, tipo= "movie", include_adult="true", idioma_busqueda="it")
         count = 0
         if oTmdb.total_results > 0:
-            #Mientras el thumbnail no coincida con el del resultado de la búsqueda, pasa al siguiente resultado
-            while oTmdb.get_poster(size="w185") != thumbnail:
-                count += 1
-                oTmdb.load_resultado(index_resultado=count)
-                if count == oTmdb.total_results : break
-            extrameta = {}
-            extrameta["Year"] = oTmdb.result["release_date"][:4]
-            extrameta["Genre"] = ", ".join(oTmdb.result["genres"])
-            extrameta["Rating"] = float(oTmdb.result["vote_average"])
-            fanart=oTmdb.get_backdrop()
-            poster=oTmdb.get_poster()
-            plot=oTmdb.get_sinopsis()
-            return plot, fanart, poster, extrameta
+           extrameta = {}
+           extrameta["Year"] = oTmdb.result["release_date"][:4]
+           extrameta["Genre"] = ", ".join(oTmdb.result["genres"])
+           extrameta["Rating"] = float(oTmdb.result["vote_average"])
+           fanart=oTmdb.get_backdrop()
+           poster=oTmdb.get_poster()
+           plot=oTmdb.get_sinopsis()
+           return plot, fanart, poster, extrameta
     except:
         pass	
 
