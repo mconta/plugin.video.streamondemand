@@ -95,7 +95,7 @@ def tvoggi(item):
                     fanart=fanart if fanart != "" else poster,
                     extrameta=extrameta,
                     plot=str(plot),
-                    action="findvideos",
+                    action="do_search",
                     title=scrapedtitle + "[COLOR yellow]   " + scrapedtv + "[/COLOR]",
                     url=scrapedurl,
                     fulltitle=scrapedtitle,
