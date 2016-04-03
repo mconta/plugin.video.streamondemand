@@ -331,10 +331,10 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/filmontv.py</update_url>
     <active>true</active>
     <include_in_global_search>false</include_in_global_search>
-    <version>11</version>
+    <version>12</version>
     <adult>false</adult>
-    <date>02/04/2015</date>
-    <changes>Addedd TMDB integration</changes>
+    <date>03/04/2015</date>
+    <changes>Fix TMDB integration</changes>
     <categories>
         <category>movie</category>
         <category>serie</category>
