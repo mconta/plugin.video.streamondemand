@@ -242,10 +242,10 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/darkstream.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>8</version>
+    <version>9</version>
     <adult>false</adult>
-    <date>19/02/2016</date>
-    <changes>Added poster in lists</changes>
+    <date>04/03/2016</date>
+    <changes>Added TMDB</changes>
     <categories>
         <category>movie</category>
         <category>serie</category>
