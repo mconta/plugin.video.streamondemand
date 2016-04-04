@@ -241,9 +241,9 @@ def peliculas(item):
         scrapedplot = ""
         if DEBUG: logger.info(
             "title=[" + scrapedtitle + "], url=[" + scrapedurl + "], thumbnail=[" + scrapedthumbnail + "]")
-        scrapedtitle = scrapedtitle.split("(")[0]
+        tmdbtitle = scrapedtitle.split("(")[0]
         try:
-           plot, fanart, poster, extrameta = info(scrapedtitle)
+           plot, fanart, poster, extrameta = info(tmdbtitle)
 
            itemlist.append(
                Item(channel=__channel__,
