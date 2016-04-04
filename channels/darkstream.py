@@ -360,7 +360,7 @@ def HomePage(item):
     xbmc.executebuiltin("ReplaceWindow(10024,plugin://plugin.video.streamondemand)")
 
 def info(title):
-    logger.info("streamondemand.mondolunatico info")
+    logger.info("streamondemand.darkstream info")
     try:
         from core.tmdb import Tmdb
         oTmdb= Tmdb(texto_buscado=title, tipo= "movie", include_adult="true", idioma_busqueda="it")
