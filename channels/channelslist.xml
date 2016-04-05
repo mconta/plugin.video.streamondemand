@@ -607,10 +607,10 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/italiafilmvideohd.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>2</version>
+    <version>3</version>
     <adult>false</adult>
-    <date>20/03/2016</date>
-    <changes>fixed hdpass</changes>
+    <date>05/04/2016</date>
+    <changes>Added TMDB</changes>
     <categories>
         <category>movie</category>
         <category>anime</category>
@@ -1117,10 +1117,10 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/vediserie.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>6</version>
+    <version>7</version>
     <adult>false</adult>
-    <date>26/10/2015</date>
-    <changes>2nd release: Impaginazione; 3rd: rimozione dei caratteri html da titoli come per GoT; fixata visualizzazione dei titoli nella ricerca. 4th Aggiunta lista alfabetica</changes>
+    <date>05/04/2015</date>
+    <changes>Added TMDB</changes>
     <categories>
         <category>serie</category>
     </categories>
