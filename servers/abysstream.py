@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 # ------------------------------------------------------------
-# pelisalacarta - XBMC Plugin
-# Conector for abysstream.com
+# StreamOnDemand - Kodi Plugin
+# Server per abysstream.com
 # http://blog.tvalacarta.info/plugin-xbmc/pelisalacarta/
 # by DrZ3r0
+# Fix trovato qui (per varie ed eventuali - Zanzibar82) https://github.com/FusionwareIT/FusionBox-repo/
 # ------------------------------------------------------------
 import re
 import urllib
