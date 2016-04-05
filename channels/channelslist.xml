@@ -937,10 +937,10 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/solostreaming.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>5</version>
+    <version>6</version>
     <adult>false</adult>
-    <date>19/02/2016</date>
-    <changes>Added TMDB - only on daily updates</changes>
+    <date>05/04/2016</date>
+    <changes>TMDB - update</changes>
     <categories>
         <category>movie</category>
         <category>serie</category>
