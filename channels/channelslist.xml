@@ -171,10 +171,10 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/cinemalibero.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>5</version>
+    <version>6</version>
     <adult>false</adult>
-    <date>05/01/2016</date>
-    <changes>First release</changes>
+    <date>08/04/2016</date>
+    <changes>Added TMDB</changes>
     <categories>
         <category>movie</category>
         <category>serie</category>
@@ -387,10 +387,10 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/filmstream.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>10</version>
+    <version>11</version>
     <adult>false</adult>
-    <date>08/11/2015</date>
-    <changes>Fix Categorie</changes>
+    <date>08/04/2016</date>
+    <changes>Added TMDB</changes>
     <categories>
         <category>movie</category>
         <category>serie</category>
