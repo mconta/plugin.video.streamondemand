@@ -254,6 +254,7 @@ def findvideos(item):
             except:
                 patron = r'<input type="hidden" name="urlEmbed" data-mirror="([^"]+)" id="urlEmbed" value="([^"]+)"/>'
                 for media_label, media_url in re.compile(patron).findall(tmp_data):
+                    media_label=scrapertools.decodeHtmlentities(media_label.replace("hosting","hdload"))
                     itemlist.append(
                             Item(server=media_label,
                                  action="play",
