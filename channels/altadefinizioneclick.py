@@ -192,8 +192,11 @@ def fichas(item):
         scrapedthumbnail += "|" + _headers
         # ------------------------------------------------
 
+        tmdbtitle1 = scrapedtitle.split("[")[0]
+        tmdbtitle = tmdbtitle1.split("(")[0]
+
         try:
-           plot, fanart, poster, extrameta = info(scrapedtitle)
+           plot, fanart, poster, extrameta = info(tmdbtitle)
 
            itemlist.append(
                Item(channel=__channel__,
@@ -238,11 +241,12 @@ def findvideos(item):
     # Descarga la página
     data = anti_cloudflare(item.url)
 
-    patron = r'<iframe width=".+?" height=".+?" src="([^"]+)" allowfullscreen frameborder="0">'
+    patron = r'<iframe id="iframeVid" width="100%" height="500px" src="([^"]+)" allowfullscreen>'
 
     url = scrapertools.find_single_match(data, patron)
 
     if 'hdpass.xyz' in url:
+        headers.append(['Referer', url])
         data = scrapertools.cache_page(url, headers=headers)
 
         start = data.find('<ul id="mirrors">')
