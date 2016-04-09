@@ -609,10 +609,10 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/italianstream.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>6</version>
+    <version>7</version>
     <adult>false</adult>
-    <date>26/10/2015</date>
-    <changes>Added correct icon</changes>
+    <date>09/04/2016</date>
+    <changes>Added TMDB</changes>
     <categories>
         <category>movie</category>
         <category>serie</category>
@@ -628,10 +628,10 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/italiaserie.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>5</version>
+    <version>6</version>
     <adult>false</adult>
-    <date>20/03/2016</date>
-    <changes>Changed domain</changes>
+    <date>09/04/2016</date>
+    <changes>Added TMDB</changes>
     <categories>
         <category>serie</category>
         <category>anime</category>
