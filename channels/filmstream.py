@@ -34,7 +34,7 @@ def mainlist(item):
     itemlist = [Item(channel=__channel__,
                      title="[COLOR azure]Ultimi Film Inseriti[/COLOR]",
                      action="peliculas",
-                     url="%s/tag/dvd-rip/" % host,
+                     url=host,
                      thumbnail="http://orig03.deviantart.net/6889/f/2014/079/7/b/movies_and_popcorn_folder_icon_by_matheusgrilo-d7ay4tw.png"),
                 Item(channel=__channel__,
                      title="[COLOR azure]Film Per Genere[/COLOR]",
@@ -51,6 +51,14 @@ def mainlist(item):
                      action="peliculas",
                      url="%s/category/serie-tv/" % host,
                      thumbnail="http://xbmc-repo-ackbarr.googlecode.com/svn/trunk/dev/skin.cirrus%20extended%20v2/extras/moviegenres/New%20TV%20Shows.png"),
+
+                Item(channel=__channel__,
+                     title="[COLOR azure]Aggiornamento Serie TV[/COLOR]",
+                     extra="serie",
+                     action="aggiornamenti",
+                     url="%s/serietv/" % host,
+                     thumbnail="http://xbmc-repo-ackbarr.googlecode.com/svn/trunk/dev/skin.cirrus%20extended%20v2/extras/moviegenres/New%20TV%20Shows.png"),
+
                 Item(channel=__channel__,
                      title="[COLOR yellow]Cerca Serie TV...[/COLOR]",
                      action="search",
@@ -104,6 +112,65 @@ def search(item, texto):
             logger.error("%s" % line)
         return []
 
+# FATTO IO
+
+def aggiornamenti(item):
+
+    logger.info("streamondemand.filmstream aggiornamenti")
+    itemlist = []
+    Day_List = []
+    starts = []
+    # Descarga la pagina
+    data = scrapertools.cache_page("http://film-stream.cc/serietv/")
+
+    # Extrae las entradas (carpetas)
+
+    patron = '<span style="color: #ff6600;"><strong>[^<]+'
+    matches = re.compile(patron, re.IGNORECASE).finditer(data)
+    lista = list(matches)
+
+    for match in lista:
+        DAY = match.group(0)
+        if DAY != '':
+            matches = re.search('[^>]+$', DAY)
+            DAY = matches.group(0)
+            Day_List.append(DAY.upper())
+            starts.append(match.end(0))
+
+    i = 1
+    len_Day_List = 10
+
+    while i <= len_Day_List:
+        inizio = starts[i - 1]
+        fine = starts[i]
+
+        html = data[inizio:fine]
+        ToDay = Day_List[i - 1]
+
+        itemlist.append(
+            Item(channel=__channel__,
+                 title="[COLOR yellow]" + ToDay + "[/COLOR]",
+                 folder=True)),
+
+        patron = '<p>[^<]{,10} <a href="http://film-stream.cc/[^<]+'
+        matches = re.compile(patron, re.IGNORECASE).finditer(html)
+        lista = list(matches)
+
+        for match in lista:
+            title = re.search('[^>]+$',match.group(0))
+            link = re.search('"http://.*?"',match.group(0))
+
+            if link is not None and title is not None:
+                itemlist.append(
+                    Item(channel=__channel__,
+                        action="episodios",
+                        fulltitle= title.group(0),
+                        show= title.group(0),
+                        title="[COLOR azure]" + title.group(0) + "[/COLOR]",
+                        url=link.group(0)[1:-1],
+                        folder=True))
+        i += 1
+    return itemlist
 
 def peliculas(item):
     logger.info("streamondemand.filmstream peliculas")
@@ -129,34 +196,17 @@ def peliculas(item):
             scrapedtitle = scrapedtitle[18:]
         if (DEBUG): logger.info(
                 "title=[" + scrapedtitle + "], url=[" + scrapedurl + "], thumbnail=[" + scrapedthumbnail + "]")
-        tmdbtitle1 = scrapedtitle.split("[")[0]
-        tmdbtitle = tmdbtitle1.split("(")[0]
-        try:
-           plot, fanart, poster, extrameta = info(tmdbtitle)
-
-           itemlist.append(
-               Item(channel=__channel__,
-                    thumbnail=poster,
-                    fanart=fanart if fanart != "" else poster,
-                    extrameta=extrameta,
-                    plot=str(plot),
-                    action="episodios" if item.extra == "serie" else "findvideos",
-                    title="[COLOR azure]" + scrapedtitle + "[/COLOR]",
-                    url=scrapedurl,
-                    fulltitle=scrapedtitle,
-                    show=scrapedtitle,
-                    folder=True))
-        except:
-           itemlist.append(
-               Item(channel=__channel__,
-                    action="episodios" if item.extra == "serie" else "findvideos",
-                    fulltitle=scrapedtitle,
-                    show=scrapedtitle,
-                    title="[COLOR azure]" + scrapedtitle + "[/COLOR]",
-                    url=scrapedurl,
-                    thumbnail=scrapedthumbnail,
-                    plot=scrapedplot,
-                    folder=True))
+        itemlist.append(
+                Item(channel=__channel__,
+                     action="episodios" if item.extra == "serie" else "findvideos",
+                     fulltitle=scrapedtitle,
+                     show=scrapedtitle,
+                     title="[COLOR azure]" + scrapedtitle + "[/COLOR]",
+                     url=scrapedurl,
+                     thumbnail=scrapedthumbnail,
+                     plot=scrapedplot,
+                     folder=True,
+                     fanart=scrapedthumbnail))
 
     # Extrae el paginador
     patronvideos = '<li><a href="([^"]+)">&gt;</a></li>'
@@ -356,22 +406,3 @@ def findvid_serie(item):
         videoitem.channel = __channel__
 
     return itemlist
-
-def info(title):
-    logger.info("streamondemand.filmstream info")
-    try:
-        from core.tmdb import Tmdb
-        oTmdb= Tmdb(texto_buscado=title, tipo= "movie", include_adult="true", idioma_busqueda="it")
-        count = 0
-        if oTmdb.total_results > 0:
-           extrameta = {}
-           extrameta["Year"] = oTmdb.result["release_date"][:4]
-           extrameta["Genre"] = ", ".join(oTmdb.result["genres"])
-           extrameta["Rating"] = float(oTmdb.result["vote_average"])
-           fanart=oTmdb.get_backdrop()
-           poster=oTmdb.get_poster()
-           plot=oTmdb.get_sinopsis()
-           return plot, fanart, poster, extrameta
-    except:
-        pass	
-
