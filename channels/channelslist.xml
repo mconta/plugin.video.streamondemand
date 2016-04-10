@@ -663,10 +663,10 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/liberoita.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>10</version>
+    <version>11</version>
     <adult>false</adult>
-    <date>18/01/2016</date>
-    <changes>Re-Added Categories</changes>
+    <date>09/04/2016</date>
+    <changes>Add TMDB</changes>
     <categories>
         <category>movie</category>
     </categories>
@@ -749,10 +749,10 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/pianetastreaming.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>5</version>
+    <version>6</version>
     <adult>false</adult>
-    <date>18/01/2016</date>
-    <changes>Added correct icon</changes>
+    <date>09/04/2016</date>
+    <changes>Added TMDB</changes>
     <categories>
         <category>movie</category>
     </categories>
@@ -766,10 +766,10 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/piratestreaming.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>8</version>
+    <version>9</version>
     <adult>false</adult>
-    <date>19/02/2016</date>
-    <changes>Changed domain</changes>
+    <date>09/04/2016</date>
+    <changes>Added TMDB</changes>
     <categories>
         <category>movie</category>
         <category>serie</category>
@@ -784,10 +784,10 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/playcinema.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>4</version>
+    <version>5</version>
     <adult>false</adult>
-    <date>03/12/2015</date>
-    <changes>Fixed error connection</changes>
+    <date>09/04/2016</date>
+    <changes>Added TMDB</changes>
     <categories>
         <category>movie</category>
     </categories>
@@ -801,10 +801,10 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/portalehd.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>9</version>
+    <version>10</version>
     <adult>false</adult>
-    <date>14/02/2016</date>
-    <changes>Aggiunto anti-cloudflare</changes>
+    <date>09/04/2016</date>
+    <changes>Added TMDB</changes>
     <categories>
         <category>movie</category>
         <category>serie</category>
