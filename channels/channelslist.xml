@@ -370,9 +370,9 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/filmstream.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>11</version>
+    <version>12</version>
     <adult>false</adult>
-    <date>08/04/2016</date>
+    <date>11/04/2016</date>
     <changes>Added TMDB</changes>
     <categories>
         <category>movie</category>
