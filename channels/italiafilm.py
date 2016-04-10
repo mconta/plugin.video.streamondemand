@@ -222,7 +222,7 @@ def episodios(item):
 
     itemlist = []
 
-    # Descarga la página
+    # Descarga la pagina
     data = scrapertools.cache_page(item.url)
 
     start = data.find('id="pd_rating_holder')
@@ -279,7 +279,7 @@ def episodios(item):
 def findvid_serie(item):
     logger.info("[italiafilm.py] findvideos")
 
-    # Descarga la página
+    # Descarga la pagina
     data = item.extra
 
     itemlist = servertools.find_video_items(data=data)
