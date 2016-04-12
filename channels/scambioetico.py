@@ -99,7 +99,7 @@ def info(title):
     logger.info("streamondemand.scambioetico info")
     try:
         from core.tmdb import Tmdb
-        oTmdb= Tmdb(texto_buscado=title, tipo= "movie", include_adult="true", idioma_busqueda="it")
+        oTmdb= Tmdb(texto_buscado=title, tipo= "movie", include_adult="false", idioma_busqueda="it")
         count = 0
         if oTmdb.total_results > 0:
             #Mientras el thumbnail no coincida con el del resultado de la búsqueda, pasa al siguiente resultado
