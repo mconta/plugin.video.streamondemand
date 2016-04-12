@@ -277,7 +277,7 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/eurostreaming.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>8</version>
+    <version>9</version>
     <adult>false</adult>
     <date>05/04/2016</date>
     <changes>Addedd TMDB mvie+series</changes>
@@ -296,7 +296,7 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/eurostreaminginfo.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>4</version>
+    <version>5</version>
     <adult>false</adult>
     <date>03/04/2016</date>
     <changes>Fix TMDB </changes>
@@ -314,7 +314,7 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/filmontv.py</update_url>
     <active>true</active>
     <include_in_global_search>false</include_in_global_search>
-    <version>14</version>
+    <version>15</version>
     <adult>false</adult>
     <date>03/04/2015</date>
     <changes>Fix TMDB integration</changes>
@@ -334,7 +334,7 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/filmpertutti.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>12</version>
+    <version>13</version>
     <adult>false</adult>
     <date>09/04/2016</date>
     <changes>Added TMDB</changes>
@@ -353,7 +353,7 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/filmsenzalimiti.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>8</version>
+    <version>9</version>
     <adult>false</adult>
     <date>04/04/2015</date>
     <changes>Added TMDB</changes>
@@ -388,7 +388,7 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/filmstreampw.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>9</version>
+    <version>10</version>
     <adult>false</adult>
     <date>09/04/2016</date>
     <changes>Added TMDB</changes>
@@ -406,7 +406,7 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/filmsubitotv.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>11</version>
+    <version>12</version>
     <adult>false</adult>
     <date>10/04/2016</date>
     <changes>Added TMDB + domain fix</changes>
