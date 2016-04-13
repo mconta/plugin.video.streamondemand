@@ -24,8 +24,8 @@ __language__ = "IT"
 
 host = "http://mondolunatico.org"
 
-captcha_url = 'http://www.keeplinks.eu/basiccaptcha/securimage_show.php?sid='
-#captcha_url = '%s/pass/CaptchaSecurityImages.php?width=100&height=40&characters=5' % host
+#captcha_url = 'http://www.keeplinks.eu/basiccaptcha/securimage_show.php?sid='
+captcha_url = '%s/pass/CaptchaSecurityImages.php?width=100&height=40&characters=5' % host
 
 headers = [
     ['User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:38.0) Gecko/20100101 Firefox/38.0'],
@@ -268,7 +268,7 @@ def info(title):
     logger.info("streamondemand.mondolunatico info")
     try:
         from core.tmdb import Tmdb
-        oTmdb= Tmdb(texto_buscado=title, tipo= "movie", include_adult="true", idioma_busqueda="it")
+        oTmdb= Tmdb(texto_buscado=title, tipo= "movie", include_adult="false", idioma_busqueda="it")
         count = 0
         if oTmdb.total_results > 0:
            extrameta = {}
