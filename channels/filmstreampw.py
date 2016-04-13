@@ -165,17 +165,34 @@ def peliculasx(item):
         scrapedtitle = scrapedtitle.strip()
         if (DEBUG): logger.info(
                 "title=[" + scrapedtitle + "], url=[" + scrapedurl + "], thumbnail=[" + scrapedthumbnail + "]")
-        itemlist.append(
-                Item(channel=__channel__,
-                     action="episodios" if item.extra == "serie" else "findvideos",
-                     fulltitle=scrapedtitle,
-                     show=scrapedtitle,
-                     title=scrapedtitle,
-                     url=scrapedurl,
-                     thumbnail=scrapedthumbnail,
-                     plot=scrapedplot,
-                     folder=True,
-                     fanart=scrapedthumbnail))
+        tmdbtitle1 = scrapedtitle.split("[")[0]
+        tmdbtitle = tmdbtitle1.split("(")[0]
+        try:
+           plot, fanart, poster, extrameta = info(tmdbtitle)
+
+           itemlist.append(
+               Item(channel=__channel__,
+                    thumbnail=poster,
+                    fanart=fanart if fanart != "" else poster,
+                    extrameta=extrameta,
+                    plot=str(plot),
+                    action="episodios" if item.extra == "serie" else "findvideos",
+                    title="[COLOR azure]" + scrapedtitle + "[/COLOR]",
+                    url=scrapedurl,
+                    fulltitle=scrapedtitle,
+                    show=scrapedtitle,
+                    folder=True))
+        except:
+           itemlist.append(
+               Item(channel=__channel__,
+                    action="episodios" if item.extra == "serie" else "findvideos",
+                    fulltitle=scrapedtitle,
+                    show=scrapedtitle,
+                    title=scrapedtitle,
+                    url=scrapedurl,
+                    thumbnail=scrapedthumbnail,
+                    plot=scrapedplot,
+                    folder=True))
 
     return itemlist
 
