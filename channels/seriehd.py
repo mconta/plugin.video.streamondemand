@@ -25,13 +25,6 @@ headers = [
     ['Accept-Encoding', 'gzip, deflate']
 ]
 
-headers_url = [
-    ['User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:38.0) Gecko/20100101 Firefox/38.0'],
-    ['Accept-Encoding', 'gzip, deflate'],
-    ['Connection', 'keep-alive'],
-    ['Host', 'hdpass.xyz']
-]
-
 host = "http://www.seriehd.org"
 
 
@@ -127,14 +120,31 @@ def fichas(item):
         scrapedthumbnail += "|" + _headers
         scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle).strip()
 
-        itemlist.append(
-                Item(channel=__channel__,
-                     action="episodios",
-                     title="[COLOR azure]" + scrapedtitle + "[/COLOR]",
-                     fulltitle=scrapedtitle,
-                     url=scrapedurl,
-                     show=scrapedtitle,
-                     thumbnail=scrapedthumbnail))
+        tmdbtitle = scrapedtitle.split("(")[0]
+        try:
+           plot, fanart, poster, extrameta = info(tmdbtitle)
+
+           itemlist.append(
+               Item(channel=__channel__,
+                    thumbnail=poster,
+                    fanart=fanart if fanart != "" else poster,
+                    extrameta=extrameta,
+                    plot=str(plot),
+                    action="episodios",
+                    title="[COLOR azure]" + scrapedtitle + "[/COLOR]",
+                    url=scrapedurl,
+                    fulltitle=scrapedtitle,
+                    show=scrapedtitle,
+                    folder=True))
+        except:
+           itemlist.append(
+               Item(channel=__channel__,
+                    action="episodios",
+                    title="[COLOR azure]" + scrapedtitle + "[/COLOR]",
+                    fulltitle=scrapedtitle,
+                    url=scrapedurl,
+                    show=scrapedtitle,
+                    thumbnail=scrapedthumbnail))
 
     patron = "<span class='current'>\d+</span><a rel='nofollow' class='page larger' href='([^']+)'>\d+</a>"
     next_page = scrapertools.find_single_match(data, patron)
@@ -306,4 +316,22 @@ def unescape(par1, par2, par3):
     var1 = re.sub("%26", "&", var1)
     var1 = re.sub("%3B", ";", var1)
     return var1.replace('<!--?--><?', '<!--?-->')
+
+def info(title):
+    logger.info("streamondemand.seriehd info")
+    try:
+        from core.tmdb import Tmdb
+        oTmdb= Tmdb(texto_buscado=title, tipo= "tv", include_adult="false", idioma_busqueda="it")
+        count = 0
+        if oTmdb.total_results > 0:
+           extrameta = {}
+           extrameta["Year"] = oTmdb.result["release_date"][:4]
+           extrameta["Genre"] = ", ".join(oTmdb.result["genres"])
+           extrameta["Rating"] = float(oTmdb.result["vote_average"])
+           fanart=oTmdb.get_backdrop()
+           poster=oTmdb.get_poster()
+           plot=oTmdb.get_sinopsis()
+           return plot, fanart, poster, extrameta
+    except:
+        pass	
 

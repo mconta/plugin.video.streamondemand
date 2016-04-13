@@ -885,10 +885,10 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/seriehd.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>20</version>
+    <version>21</version>
     <adult>false</adult>
     <date>09/04/2016</date>
-    <changes>fixed hdpass (sort of)</changes>
+    <changes>Add TMDB</changes>
     <categories>
         <category>serie</category>
     </categories>
@@ -902,10 +902,10 @@
     <update_url>https://raw.githubusercontent.com/Zanzibar82/plugin.video.streamondemand/master/channels/serietvsubita.py</update_url>
     <active>true</active>
     <include_in_global_search>true</include_in_global_search>
-    <version>3</version>
+    <version>4</version>
     <adult>false</adult>
-    <date>28/08/2015</date>
-    <changes>Prima versione di Pelisalacarta 4</changes>
+    <date>12/04/2016</date>
+    <changes>Add TMDB</changes>
     <categories>
         <category>serie</category>
         <category>vos</category>
