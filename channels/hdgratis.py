@@ -153,14 +153,30 @@ def getsearch(item):
         scrapedthumbnail += "|" + _headers
         # ------------------------------------------------
 
-        itemlist.append(
-                Item(channel=__channel__,
-                     action="findvideos",
-                     title=title,
-                     url=scrapedurl,
-                     thumbnail=scrapedthumbnail,
-                     fulltitle=title,
-                     show=scrapedtitle))
+        try:
+           plot, fanart, poster, extrameta = info(title)
+
+           itemlist.append(
+               Item(channel=__channel__,
+                    thumbnail=poster,
+                    fanart=fanart if fanart != "" else poster,
+                    extrameta=extrameta,
+                    plot=str(plot),
+                    action="findvideos",
+                    title="[COLOR azure]" + title + "[/COLOR]",
+                    url=scrapedurl,
+                    fulltitle=title,
+                    show=scrapedtitle,
+                    folder=True))
+        except:
+           itemlist.append(
+               Item(channel=__channel__,
+                    action="findvideos",
+                    title=title,
+                    url=scrapedurl,
+                    thumbnail=scrapedthumbnail,
+                    fulltitle=title,
+                    show=scrapedtitle))
 
     # Paginación
 	next_page = re.compile('<link rel="next" href="(.+?)"/>', re.DOTALL).findall(data)

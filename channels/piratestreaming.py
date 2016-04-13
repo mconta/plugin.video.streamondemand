@@ -234,16 +234,34 @@ def cerca(item):
         scrapedplot = ""
         scrapedtitle = scrapertools.decodeHtmlentities(scrapedtitle.replace("</a>", ""))
         if DEBUG: logger.info("title=[" + scrapedtitle + "], url=[" + scrapedurl + "]")
-        itemlist.append(
-                Item(channel=__channel__,
-                     action="episodios" if item.extra == "serie" else "findvideos",
-                     fulltitle=scrapedtitle,
-                     show=scrapedtitle,
-                     title="[COLOR azure]" + scrapedtitle + "[/COLOR]",
-                     url=scrapedurl,
-                     thumbnail=scrapedthumbnail,
-                     plot=scrapedplot,
-                     folder=True))
+        tmdbtitle1 = scrapedtitle.split("Sub ")[0]
+        tmdbtitle = tmdbtitle1.split("(")[0]
+        try:
+           plot, fanart, poster, extrameta = info(tmdbtitle)
+
+           itemlist.append(
+               Item(channel=__channel__,
+                    thumbnail=poster,
+                    fanart=fanart if fanart != "" else poster,
+                    extrameta=extrameta,
+                    plot=str(plot),
+                    action="episodios" if item.extra == "serie" else "findvideos",
+                    title="[COLOR azure]" + scrapedtitle + "[/COLOR]",
+                    url=scrapedurl,
+                    fulltitle=scrapedtitle,
+                    show=scrapedtitle,
+                    folder=True))
+        except:
+           itemlist.append(
+               Item(channel=__channel__,
+                    action="episodios" if item.extra == "serie" else "findvideos",
+                    fulltitle=scrapedtitle,
+                    show=scrapedtitle,
+                    title="[COLOR azure]" + scrapedtitle + "[/COLOR]",
+                    url=scrapedurl,
+                    thumbnail=scrapedthumbnail,
+                    plot=scrapedplot,
+                    folder=True))
 
     # Extrae el paginador
     patronvideos = '<td align="center">[^<]+</td>[^<]+<td align="center">\s*<a href="([^"]+)">[^<]+</a>'
