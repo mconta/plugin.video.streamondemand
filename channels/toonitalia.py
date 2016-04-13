@@ -63,7 +63,7 @@ def anime( item ):
     data = scrapertools.cache_page(item.url)
 
     ## Extrae las entradas (carpetas)
-    patron  = '<figure class="post-image left">.*?<a href="([^"]+)"><img src="([^"]+)".*?alt="([^"]+)" /></a>'
+    patron  = '<figure class="post-image left">\s*<a href="([^"]+)"><img src="([^"]+)"[^l]+lt="([^"]+)" /></a>\s*</figure>'
     matches = re.compile( patron, re.DOTALL ).findall( data )
 
     for scrapedurl,scrapedthumbnail,scrapedtitle in matches:
@@ -184,3 +184,4 @@ def findvid(item):
         videoitem.channel = __channel__
 
     return itemlist
+
