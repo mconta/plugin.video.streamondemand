@@ -83,16 +83,34 @@ def peliculas(item):
         scrapedplot = scrapertools.decodeHtmlentities(scrapedplot)
         title = scrapertools.decodeHtmlentities(scrapedtitle)
 
-        itemlist.append(
-            Item(channel=__channel__,
-                 action="findvideos",
-                 title=title,
-                 url=scrapedurl,
-                 thumbnail=scrapedthumbnail,
-                 fulltitle=title,
-                 show=title,
-                 plot=scrapedplot,
-                 viewmode="movie_with_plot"))
+        tmdbtitle1 = scrapedtitle.split("[")[0]
+        tmdbtitle = tmdbtitle1.split("(")[0]
+        try:
+           plot, fanart, poster, extrameta = info(tmdbtitle)
+
+           itemlist.append(
+               Item(channel=__channel__,
+                    thumbnail=poster,
+                    fanart=fanart if fanart != "" else poster,
+                    extrameta=extrameta,
+                    plot=str(plot),
+                    action="findvideos",
+                    title="[COLOR azure]" + title + "[/COLOR]",
+                    url=scrapedurl,
+                    fulltitle=title,
+                    show=title,
+                    folder=True))
+        except:
+           itemlist.append(
+               Item(channel=__channel__,
+                    action="findvideos",
+                    title=title,
+                    url=scrapedurl,
+                    thumbnail=scrapedthumbnail,
+                    fulltitle=title,
+                    show=title,
+                    plot=scrapedplot,
+                    viewmode="movie_with_plot"))
 
     # Paginación
     patron = '<div class="nav-previous"><a href="(.*?)" ><span class="meta-nav">&larr;</span> Articoli precedenti</a></div>'
@@ -180,3 +198,22 @@ def play(item):
         videoitem.channel = __channel__
 
     return itemlist
+
+def info(title):
+    logger.info("streamondemand.asiansubita info")
+    try:
+        from core.tmdb import Tmdb
+        oTmdb= Tmdb(texto_buscado=title, tipo= "movie", include_adult="false", idioma_busqueda="it")
+        count = 0
+        if oTmdb.total_results > 0:
+           extrameta = {}
+           extrameta["Year"] = oTmdb.result["release_date"][:4]
+           extrameta["Genre"] = ", ".join(oTmdb.result["genres"])
+           extrameta["Rating"] = float(oTmdb.result["vote_average"])
+           fanart=oTmdb.get_backdrop()
+           poster=oTmdb.get_poster()
+           plot=oTmdb.get_sinopsis()
+           return plot, fanart, poster, extrameta
+    except:
+        pass	
+
