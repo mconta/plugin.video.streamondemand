@@ -23,6 +23,13 @@ __language__ = "IT"
 
 host = "http://toonitalia.altervista.org/"
 
+headers = [
+    ['User-Agent', 'Mozilla/5.0 (Windows NT 6.1; rv:38.0) Gecko/20100101 Firefox/38.0'],
+    ['Accept-Encoding', 'gzip, deflate'],
+    ['Referer', host]
+]
+
+
 DEBUG = config.get_setting("debug")
 
 
@@ -227,6 +234,10 @@ def findvid(item):
 
     # Downloads page
     data = item.url
+    if 'http://bc.vc/' in data:
+        headers.append(['Referer', data])
+        data = scrapertools.cache_page(data, headers=headers)
+        data = data[20:]
     itemlist = servertools.find_video_items(data=data)
     for videoitem in itemlist:
         videoitem.title = item.title + videoitem.title
