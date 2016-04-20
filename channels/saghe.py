@@ -81,6 +81,17 @@ def mainlist(item):
                      action="tmdb_saghe",
                      url='http://api.themoviedb.org/3/list/51224e42760ee3297424a1e0?api_key=%s&language=it' % tmdb_key,
                      thumbnail="https://image.tmdb.org/t/p/w180_and_h270_bestv2/vGV35HBCMhQl2phhGaQ29P08ZgM.jpg"),
+                Item(channel=__channel__,
+                     title="[COLOR yellow]Star Wars[/COLOR]",
+                     action="tmdb_saghe",
+                     url='http://api.themoviedb.org/3/list/509fb10819c29510bb000675?api_key=%s&language=it' % tmdb_key,
+                         thumbnail="https://image.tmdb.org/t/p/w180_and_h270_bestv2/tvSlBzAdRE29bZe5yYWrJ2ds137.jpg"),
+                Item(channel=__channel__,
+                     title="[COLOR yellow]Selezione Fantascienza[/COLOR]",
+                     action="tmdb_saghe",
+                     url='http://api.themoviedb.org/3/list/54408e79929fb858d1000052?api_key=%s&language=it' % tmdb_key,
+                     thumbnail="https://image.tmdb.org/t/p/w180_and_h270_bestv2/uPxtxhB2Fy9ihVqtBtNGHmknJqV.jpg"),
+
 		Item(channel=__channel__,
 			title="[COLOR yellow]Azione[/COLOR]",
 			action="tmdb_saghe",
@@ -319,4 +330,3 @@ def do_search(item):
         progreso.close()
 
     return itemlist
-
