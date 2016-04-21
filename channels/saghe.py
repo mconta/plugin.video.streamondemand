@@ -263,7 +263,7 @@ def tmdb_generi(item):
 
     #logger.error("streamondemand.channels.saghe totpages = {0}".format(totpages))
     
-    while currpage < totpages and currpage < 20:
+    while currpage < totpages and currpage < 30:
         try:
             logger.error("streamondemand.channels.saghe currpage = {0}".format(currpage))
             append_items(items,itemlist)
