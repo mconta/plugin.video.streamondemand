@@ -94,102 +94,102 @@ def mainlist(item):
 
 		Item(channel=__channel__,
 			title="[COLOR yellow]Azione[/COLOR]",
-			action="tmdb_saghe",
+			action="tmdb_generi",
 			url='http://api.themoviedb.org/3/discover/movie?with_genres=28&api_key=%s&language=it' % tmdb_key,
 			thumbnail="http://icons.iconarchive.com/icons/sirubico/movie-genre/256/Action-2-icon.png"),
 		Item(channel=__channel__,
 			title="[COLOR yellow]Avventura[/COLOR]",
-			action="tmdb_saghe",
+			action="tmdb_generi",
 			url='http://api.themoviedb.org/3/discover/movie?with_genres=12&api_key=%s&language=it' % tmdb_key,
 			thumbnail="http://icons.iconarchive.com/icons/sirubico/movie-genre/256/Adventure-5-icon.png"),
 		Item(channel=__channel__,
 			title="[COLOR yellow]Animazione[/COLOR]",
-			action="tmdb_saghe",
+			action="tmdb_generi",
 			url='http://api.themoviedb.org/3/discover/movie?with_genres=16&api_key=%s&language=it' % tmdb_key,
 			thumbnail=""),
 		Item(channel=__channel__,
 			title="[COLOR yellow]Commedia[/COLOR]",
-			action="tmdb_saghe",
+			action="tmdb_generi",
 			url='http://api.themoviedb.org/3/discover/movie?with_genres=35&api_key=%s&language=it' % tmdb_key,
 			thumbnail=""),
 		Item(channel=__channel__,
 			title="[COLOR yellow]Crime[/COLOR]",
-			action="tmdb_saghe",
+			action="tmdb_generi",
 			url='http://api.themoviedb.org/3/discover/movie?with_genres=80&api_key=%s&language=it' % tmdb_key,
 			thumbnail=""),
 		Item(channel=__channel__,
 			title="[COLOR yellow]Documentario[/COLOR]",
-			action="tmdb_saghe",
+			action="tmdb_generi",
 			url='http://api.themoviedb.org/3/discover/movie?with_genres=99&api_key=%s&language=it' % tmdb_key,
 			thumbnail=""),
 		Item(channel=__channel__,
 			title="[COLOR yellow]Dramma[/COLOR]",
-			action="tmdb_saghe",
+			action="tmdb_generi",
 			url='http://api.themoviedb.org/3/discover/movie?with_genres=18&api_key=%s&language=it' % tmdb_key,
 			thumbnail=""),
 		Item(channel=__channel__,
 			title="[COLOR yellow]Famiglia[/COLOR]",
-			action="tmdb_saghe",
+			action="tmdb_generi",
 			url='http://api.themoviedb.org/3/discover/movie?with_genres=10751&api_key=%s&language=it' % tmdb_key,
 			thumbnail=""),
 		Item(channel=__channel__,
 			title="[COLOR yellow]Fantasia[/COLOR]",
-			action="tmdb_saghe",
+			action="tmdb_generi",
 			url='http://api.themoviedb.org/3/discover/movie?with_genres=14&api_key=%s&language=it' % tmdb_key,
 			thumbnail=""),
 		Item(channel=__channel__,
 			title="[COLOR yellow]Internazionale[/COLOR]",
-			action="tmdb_saghe",
+			action="tmdb_generi",
 			url='http://api.themoviedb.org/3/discover/movie?with_genres=10769&api_key=%s&language=it' % tmdb_key,
 			thumbnail=""),
 		Item(channel=__channel__,
 			title="[COLOR yellow]Storia[/COLOR]",
-			action="tmdb_saghe",
+			action="tmdb_generi",
 			url='http://api.themoviedb.org/3/discover/movie?with_genres=36&api_key=%s&language=it' % tmdb_key,
 			thumbnail=""),
 		Item(channel=__channel__,
 			title="[COLOR yellow]Orrore[/COLOR]",
-			action="tmdb_saghe",
+			action="tmdb_generi",
 			url='http://api.themoviedb.org/3/discover/movie?with_genres=27&api_key=%s&language=it' % tmdb_key,
 			thumbnail=""),
 		Item(channel=__channel__,
 			title="[COLOR yellow]Musica[/COLOR]",
-			action="tmdb_saghe",
+			action="tmdb_generi",
 			url='http://api.themoviedb.org/3/discover/movie?with_genres=10402&api_key=%s&language=it' % tmdb_key,
 			thumbnail=""),
 		Item(channel=__channel__,
 			title="[COLOR yellow]Mistero[/COLOR]",
-			action="tmdb_saghe",
+			action="tmdb_generi",
 			url='http://api.themoviedb.org/3/discover/movie?with_genres=9648&api_key=%s&language=it' % tmdb_key,
 			thumbnail=""),
 		Item(channel=__channel__,
-			title="[COLOR yellow]Romanza[/COLOR]",
-			action="tmdb_saghe",
+			title="[COLOR yellow]Romantico[/COLOR]",
+			action="tmdb_generi",
 			url='http://api.themoviedb.org/3/discover/movie?with_genres=10749&api_key=%s&language=it' % tmdb_key,
 			thumbnail=""),
 		Item(channel=__channel__,
 			title="[COLOR yellow]Fantascienza[/COLOR]",
-			action="tmdb_saghe",
+			action="tmdb_generi",
 			url='http://api.themoviedb.org/3/discover/movie?with_genres=878&api_key=%s&language=it' % tmdb_key,
 			thumbnail=""),
 		Item(channel=__channel__,
 			title="[COLOR yellow]Film TV[/COLOR]",
-			action="tmdb_saghe",
+			action="tmdb_generi",
 			url='http://api.themoviedb.org/3/discover/movie?with_genres=10770&api_key=%s&language=it' % tmdb_key,
 			thumbnail=""),
 		Item(channel=__channel__,
 			title="[COLOR yellow]Romanzo giallo[/COLOR]",
-			action="tmdb_saghe",
+			action="tmdb_generi",
 			url='http://api.themoviedb.org/3/discover/movie?with_genres=53&api_key=%s&language=it' % tmdb_key,
 			thumbnail=""),
 		Item(channel=__channel__,
 			title="[COLOR yellow]Guerra[/COLOR]",
-			action="tmdb_saghe",
+			action="tmdb_generi",
 			url='http://api.themoviedb.org/3/discover/movie?with_genres=10752&api_key=%s&language=it' % tmdb_key,
 			thumbnail=""),
 		Item(channel=__channel__,
 			title="[COLOR yellow]Western[/COLOR]",
-			action="tmdb_saghe",
+			action="tmdb_generi",
 			url='http://api.themoviedb.org/3/discover/movie?with_genres=37&api_key=%s&language=it' % tmdb_key,
 			thumbnail=""),			
                 Item( title="[COLOR azure]Hokuto no Ken[/COLOR]", channel="hokutonoken", action="mainlist", thumbnail="http://i.imgur.com/dn9ImTf.jpg"),
@@ -246,6 +246,53 @@ def tmdb_saghe(item):
 
     return itemlist
 
+
+def tmdb_generi(item):
+    try:
+        result = scrapertools.cache_page(item.url)
+        result = json.loads(result)
+        items = result['results']
+    except:
+        return
+
+    itemlist = []
+    for item in items:
+        try:
+            title = item['title']
+            title = scrapertools.decodeHtmlentities(title)
+            title = title.encode('utf-8')
+
+            poster = item['poster_path']
+            if poster == '' or poster is None:
+                raise Exception()
+            else:
+                poster = '%s%s' % (tmdb_poster, poster)
+            poster = poster.encode('utf-8')
+
+            fanart = item['backdrop_path']
+            if fanart == '' or fanart is None: fanart = '0'
+            if not fanart == '0': fanart = '%s%s' % (tmdb_image, fanart)
+            fanart = fanart.encode('utf-8')
+
+            plot = item['overview']
+            if plot == '' or plot is None: plot = '0'
+            plot = scrapertools.decodeHtmlentities(plot)
+            plot = plot.encode('utf-8')
+
+            itemlist.append(
+                Item(channel=__channel__,
+                     action="do_search",
+                     extra=urllib.quote_plus(title),
+                     title="[COLOR azure]%s[/COLOR]" % title,
+                     fulltitle=title,
+                     plot=plot,
+                     thumbnail=poster,
+                     fanart=fanart,
+                     folder=True))
+        except:
+            pass
+
+    return itemlist
 
 def do_search(item):
     logger.info("streamondemand.channels.saghe do_search")
