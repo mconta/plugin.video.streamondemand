@@ -248,14 +248,36 @@ def tmdb_saghe(item):
 
 
 def tmdb_generi(item):
+    currpage=1
+
     try:
         result = scrapertools.cache_page(item.url)
         result = json.loads(result)
         items = result['results']
     except:
+        #logger.error("streamondemand.channels.saghe exception on cache_page")
         return
 
     itemlist = []
+    totpages = result['total_pages']
+
+    #logger.error("streamondemand.channels.saghe totpages = {0}".format(totpages))
+    
+    while currpage < totpages and currpage < 20:
+        try:
+            logger.error("streamondemand.channels.saghe currpage = {0}".format(currpage))
+            append_items(items,itemlist)
+            currpage=currpage+1
+            result = scrapertools.cache_page(item.url + "&page={0}".format(currpage))
+            result = json.loads(result)
+            items = result['results']
+        except:
+            logger.error("streamondemand.channels.saghe exception")
+            break
+        #currpage = result['pages']
+    return itemlist
+
+def append_items(items,itemlist):
     for item in items:
         try:
             title = item['title']
@@ -291,8 +313,8 @@ def tmdb_generi(item):
                      folder=True))
         except:
             pass
-
-    return itemlist
+    return 
+    
 
 def do_search(item):
     logger.info("streamondemand.channels.saghe do_search")
